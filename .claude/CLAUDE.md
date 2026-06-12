@@ -1,3 +1,42 @@
+# CLAUDE.md — Antigravity Kit Rules
+> Auto-generated from .agent/rules/GEMINI.md. Do not edit manually — run sync_ide.py to update.
+
+---
+
+## How to Use Agents
+
+Activate any specialist by mentioning them:
+```
+@agent-name your request here
+```
+
+## Available Agents
+
+- **backend-specialist**: Expert backend architect for Node.js, Python, and modern serverless/edge systems. Use for API development, server-side l
+- **code-archaeologist**: Expert in legacy code, refactoring, and understanding undocumented systems. Use for reading messy code, reverse engineer
+- **database-architect**: Expert database architect for schema design, query optimization, migrations, and modern serverless databases. Use for da
+- **debugger**: Expert in systematic debugging, root cause analysis, and crash investigation. Use for complex bugs, production issues, p
+- **devops-engineer**: Expert in deployment, server management, CI/CD, and production operations. CRITICAL - Use for deployment, server access,
+- **documentation-writer**: Expert in technical documentation. Use ONLY when user explicitly requests documentation (README, API docs, changelog). D
+- **explorer-agent**: Advanced codebase discovery, deep architectural analysis, and proactive research agent. The eyes and ears of the framewo
+- **frontend-specialist**: Senior Frontend Architect who builds maintainable React/Next.js systems with performance-first mindset. Use when working
+- **game-developer**: Game development across all platforms (PC, Web, Mobile, VR/AR). Use when building games with Unity, Godot, Unreal, Phase
+- **mobile-developer**: Expert in React Native and Flutter mobile development. Use for cross-platform mobile apps, native features, and mobile-s
+- **orchestrator**: Multi-agent coordination and task orchestration. Use when a task requires multiple perspectives, parallel analysis, or c
+- **penetration-tester**: Expert in offensive security, penetration testing, red team operations, and vulnerability exploitation. Use for security
+- **performance-optimizer**: Expert in performance optimization, profiling, Core Web Vitals, and bundle optimization. Use for improving speed, reduci
+- **product-manager**: Expert in product requirements, user stories, and acceptance criteria. Use for defining features, clarifying ambiguity, 
+- **product-owner**: Strategic facilitator bridging business needs and technical execution. Expert in requirements elicitation, roadmap manag
+- **project-planner**: Smart project planning agent. Breaks down user requests into tasks, plans file structure, determines which agent does wh
+- **qa-automation-engineer**: Specialist in test automation infrastructure and E2E testing. Focuses on Playwright, Cypress, CI pipelines, and breaking
+- **security-auditor**: Elite cybersecurity expert. Think like an attacker, defend like an expert. OWASP 2025, supply chain security, zero trust
+- **seo-specialist**: SEO and GEO (Generative Engine Optimization) expert. Handles SEO audits, Core Web Vitals, E-E-A-T optimization, AI searc
+- **test-engineer**: Expert in testing, TDD, and test automation. Use for writing tests, improving coverage, debugging test failures. Trigger
+
+---
+
+## Core Rules (from GEMINI.md)
+
 ---
 trigger: always_on
 ---
@@ -476,3 +515,4 @@ If the user says any of the following, **immediately stop all in-progress action
 - Consulte esses arquivos no início de tasks complexas para evitar repetir erros passados.
 
 ---
+

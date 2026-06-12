@@ -1,121 +1,28 @@
----
-trigger: always_on
----
+# Antigravity Kit — Cursor Rules
+> Auto-generated from .agent/rules/GEMINI.md via sync_ide.py
 
-# GEMINI.md - Antigravity Kit
+## Available Agents
 
-> This file defines how the AI behaves in this workspace.
-
----
-
-## CRITICAL: AGENT & SKILL PROTOCOL (START HERE)
-
-> **MANDATORY:** You MUST read the appropriate agent file and its skills BEFORE performing any implementation. This is the highest priority rule.
-
-### 1. Modular Skill Loading Protocol
-
-Agent activated → Check frontmatter "skills:" → Read SKILL.md (INDEX) → Read specific sections.
-
-- **Selective Reading:** DO NOT read ALL files in a skill folder. Read `SKILL.md` first, then only read sections matching the user's request.
-- **Rule Priority:** P0 (GEMINI.md) > P1 (Agent .md) > P2 (SKILL.md). All rules are binding.
-
-### 2. Enforcement Protocol
-
-1. **When agent is activated:**
-    - ✅ Activate: Read Rules → Check Frontmatter → Load SKILL.md → Apply All.
-2. **Forbidden:** Never skip reading agent rules or skill instructions. "Read → Understand → Apply" is mandatory.
-
----
-
-## 📥 REQUEST CLASSIFIER (STEP 1)
-
-**Before ANY action, classify the request:**
-
-| Request Type     | Trigger Keywords (EN / PT)                                    | Active Tiers                   | Result                      |
-| ---------------- | ------------------------------------------------------------ | ------------------------------ | --------------------------- |
-| **QUESTION**     | "what is", "how does", "explain" / "o que é", "como", "explique" | TIER 0 only                    | Text Response               |
-| **SURVEY/INTEL** | "analyze", "list files", "overview" / "analise", "listar", "visão geral" | TIER 0 + Explorer              | Session Intel (No File)     |
-| **SIMPLE CODE**  | "fix", "add", "change" / "corrija", "adicione", "mude"       | TIER 0 + TIER 1 (lite)         | Inline Edit                 |
-| **COMPLEX CODE** | "build", "create", "implement", "refactor" / "construa", "crie", "implemente", "refatore" | TIER 0 + TIER 1 (full) + Agent | **{task-slug}.md Required** |
-| **DESIGN/UI**    | "design", "UI", "page", "dashboard" / "visual", "tela", "página", "interface" | TIER 0 + TIER 1 + Agent        | **{task-slug}.md Required** |
-| **SLASH CMD**    | /create, /orchestrate, /debug, /build-saas, /ade             | Command-specific flow          | Variable                    |
-| **KIT HEALTH**   | "doctor", "diagnóstico", "kit integridade", "checar kit"     | TIER 0 + Scripts               | `python .agent/scripts/doctor.py` |
-| **ADE PIPELINE** | /ade, "pipeline autônomo", "autonomous"                      | TIER 0 + orchestrator + /ade   | ADE Workflow                |
-
----
-
-## 🤖 INTELLIGENT AGENT ROUTING (STEP 2 - AUTO)
-
-**ALWAYS ACTIVE: Before responding to ANY request, automatically analyze and select the best agent(s).**
-
-> 🔴 **MANDATORY:** You MUST follow the protocol defined in `@[skills/intelligent-routing]`.
-
-### Auto-Selection Protocol
-
-1. **Analyze (Silent)**: Detect domains (Frontend, Backend, Security, etc.) from user request.
-2. **Select Agent(s)**: Choose the most appropriate specialist(s).
-3. **Inform User**: Concisely state which expertise is being applied.
-4. **Apply**: Generate response using the selected agent's persona and rules.
-
-### Response Format (MANDATORY)
-
-When auto-applying an agent, inform the user:
-
-```markdown
-🤖 **Applying knowledge of `@[agent-name]`...**
-
-[Continue with specialized response]
-```
-
-**Rules:**
-
-1. **Silent Analysis**: No verbose meta-commentary ("I am analyzing...").
-2. **Respect Overrides**: If user mentions `@agent`, use it.
-3. **Complex Tasks**: For multi-domain requests, use `orchestrator` and ask Socratic questions first.
-
-### ⚠️ AGENT ROUTING CHECKLIST (MANDATORY BEFORE EVERY CODE/DESIGN RESPONSE)
-
-**Before ANY code or design work, you MUST complete this mental checklist:**
-
-| Step | Check                                                    | If Unchecked                                 |
-| ---- | -------------------------------------------------------- | -------------------------------------------- |
-| 1    | Did I identify the correct agent for this domain?        | → STOP. Analyze request domain first.        |
-| 2    | Did I READ the agent's `.md` file (or recall its rules)? | → STOP. Open `.agent/agents/{agent}.md`      |
-| 3    | Did I announce `🤖 Applying knowledge of @[agent]...`?   | → STOP. Add announcement before response.    |
-| 4    | Did I load required skills from agent's frontmatter?     | → STOP. Check `skills:` field and read them. |
-
-**Failure Conditions:**
-
-- ❌ Writing code without identifying an agent = **PROTOCOL VIOLATION**
-- ❌ Skipping the announcement = **USER CANNOT VERIFY AGENT WAS USED**
-- ❌ Ignoring agent-specific rules (e.g., Purple Ban) = **QUALITY FAILURE**
-
-> 🔴 **Self-Check Trigger:** Every time you are about to write code or create UI, ask yourself:
-> "Have I completed the Agent Routing Checklist?" If NO → Complete it first.
-
----
-
-## ⚡ EFICIÊNCIA OPERACIONAL & ECONOMIA (MODOS SELETIVOS)
-
-### 1. Localização Restrita de Integridade do Kit
-- **Regra:** O script `python -m pytest .agent/tests/test_kit_integrity.py` deve ser executado **EXCLUSIVAMENTE** dentro do projeto `antigravity-kit-personalizado`.
-- **Comportamento:** Em qualquer outro repositório que utilize este kit, ignore os testes de metadados do kit para economizar processamento. Se solicitado em outros projetos, informe ao usuário que isso é restrito ao projeto oficial de manutenção.
-
-### 2. Validação Seletiva (Selective Validation Mode) - PADRÃO
-- **Regra:** Não valide o projeto inteiro em cada iteração. Foque **APENAS** no que foi alterado.
-- **Execução:** Ao rodar `checklist.py`, passe os caminhos específicos dos arquivos ou pastas modificados (ex: `python .agent/scripts/checklist.py src/components/Login.tsx`).
-- **Escopo:** Se a mudança for lógica profunda, valide o módulo afetado. Se for apenas estilo, valide apenas o arquivo CSS/Componente.
-
-### 3. Fast-Track CI (Deploy Only)
-- **Desenvolvimento:** Use apenas `checklist.py` (Security + Lint + Schema) de forma silenciosa e rápida.
-- **Deploy:** Reserve o `verify_all.py` (Lighthouse + Playwright E2E + Bundle Analysis) **EXCLUSIVAMENTE** para o comando `/deploy`. Nunca execute testes pesados durante o fluxo de criação/edição comum, a menos que haja um bug visual crítico.
-
-### 4. Ambiente de Preview Inteligente
-- **Regra:** O `browser_subagent` para verificação visual só deve ser invocado se houver alterações detectadas em:
-    - Arquivos CSS/Tailwind (`.css`, `.scss`)
-    - Estrutura HTML/JSX (`.html`, `.tsx`, `.jsx`, `.vue`)
-    - Configurações de layout ou bibliotecas de animação (GSAP, Framer Motion).
-- **Lógica:** Se a alteração for apenas em uma função de Utility ou API (Backend/Logic), **NÃO** abra o navegador.
+- **backend-specialist**: Expert backend architect for Node.js, Python, and modern serverless/edge systems. Use for API development, server-side l
+- **code-archaeologist**: Expert in legacy code, refactoring, and understanding undocumented systems. Use for reading messy code, reverse engineer
+- **database-architect**: Expert database architect for schema design, query optimization, migrations, and modern serverless databases. Use for da
+- **debugger**: Expert in systematic debugging, root cause analysis, and crash investigation. Use for complex bugs, production issues, p
+- **devops-engineer**: Expert in deployment, server management, CI/CD, and production operations. CRITICAL - Use for deployment, server access,
+- **documentation-writer**: Expert in technical documentation. Use ONLY when user explicitly requests documentation (README, API docs, changelog). D
+- **explorer-agent**: Advanced codebase discovery, deep architectural analysis, and proactive research agent. The eyes and ears of the framewo
+- **frontend-specialist**: Senior Frontend Architect who builds maintainable React/Next.js systems with performance-first mindset. Use when working
+- **game-developer**: Game development across all platforms (PC, Web, Mobile, VR/AR). Use when building games with Unity, Godot, Unreal, Phase
+- **mobile-developer**: Expert in React Native and Flutter mobile development. Use for cross-platform mobile apps, native features, and mobile-s
+- **orchestrator**: Multi-agent coordination and task orchestration. Use when a task requires multiple perspectives, parallel analysis, or c
+- **penetration-tester**: Expert in offensive security, penetration testing, red team operations, and vulnerability exploitation. Use for security
+- **performance-optimizer**: Expert in performance optimization, profiling, Core Web Vitals, and bundle optimization. Use for improving speed, reduci
+- **product-manager**: Expert in product requirements, user stories, and acceptance criteria. Use for defining features, clarifying ambiguity, 
+- **product-owner**: Strategic facilitator bridging business needs and technical execution. Expert in requirements elicitation, roadmap manag
+- **project-planner**: Smart project planning agent. Breaks down user requests into tasks, plans file structure, determines which agent does wh
+- **qa-automation-engineer**: Specialist in test automation infrastructure and E2E testing. Focuses on Playwright, Cypress, CI pipelines, and breaking
+- **security-auditor**: Elite cybersecurity expert. Think like an attacker, defend like an expert. OWASP 2025, supply chain security, zero trust
+- **seo-specialist**: SEO and GEO (Generative Engine Optimization) expert. Handles SEO audits, Core Web Vitals, E-E-A-T optimization, AI searc
+- **test-engineer**: Expert in testing, TDD, and test automation. Use for writing tests, improving coverage, debugging test failures. Trigger
 
 ---
 
@@ -476,3 +383,4 @@ If the user says any of the following, **immediately stop all in-progress action
 - Consulte esses arquivos no início de tasks complexas para evitar repetir erros passados.
 
 ---
+
