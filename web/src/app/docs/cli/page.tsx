@@ -16,7 +16,7 @@ export default function CLIPage() {
                     CLI Reference
                 </h1>
                 <p className="text-lg text-zinc-600 dark:text-zinc-400">
-                    Command-line interface for managing Antigravity Kit installations.
+                    Command-line interface for managing DevBureau installations.
                 </p>
             </div>
 
@@ -26,7 +26,7 @@ export default function CLIPage() {
                     Overview
                 </h2>
                 <p className="text-base text-zinc-600 dark:text-zinc-400 mb-6">
-                    The <code className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-sm font-mono">ag-kit</code> CLI tool helps you manage Antigravity Kit installations across your projects.
+                    The <code className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-sm font-mono">devbureau</code> CLI tool helps you manage DevBureau installations across your projects.
                 </p>
             </section>
 
@@ -40,15 +40,15 @@ export default function CLIPage() {
                     {/* init */}
                     <div>
                         <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 mb-3">
-                            <code className="font-mono">ag-kit init</code>
+                            <code className="font-mono">devbureau init</code>
                         </h3>
                         <p className="text-base text-zinc-600 dark:text-zinc-400 mb-4">
-                            Initialize Antigravity Kit in your project by installing the <code className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-sm font-mono">.agent</code> folder.
+                            Initialize DevBureau in your project by installing the <code className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-sm font-mono">.agent</code> folder.
                         </p>
 
                         <div className="relative group mb-4">
                             <pre className="p-4 rounded-lg bg-zinc-900 dark:bg-zinc-950 overflow-x-auto border border-zinc-800 font-mono text-sm">
-                                <code className="text-zinc-100">ag-kit init</code>
+                                <code className="text-zinc-100">devbureau init</code>
                             </pre>
                         </div>
 
@@ -65,15 +65,15 @@ export default function CLIPage() {
                     {/* update */}
                     <div>
                         <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 mb-3">
-                            <code className="font-mono">ag-kit update</code>
+                            <code className="font-mono">devbureau update</code>
                         </h3>
                         <p className="text-base text-zinc-600 dark:text-zinc-400 mb-4">
-                            Update your existing Antigravity Kit installation to the latest version.
+                            Update your existing DevBureau installation to the latest version.
                         </p>
 
                         <div className="relative group mb-4">
                             <pre className="p-4 rounded-lg bg-zinc-900 dark:bg-zinc-950 overflow-x-auto border border-zinc-800 font-mono text-sm">
-                                <code className="text-zinc-100">ag-kit update</code>
+                                <code className="text-zinc-100">devbureau update</code>
                             </pre>
                         </div>
 
@@ -87,7 +87,7 @@ export default function CLIPage() {
                     {/* status */}
                     <div>
                         <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 mb-3">
-                            <code className="font-mono">ag-kit status</code>
+                            <code className="font-mono">devbureau status</code>
                         </h3>
                         <p className="text-base text-zinc-600 dark:text-zinc-400 mb-4">
                             Check the current installation status and version information.
@@ -95,7 +95,7 @@ export default function CLIPage() {
 
                         <div className="relative group mb-4">
                             <pre className="p-4 rounded-lg bg-zinc-900 dark:bg-zinc-950 overflow-x-auto border border-zinc-800 font-mono text-sm">
-                                <code className="text-zinc-100">ag-kit status</code>
+                                <code className="text-zinc-100">devbureau status</code>
                             </pre>
                         </div>
 
@@ -189,7 +189,7 @@ export default function CLIPage() {
                         </h3>
                         <div className="relative group">
                             <pre className="p-4 rounded-lg bg-zinc-900 dark:bg-zinc-950 overflow-x-auto border border-zinc-800 font-mono text-sm">
-                                <code className="text-zinc-100">ag-kit init --force</code>
+                                <code className="text-zinc-100">devbureau init --force</code>
                             </pre>
                         </div>
                     </div>
@@ -200,7 +200,7 @@ export default function CLIPage() {
                         </h3>
                         <div className="relative group">
                             <pre className="p-4 rounded-lg bg-zinc-900 dark:bg-zinc-950 overflow-x-auto border border-zinc-800 font-mono text-sm">
-                                <code className="text-zinc-100">ag-kit init --path ./my-project</code>
+                                <code className="text-zinc-100">devbureau init --path ./my-project</code>
                             </pre>
                         </div>
                     </div>
@@ -211,7 +211,7 @@ export default function CLIPage() {
                         </h3>
                         <div className="relative group">
                             <pre className="p-4 rounded-lg bg-zinc-900 dark:bg-zinc-950 overflow-x-auto border border-zinc-800 font-mono text-sm">
-                                <code className="text-zinc-100">ag-kit init --branch dev</code>
+                                <code className="text-zinc-100">devbureau init --branch dev</code>
                             </pre>
                         </div>
                     </div>
@@ -222,7 +222,7 @@ export default function CLIPage() {
                         </h3>
                         <div className="relative group">
                             <pre className="p-4 rounded-lg bg-zinc-900 dark:bg-zinc-950 overflow-x-auto border border-zinc-800 font-mono text-sm">
-                                <code className="text-zinc-100">ag-kit init --quiet --force</code>
+                                <code className="text-zinc-100">devbureau init --quiet --force</code>
                             </pre>
                         </div>
                     </div>
@@ -245,7 +245,7 @@ export default function CLIPage() {
                         </p>
                     </Link>
                     <a
-                        href="https://github.com/vudovn/antigravity-kit"
+                        href="https://github.com/fernandotenguan/devbureau"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-all"
@@ -270,7 +270,7 @@ export default function CLIPage() {
                     Workflows
                 </Link>
                 <a
-                    href="https://github.com/vudovn/antigravity-kit"
+                    href="https://github.com/fernandotenguan/devbureau"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm font-medium text-zinc-900 dark:text-zinc-50 hover:underline flex items-center gap-1"

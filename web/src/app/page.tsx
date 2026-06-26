@@ -465,18 +465,18 @@ export default function Home() {
         <img
           className="dark:invert"
           src="/images/logo.png"
-          alt="Antigravity Kit logo"
+          alt="DevBureau logo"
           width={100}
           height={20}
         />
         <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
           <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
             <span className="before:-inset-x-1 before:-rotate-1 relative z-4 before:pointer-events-none before:absolute before:inset-y-0 before:z-4 before:bg-linear-to-r before:from-blue-500 before:via-cyan-500 before:to-orange-500 before:opacity-16 before:mix-blend-hard-light">
-              Antigravity Kit
+              DevBureau
             </span>
           </h1>
           <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            AI Agent templates with Skills, Agents, and Workflows for{" "}
+            AI Agent templates with Skills, Agents, and Workflows for Claude Code, Cursor, Codex CLI, GitHub Copilot, and{" "}
             <a
               href="https://antigravity.google/t"
               className="inline-flex items-center align-middle font-medium text-zinc-950 dark:text-zinc-50 mb-2"
@@ -491,7 +491,7 @@ export default function Home() {
         <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
           <a
             className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://github.com/vudovn/antigravity-kit"
+            href="https://github.com/fernandotenguan/devbureau"
             target="_blank"
             rel="noopener noreferrer"
           >

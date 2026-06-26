@@ -1,24 +1,18 @@
-# Antigravity Kit
+# DevBureau
 
 > AI Agent templates with Skills, Agents, and Workflows
-
-<div  align="center">
-    <a href="https://unikorn.vn/p/antigravity-kit?ref=unikorn" target="_blank"><img src="https://unikorn.vn/api/widgets/badge/antigravity-kit?theme=dark" alt="Antigravity Kit - Nổi bật trên Unikorn.vn" style="width: 210px; height: 54px;" width="210" height="54" /></a>
-    <a href="https://unikorn.vn/p/antigravity-kit?ref=unikorn" target="_blank"><img src="https://unikorn.vn/api/widgets/badge/antigravity-kit/rank?theme=dark&type=daily" alt="Antigravity Kit - Hàng ngày" style="width: 250px; height: 64px;" width="250" height="64" /></a>
-    <a href="https://launch.j2team.dev/products/antigravity-kit" target="_blank"><img src="https://launch.j2team.dev/badge/antigravity-kit/dark" alt="Antigravity Kit on J2TEAM Launch" width="250" height="54" /></a>
-</div>
 
 ## Quick Install
 
 ```bash
-npx @vudovn/ag-kit init
+npx devbureau init
 ```
 
 Or install globally:
 
 ```bash
-npm install -g @vudovn/ag-kit
-ag-kit init
+npm install -g devbureau
+devbureau init
 ```
 
 This installs the `.agent` folder containing all templates into your project.
@@ -87,41 +81,34 @@ Skills are loaded automatically based on task context. The AI reads skill descri
 
 ## CLI Tool
 
-| Command         | Description                               |
-| --------------- | ----------------------------------------- |
-| `ag-kit init`   | Install `.agent` folder into your project |
-| `ag-kit update` | Update to the latest version              |
-| `ag-kit status` | Check installation status                 |
+| Command            | Description                               |
+| ------------------ | ----------------------------------------- |
+| `devbureau init`   | Install `.agent` folder into your project |
+| `devbureau update` | Update to the latest version              |
+| `devbureau status` | Check installation status                 |
 
 ### Options
 
 ```bash
-ag-kit init --force        # Overwrite existing .agent folder
-ag-kit init --path ./myapp # Install in specific directory
-ag-kit init --branch dev   # Use specific branch
-ag-kit init --quiet        # Suppress output (for CI/CD)
-ag-kit init --dry-run      # Preview actions without executing
+devbureau init --force        # Overwrite existing .agent folder
+devbureau init --path ./myapp # Install in specific directory
+devbureau init --branch dev   # Use specific branch
+devbureau init --quiet        # Suppress output (for CI/CD)
+devbureau init --dry-run      # Preview actions without executing
 ```
 
 ## Documentation
 
-- **[Web App Example](https://antigravity-kit.vercel.app//docs/guide/examples/web-app)** - Step-by-step guide to creating a web application
-- **[Online Docs](https://antigravity-kit.vercel.app//docs)** - Browse all documentation online
+- **[Online Docs](https://github.com/fernandotenguan/devbureau#readme)** - Browse all documentation online
 
-## Buy me coffee
-
-<p align="center">
-  <a href="https://buymeacoffee.com/vudovn">
-    <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me a Coffee" />
-  </a>
-</p>
-
-<p align="center"> - or - </p>
+## Support
 
 <p align="center">
-  <img src="https://img.vietqr.io/image/mbbank-0779440918-compact.jpg" alt="Buy me coffee" width="200" />
+  <img src="/pix-fernando.png" alt="PIX QR Code" width="200" />
 </p>
+
+<p align="center">PIX key: fernando.tenguan@gmail.com</p>
 
 ## License
 
-MIT © Vudovn
+MIT © DevBureau

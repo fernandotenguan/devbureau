@@ -23,9 +23,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Antigravity Kit - AI Agent Capability Expansion Toolkit",
-  description: "A comprehensive collection of skills, rules, and workflows to supercharge AI coding assistants for Antigravity. 35+ skills, 57 UI Styles, production-ready workflows.",
-  metadataBase: new URL("https://antigravity-kit.vercel.app/"),
+  title: "DevBureau - AI Agent Capability Expansion Toolkit",
+  description: "A comprehensive collection of skills, rules, and workflows to supercharge AI coding assistants across Claude Code, Cursor, Codex CLI, GitHub Copilot, and Antigravity. 58+ skills, 22 agents, production-ready workflows.",
+  metadataBase: new URL("https://github.com/fernandotenguan/devbureau"),
   robots: {
     index: true,
     follow: true,
@@ -33,8 +33,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://antigravity-kit.vercel.app/",
-    siteName: "Antigravity Kit",
+    url: "https://github.com/fernandotenguan/devbureau",
+    siteName: "DevBureau",
     images: ["/images/logo.png"],
   },
 };

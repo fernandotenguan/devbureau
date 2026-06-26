@@ -2,8 +2,8 @@ import Link from "next/link";
 import { Callout } from "@/components/mdx";
 
 export const metadata = {
-  title: "Installation | Antigravity Kit",
-  description: "Get started with Antigravity Kit in under a minute.",
+  title: "Installation | DevBureau",
+  description: "Get started with DevBureau in under a minute.",
 };
 
 export default function InstallationPage() {
@@ -20,7 +20,7 @@ export default function InstallationPage() {
           Installation
         </h1>
         <p className="text-lg text-zinc-600 dark:text-zinc-400">
-          Get started with Antigravity Kit in under a minute.
+          Get started with DevBureau in under a minute.
         </p>
       </div>
 
@@ -29,11 +29,11 @@ export default function InstallationPage() {
           Quick Start
         </h2>
         <p className="text-base text-zinc-600 dark:text-zinc-400 mb-6">
-          The fastest way to install Antigravity Kit is using <code className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-sm font-mono">npx</code> in root project:
+          The fastest way to install DevBureau is using <code className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-sm font-mono">npx</code> in root project:
         </p>
 
         <pre className="p-4 rounded-lg bg-zinc-950 overflow-x-auto mb-4 text-sm font-mono text-zinc-100">
-          npx @vudovn/ag-kit init
+          npx devbureau init
         </pre>
 
         <Callout type="info">
@@ -46,15 +46,15 @@ export default function InstallationPage() {
           Global Installation
         </h2>
         <p className="text-base text-zinc-600 dark:text-zinc-400 mb-6">
-          Install the CLI globally to use <code className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-sm font-mono">ag-kit</code> command anywhere:
+          Install the CLI globally to use <code className="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-sm font-mono">devbureau</code> command anywhere:
         </p>
 
         <pre className="p-4 rounded-lg bg-zinc-950 overflow-x-auto mb-2 text-sm font-mono text-zinc-100">
-          npm install -g @vudovn/ag-kit
+          npm install -g devbureau
         </pre>
 
         <pre className="p-4 rounded-lg bg-zinc-950 overflow-x-auto mb-4 text-sm font-mono text-zinc-100">
-          cd your-project && ag-kit init
+          cd your-project && devbureau init
         </pre>
 
         <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
@@ -138,7 +138,7 @@ export default function InstallationPage() {
           Next Steps
         </h2>
         <p className="text-base text-zinc-600 dark:text-zinc-400 mb-6">
-          Now that you have Antigravity Kit installed, learn about the core concepts:
+          Now that you have DevBureau installed, learn about the core concepts:
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
           <Link
