@@ -47,12 +47,15 @@ graph TD
 | **Deployment**      | "deploy", "CI/CD", "docker" / "publicar", "colocar no ar", "subir site" | `devops-engineer`                           | ✅ YES       |
 | **Security Review** | "security", "vulnerability" / "seguro", "vulnerabilidade", "ataque" | `security-auditor` + `penetration-tester`   | ✅ YES       |
 | **Performance**     | "slow", "optimize", "speed" / "lento", "rápido", "otimizar", "velocidade" | `performance-optimizer`                     | ✅ YES       |
-| **Product Def**     | "requirements", "MVP" / "requisitos", "ideia", "funcionalidades" | `product-owner`                             | ✅ YES       |
+| **Product Def**     | "requirements", "MVP" / "requisitos", "ideia", "funcionalidades" | `product-manager`                           | ✅ YES       |
 | **Kit Health**      | "doctor", "diagnóstico", "checar kit" / "saúde", "integridade", "tá tudo certo" | *(scripts)* `doctor.py`                      | ✅ YES       |
 | **ADE Pipeline**    | "/ade", "pipeline autônomo" / "fazer tudo", "implementar autônomo" | `orchestrator` via `/ade`                   | ✅ YES       |
 | **Memory Layer**    | "lessons", "gotchas", "memory" / "lições", "aprendemos", "evitar erro" | Consultar `.agent/memory/`                  | ✅ YES       |
 | **Premium Design** | "premium design", "immersive", "awwwards", "gsap", "three.js" / "site premiado", "design de luxo", "animações premium", "interface imersiva", "5 pilares", "experiência imersiva", "design premium" | `frontend-specialist` + `premium-design-orchestrator` | ✅ YES       |
 | **Brand Extraction** | "extract identity", "clone design", "analyze reference" / "extrair identidade", "clonar design", "analisar referência", "extrair paleta", "copiar essência" | `brand-identity-extractor` | ✅ YES       |
+| **Monitoring/Incident** | "monitoring", "alert", "down", "incident" / "monitorar", "alerta", "fora do ar", "caiu" | `sre-engineer`                              | ✅ YES       |
+| **API Contract**    | "OpenAPI", "GraphQL schema", "API versioning" / "contrato de API", "versionar API" | `api-designer`                              | ✅ YES       |
+| **Accessibility**   | "accessibility", "a11y", "WCAG", "screen reader" / "acessibilidade", "leitor de tela", "contraste" | `accessibility-specialist`                  | ✅ YES       |
 
 ### 3. Automatic Routing Protocol
 

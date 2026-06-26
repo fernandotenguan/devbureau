@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Full Verification Suite - Antigravity Kit
-==========================================
+Full Verification Suite - DevBureau
+====================================
 
 Runs COMPLETE validation including all checks + performance + E2E.
 Use this before deployment or major releases.
@@ -28,6 +28,13 @@ import argparse
 from pathlib import Path
 from typing import List, Dict, Optional
 from datetime import datetime
+
+# Configuração de encoding para evitar erros em terminais Windows (cp1252)
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except AttributeError:
+        pass
 
 # ANSI colors
 class Colors:
@@ -262,7 +269,7 @@ def print_final_report(results: List[dict], start_time: datetime):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Run complete Antigravity Kit verification suite",
+        description="Run complete DevBureau verification suite",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

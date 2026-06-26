@@ -2,7 +2,7 @@
 applyTo: "**"
 ---
 
-# Code Quality Standards — Antigravity Kit
+# Code Quality Standards — DevBureau
 > Auto-generated via sync_ide.py. Do not edit manually.
 
 ## Functions & Methods

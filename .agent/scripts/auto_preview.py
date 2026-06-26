@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Auto Preview - Antigravity Kit
-==============================
+Auto Preview - DevBureau
+=========================
 Manages (start/stop/status) the local development server for previewing the application.
 
 Usage:
@@ -18,6 +18,13 @@ import signal
 import argparse
 import subprocess
 from pathlib import Path
+
+# Configuração de encoding para evitar erros em terminais Windows (cp1252)
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except AttributeError:
+        pass
 
 AGENT_DIR = Path(".agent")
 PID_FILE = AGENT_DIR / "preview.pid"

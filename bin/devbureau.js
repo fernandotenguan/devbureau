@@ -1,0 +1,336 @@
+#!/usr/bin/env node
+"use strict";
+
+const fs = require("fs");
+const path = require("path");
+const readline = require("readline");
+const { spawnSync } = require("child_process");
+const { createHash } = require("crypto");
+
+const PACKAGE_ROOT = path.resolve(__dirname, "..");
+const SOURCE_AGENT_DIR = path.join(PACKAGE_ROOT, ".agent");
+const SOURCE_MCP_CONFIG = path.join(PACKAGE_ROOT, ".mcp.json");
+const MANIFEST_FILENAME = ".devbureau-manifest.json";
+const IDE_TARGETS = [
+  "claude", "cursor", "codex", "copilot", "antigravity", "windsurf", "cline", "roocode", "all",
+];
+
+// Detects which AI IDE/engine is already in use in this project, by checking
+// for the folder/file each one creates on its own (not files DevBureau generates).
+const ENGINE_DETECTORS = {
+  claude: (dir) => fs.existsSync(path.join(dir, ".claude")),
+  cursor: (dir) => fs.existsSync(path.join(dir, ".cursor")) || fs.existsSync(path.join(dir, ".cursorrules")),
+  codex: (dir) => fs.existsSync(path.join(dir, "AGENTS.md")),
+  antigravity: (dir) => fs.existsSync(path.join(dir, ".antigravity")),
+  copilot: (dir) => fs.existsSync(path.join(dir, ".github", "copilot-instructions.md")),
+  windsurf: (dir) => fs.existsSync(path.join(dir, ".windsurfrules")) || fs.existsSync(path.join(dir, ".windsurf")),
+  cline: (dir) => fs.existsSync(path.join(dir, ".clinerules")) || fs.existsSync(path.join(dir, ".cline")),
+  roocode: (dir) => fs.existsSync(path.join(dir, ".roorules")) || fs.existsSync(path.join(dir, ".roo")),
+};
+
+function detectInstalledEngines(targetDir) {
+  return Object.keys(ENGINE_DETECTORS).filter((id) => ENGINE_DETECTORS[id](targetDir));
+}
+
+function findPythonCommand() {
+  const candidates = process.platform === "win32" ? ["python", "py", "python3"] : ["python3", "python"];
+  for (const candidate of candidates) {
+    const result = spawnSync(candidate, ["--version"], { encoding: "utf8" });
+    const output = `${result.stdout || ""}${result.stderr || ""}`;
+    if (result.status === 0 && output.trim().startsWith("Python")) return candidate;
+  }
+  return null;
+}
+
+// Lists every file under dir, recursively, as POSIX-style paths relative to baseDir.
+function listFilesRecursive(dir, baseDir) {
+  baseDir = baseDir || dir;
+  let results = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const absPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      results = results.concat(listFilesRecursive(absPath, baseDir));
+    } else {
+      results.push(path.relative(baseDir, absPath).split(path.sep).join("/"));
+    }
+  }
+  return results;
+}
+
+function hashFile(absPath) {
+  if (!fs.existsSync(absPath) || fs.statSync(absPath).isDirectory()) return null;
+  return createHash("sha256").update(fs.readFileSync(absPath)).digest("hex");
+}
+
+// relPaths are project-root-relative (e.g. ".agent/agents/orchestrator.md").
+function buildManifest(baseDir, relPaths) {
+  const manifest = {};
+  for (const relPath of relPaths) {
+    const hash = hashFile(path.join(baseDir, relPath));
+    if (hash) manifest[relPath] = hash;
+  }
+  return manifest;
+}
+
+function saveManifest(targetDir, manifest) {
+  fs.writeFileSync(
+    path.join(targetDir, MANIFEST_FILENAME),
+    JSON.stringify(manifest, null, 2) + "\n",
+    "utf8"
+  );
+}
+
+function loadManifest(targetDir) {
+  const manifestPath = path.join(targetDir, MANIFEST_FILENAME);
+  if (!fs.existsSync(manifestPath)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+function agentRelFiles(baseDir) {
+  return listFilesRecursive(path.join(baseDir, ".agent")).map((p) => path.posix.join(".agent", p));
+}
+
+function copyAgentFolder(targetDir, force) {
+  const destination = path.join(targetDir, ".agent");
+  if (fs.existsSync(destination) && !force) {
+    throw new Error(
+      `.agent/ already exists at ${destination}. Re-run with --force to overwrite.`
+    );
+  }
+  fs.cpSync(SOURCE_AGENT_DIR, destination, { recursive: true, force: true });
+  saveManifest(targetDir, buildManifest(targetDir, agentRelFiles(targetDir)));
+  return destination;
+}
+
+function copyMcpConfigIfAbsent(targetDir) {
+  const destination = path.join(targetDir, ".mcp.json");
+  if (fs.existsSync(destination)) {
+    console.log("ℹ .mcp.json already exists — leaving it untouched.");
+    return;
+  }
+  fs.copyFileSync(SOURCE_MCP_CONFIG, destination);
+  console.log(`✔ Added starter .mcp.json (GitHub MCP server, OAuth — no token needed in the file)`);
+}
+
+function runPythonScript(pythonCmd, targetDir, relativeScriptPath, extraArgs) {
+  const scriptPath = path.join(targetDir, relativeScriptPath);
+  const result = spawnSync(pythonCmd, [scriptPath, ...extraArgs], {
+    cwd: targetDir,
+    stdio: "inherit",
+  });
+  return result.status === 0;
+}
+
+function promptIdeTarget(detectedEngines) {
+  if (!process.stdin.isTTY) return Promise.resolve(null);
+
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  const defaultChoice = detectedEngines.length === 1 ? detectedEngines[0] : "skip";
+  const detectedHint = detectedEngines.length > 0 ? ` (detected: ${detectedEngines.join(", ")})` : "";
+  const question =
+    `\nWhich IDE do you want to sync rules to?${detectedHint} [${IDE_TARGETS.join(", ")}, skip] (default: ${defaultChoice}): `;
+
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
+      rl.close();
+      const choice = answer.trim().toLowerCase();
+      if (choice === "") return resolve(defaultChoice === "skip" ? null : defaultChoice);
+      resolve(IDE_TARGETS.includes(choice) ? choice : null);
+    });
+  });
+}
+
+async function init(args) {
+  const targetDir = process.cwd();
+  const force = args.includes("--force");
+  const explicitTargetArg = args.find((arg) => arg.startsWith("--target="));
+  const pythonCmd = findPythonCommand();
+
+  console.log("\n🏛️  DevBureau — Project Setup\n");
+
+  if (!pythonCmd) {
+    console.error(
+      "✘ Python was not found (tried py/python/python3). Install Python 3.9+ and re-run."
+    );
+    process.exitCode = 1;
+    return;
+  }
+
+  let agentDir;
+  try {
+    agentDir = copyAgentFolder(targetDir, force);
+  } catch (error) {
+    console.error(`✘ ${error.message}`);
+    process.exitCode = 1;
+    return;
+  }
+  console.log(`✔ Copied .agent/ to ${agentDir}`);
+
+  copyMcpConfigIfAbsent(targetDir);
+
+  const doctorOk = runPythonScript(pythonCmd, targetDir, ".agent/scripts/doctor.py", []);
+  if (!doctorOk) {
+    console.error("\n✘ Kit health check failed. Fix the issues above before continuing.");
+    process.exitCode = 1;
+    return;
+  }
+
+  const gitDir = path.join(targetDir, ".git");
+  if (fs.existsSync(gitDir)) {
+    runPythonScript(pythonCmd, targetDir, ".agent/scripts/install_hooks.py", []);
+  } else {
+    console.log("ℹ No .git/ found — skipping pre-commit hook install. Run `git init` first if you want it.");
+  }
+
+  const detectedEngines = detectInstalledEngines(targetDir);
+  let ideTarget;
+  if (explicitTargetArg) {
+    ideTarget = explicitTargetArg.split("=")[1];
+  } else if (process.stdin.isTTY) {
+    ideTarget = await promptIdeTarget(detectedEngines);
+  } else if (detectedEngines.length === 1) {
+    ideTarget = detectedEngines[0];
+    console.log(`ℹ Detected ${ideTarget} in this project — syncing automatically (non-interactive mode).`);
+  } else {
+    ideTarget = null;
+  }
+
+  if (ideTarget && IDE_TARGETS.includes(ideTarget)) {
+    runPythonScript(pythonCmd, targetDir, ".agent/scripts/sync_ide.py", ["--target", ideTarget]);
+  } else {
+    console.log("ℹ Skipped IDE sync. Run `python .agent/scripts/sync_ide.py --target <ide>` whenever you're ready.");
+  }
+
+  console.log("\n✅ DevBureau is set up. Open this project in your AI assistant and start with /brainstorm or /ade.\n");
+}
+
+function update(args) {
+  const targetDir = process.cwd();
+  const force = args.includes("--force");
+  const destAgentDir = path.join(targetDir, ".agent");
+
+  console.log("\n🏛️  DevBureau — Update\n");
+
+  if (!fs.existsSync(destAgentDir)) {
+    console.error("✘ No .agent/ found in this directory. Run `npx devbureau init` first.");
+    process.exitCode = 1;
+    return;
+  }
+
+  const previousManifest = loadManifest(targetDir);
+  if (!previousManifest && !force) {
+    console.log(
+      "ℹ No manifest found (installed before `update` existed, or the manifest file was removed)."
+    );
+    console.log(
+      "  Without it, DevBureau can't tell which files in .agent/ you customized — nothing was changed."
+    );
+    console.log(
+      "  Re-run with --force to overwrite everything anyway (this WILL discard any local edits under .agent/)."
+    );
+    return;
+  }
+
+  const sourceRelFiles = agentRelFiles(PACKAGE_ROOT);
+  const destRelFiles = agentRelFiles(targetDir);
+  const newManifest = {};
+  const customizedFiles = [];
+  let added = 0;
+  let updated = 0;
+  let unchanged = 0;
+
+  for (const relPath of sourceRelFiles) {
+    const sourceAbs = path.join(PACKAGE_ROOT, relPath);
+    const destAbs = path.join(targetDir, relPath);
+    const sourceHash = hashFile(sourceAbs);
+    const destHash = hashFile(destAbs);
+
+    if (destHash === null) {
+      fs.mkdirSync(path.dirname(destAbs), { recursive: true });
+      fs.copyFileSync(sourceAbs, destAbs);
+      newManifest[relPath] = sourceHash;
+      added++;
+      continue;
+    }
+
+    if (destHash === sourceHash) {
+      newManifest[relPath] = sourceHash;
+      unchanged++;
+      continue;
+    }
+
+    const baselineHash = previousManifest ? previousManifest[relPath] : null;
+    const isCustomized = !force && baselineHash && baselineHash !== destHash;
+
+    if (isCustomized) {
+      newManifest[relPath] = baselineHash;
+      customizedFiles.push(relPath);
+      continue;
+    }
+
+    fs.copyFileSync(sourceAbs, destAbs);
+    newManifest[relPath] = sourceHash;
+    updated++;
+  }
+
+  saveManifest(targetDir, newManifest);
+
+  const orphaned = destRelFiles.filter((relPath) => !sourceRelFiles.includes(relPath));
+
+  console.log(`✔ Atualizados: ${updated}`);
+  console.log(`✔ Adicionados: ${added}`);
+  console.log(`ℹ Sem mudança: ${unchanged}`);
+  if (customizedFiles.length > 0) {
+    console.log(`⚠ Customizados, não sobrescritos (${customizedFiles.length}):`);
+    for (const f of customizedFiles.slice(0, 20)) console.log(`    - ${f}`);
+    if (customizedFiles.length > 20) console.log(`    ... e mais ${customizedFiles.length - 20}`);
+    console.log("  Revise manualmente se quiser incorporar as melhorias do kit nesses arquivos.");
+    console.log("  (Re-rode com --force se quiser sobrescrever mesmo assim — perde as suas edições.)");
+  }
+  if (orphaned.length > 0) {
+    console.log(`ℹ Presentes localmente mas não mais no kit publicado (mantidos, nada foi apagado): ${orphaned.length}`);
+  }
+
+  console.log("\n✅ Update concluído. Rode `python .agent/scripts/doctor.py` para validar.\n");
+}
+
+function printUsage() {
+  console.log(`
+DevBureau CLI
+
+Usage:
+  npx devbureau init [--force] [--target=<${IDE_TARGETS.join("|")}>]
+  npx devbureau update [--force]
+
+Commands:
+  init     Copy .agent/ and a starter .mcp.json into the current directory,
+           run the health check, install the pre-commit hook, and optionally
+           sync IDE rules.
+  update   Pull the latest .agent/ from the installed DevBureau version into
+           this project. Files you customized are detected (via a SHA-256
+           manifest) and never overwritten unless you pass --force.
+`);
+}
+
+async function main() {
+  const [command, ...args] = process.argv.slice(2);
+
+  if (!command || command === "init") {
+    await init(args);
+    return;
+  }
+
+  if (command === "update") {
+    update(args);
+    return;
+  }
+
+  printUsage();
+  process.exitCode = command === "--help" || command === "-h" ? 0 : 1;
+}
+
+main();

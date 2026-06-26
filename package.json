@@ -1,23 +1,39 @@
 {
-  "name": "antigravity-kit",
-  "version": "2.0.0",
-  "description": "AI Agent templates - Skills, Agents, and Workflows for enhanced coding assistance",
+  "name": "devbureau",
+  "version": "3.9.0",
+  "description": "A multi-agent AI framework for building software with professional quality, across Antigravity, Claude Code, Cursor, Codex CLI, and GitHub Copilot.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vudovn/antigravity-kit.git"
+    "url": "git+https://github.com/fernandotenguan/devbureau.git"
   },
-  "homepage": "https://github.com/vudovn/antigravity-kit#readme",
+  "homepage": "https://github.com/fernandotenguan/devbureau#readme",
   "bugs": {
-    "url": "https://github.com/vudovn/antigravity-kit/issues"
+    "url": "https://github.com/fernandotenguan/devbureau/issues"
+  },
+  "bin": {
+    "devbureau": "./bin/devbureau.js"
+  },
+  "files": [
+    "bin",
+    ".agent",
+    ".mcp.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=16.7.0"
   },
   "keywords": [
+    "devbureau",
     "antigravity",
     "ai",
     "agent",
     "gemini",
+    "claude-code",
+    "cursor",
     "skills",
     "templates"
   ],
-  "author": "vudovn",
+  "author": "fernandotenguan",
   "license": "MIT"
 }

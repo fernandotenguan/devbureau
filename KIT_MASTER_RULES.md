@@ -1,4 +1,4 @@
-# 📜 Regras de Manutenção do Antigravity Kit (Personalizado)
+# 📜 Regras de Manutenção do DevBureau
 
 > **MANDATÓRIO:** Este documento deve ser lido por qualquer agente de IA ao iniciar uma sessão neste repositório.
 
@@ -8,9 +8,10 @@ Este repositório NÃO é uma aplicação final. Ele é um **Framework de Desenv
 ## 🛡️ Princípios de Evolução
 1.  **Simplicidade para o Usuário (P0):** Toda funcionalidade nova deve ser explicada no `GUIA_DO_USUARIO.md` em linguagem de negócios.
 2.  **Estrutura "Clean" (P0):** Mantenha a separação clara entre `.agent/` (Inteligência) e `web/` (Exemplo/Painel).
-3.  **Rastreabilidade do Fork (P1):** Sempre que adicionar uma melhoria que não existe no repositório original (vudovn/antigravity-kit), documente no `CHANGELOG.md`.
+3.  **Rastreabilidade de Mudanças (P1):** Sempre que adicionar uma melhoria relevante, documente no `CHANGELOG.md`.
 4.  **Auto-Diagnóstico:** Qualquer script novo (`.py`) deve ser integrado ao `doctor.py` para validação automática de saúde do kit.
 5.  **Zero-Break na Base:** Como este kit será copiado para outros projetos, ele deve ser extremamente estável. Nunca suba código que quebre os testes do `pytest`.
+6.  **Benchmarking Contínuo (P2):** Periodicamente, rode `/benchmark` para comparar agentes/skills/workflows do kit contra coleções externas bem avaliadas (ver `.agent/skills/framework-benchmarking/`). O comando só gera recomendações em `.agent/memory/benchmark-log.md` — nenhuma mudança é aplicada automaticamente. Mais agentes/skills não é o objetivo; preencher gaps reais sem violar a filosofia de tiers (`stack-sizing`) é.
 
 ## 👥 Conceito de Equipe Profissional
 Sempre que o usuário interagir, trate os agentes como uma equipe:

@@ -1,13 +1,16 @@
-# Antigravity Kit — Personalized by FernandoTenguan
+# DevBureau
 
-> A production-grade AI agent framework for building software with professional quality —
-> without needing to know how to code.
+> A production-grade multi-agent AI framework for building software with professional quality —
+> without needing to know how to code. Works across Claude Code, Cursor, Codex CLI, GitHub Copilot,
+> Antigravity, Windsurf, Cline, and Roo Code.
 
-[![Kit Version](https://img.shields.io/badge/Kit-v2.0.0-blue)](https://github.com/fernandotenguan/antigravity-kit-personalizado)
-[![Agents](https://img.shields.io/badge/Agents-20-green)](https://github.com/fernandotenguan/antigravity-kit-personalizado)
-[![Skills](https://img.shields.io/badge/Skills-50-orange)](https://github.com/fernandotenguan/antigravity-kit-personalizado)
-[![Workflows](https://img.shields.io/badge/Workflows-15-red)](https://github.com/fernandotenguan/antigravity-kit-personalizado)
-[![Tests](https://img.shields.io/badge/Tests-Automated-brightgreen)](https://github.com/fernandotenguan/antigravity-kit-personalizado)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.0.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Agents](https://img.shields.io/badge/Agents-22-green)](https://github.com/fernandotenguan/devbureau)
+[![Skills](https://img.shields.io/badge/Skills-58-orange)](https://github.com/fernandotenguan/devbureau)
+[![Workflows](https://img.shields.io/badge/Workflows-18-red)](https://github.com/fernandotenguan/devbureau)
+[![Tests](https://img.shields.io/badge/Tests-Automated-brightgreen)](https://github.com/fernandotenguan/devbureau)
+
+> Badge links assume the repo is published as `fernandotenguan/devbureau`. Update them if the final published path differs.
 
 ---
 
@@ -15,12 +18,14 @@
 
 | Components         | Count | Description                                                                  |
 | ------------------ | ----- | ---------------------------------------------------------------------------- |
-| **Agents**         | 20    | Specialist AI personas (frontend, backend, security, game dev, etc.)         |
-| **Skills**         | 50    | Domain-specific knowledge modules with automated scripts                     |
-| **Workflows**      | 15    | Slash-command procedures including the autonomous `/ade` pipeline            |
+| **Agents**         | 22    | Specialist AI personas (frontend, backend, security, SRE, a11y, game dev, etc.) |
+| **Skills**         | 58    | Domain-specific knowledge modules with automated scripts                     |
+| **Workflows**      | 18    | Slash-command procedures including the autonomous `/ade` pipeline             |
 | **Master Scripts** | 5     | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py` |
 | **Kit Tests**      | ✅    | Automated pytest suite — runs before every commit                            |
 | **Memory Layer**   | ✅    | Persistent lessons and gotchas across sessions                               |
+| **Hooks**          | 2     | Git pre-commit (all IDEs) + a Claude Code `PreToolUse` hook that blocks edits to auto-generated files |
+| **MCP**            | 1     | Starter `.mcp.json` with the GitHub MCP server (OAuth, no token in the file) |
 
 ---
 
@@ -55,7 +60,7 @@ The most powerful mode. You describe a feature, the kit plans it, shows you the 
 python .agent/scripts/doctor.py
 ```
 
-Validates all 20 agents, 47 skills, 13 workflows, and master scripts in seconds.
+Validates all 22 agents, 58 skills, 18 workflows, and master scripts in seconds.
 
 ### 🔒 Automated Pre-Commit Guard
 
@@ -65,31 +70,54 @@ Tests run automatically before every `git commit`. If anything breaks, the commi
 
 The kit remembers patterns and lessons learned across sessions, stored in `.agent/memory/`.
 
+### 🪶 Lean Code Ladder (Token Economy, Without Cutting Quality)
+
+Every coding agent climbs a 7-rung decision ladder before writing code — YAGNI, then reuse, then stdlib, then native platform features, then an already-installed dependency, then one line, only then the minimum that works. It never cuts validation, error handling, security, or accessibility. Deliberate shortcuts get a `lean:` comment naming the ceiling and upgrade trigger, so "later" doesn't become "never":
+
+```bash
+/lean-audit          # find over-engineering to delete in the current diff
+/lean-audit repo     # same, whole codebase
+/lean-debt           # harvest every lean: marker into a ledger
+python .agent/scripts/token_footprint.py   # measure the kit's own context footprint
+```
+
+#### Optional: Headroom MCP (third-party, not bundled)
+
+DevBureau's rules already say "use `mcp__headroom__*` tools if present" — but getting them present is a one-time, per-machine setup you do yourself, not something `npx devbureau init` installs:
+
+```bash
+pip install "headroom-ai[mcp]"
+claude mcp add headroom --scope user -- headroom mcp serve
+```
+
+`--scope user` registers it once for every project you open in Claude Code afterward — no per-project setup, no proxy, no admin rights needed. Once connected, every agent in this kit will call `headroom_compress` on large tool outputs/file reads automatically, without you asking. If it's not installed, agents proceed normally — it's an accelerator, not a dependency.
+
 ### 🔄 Multi-IDE Sync
 
-Export the kit configuration to Claude Code, Cursor, Codex CLI, and GitHub Copilot:
+Export the kit configuration to Antigravity, Claude Code, Cursor, Codex CLI, GitHub Copilot, Windsurf, Cline, and Roo Code:
 
 ```bash
 python .agent/scripts/sync_ide.py --target all
+# or a single target: claude | cursor | codex | copilot | antigravity | windsurf | cline | roocode
 ```
 
-## 🚀 Como Iniciar um Novo Projeto (Sua Fábrica)
+## 🚀 Starting a New Project
 
-Este repositório é seu **Cérebro de Desenvolvimento**. Para criar um novo projeto (ex: Lotofácil, E-commerce, App Mobile) usando esta inteligência:
+This repository is your **development brain**. To bootstrap a new project (e.g. an e-commerce site, a mobile app) using this base:
 
-1.  **Crie sua nova pasta** no computador.
-2.  **No chat do seu agente**, digite:
+1.  **Create your new project folder.**
+2.  **In your agent's chat**, type:
     ```
     /new-project
     ```
-3.  O agente vai te guiar na cópia do `.agent/` (a "alma" do kit) e na configuração inicial da sua nova aplicação.
+3.  The agent guides you through copying `.agent/` (the kit's "soul") and the initial setup of your new application.
 
 ---
 
-## 📜 Regras de Manutenção
+## 📜 Maintenance Rules
 
-Se você é um desenvolvedor ou quer que o agente atualize este kit base (fork), ele deve SEMPRE seguir as:
-[Regras de Manutenção e Evolução (KIT_MASTER_RULES.md)](file:///c:/Users/ferna/Desktop/IA%20Project/antigravity-kit-personalizado/KIT_MASTER_RULES.md)
+If you're maintaining DevBureau itself (not just consuming it in a downstream project), always follow:
+[Maintenance & Evolution Rules (KIT_MASTER_RULES.md)](./KIT_MASTER_RULES.md)
 
 ---
 
@@ -97,12 +125,28 @@ Se você é um desenvolvedor ou quer que o agente atualize este kit base (fork),
 
 > **Requirements:** Python 3.9+ and Git
 
-### Option 1 — NPX (Recommended, fastest)
-
-Copy only the `.agent` folder into your existing project:
+### Option 1 — NPX CLI (Recommended, fastest)
 
 ```bash
-npx giget@latest github:fernandotenguan/antigravity-kit-personalizado/.agent .agent --force
+npx devbureau init
+```
+
+This copies the `.agent/` folder into your project, runs the health check (`doctor.py`), installs the pre-commit hook, and syncs the rules to your IDE. It auto-detects which IDE/engine is already in use in the project (Claude Code, Cursor, Codex, Antigravity, Copilot, Windsurf, Cline, Roo Code) and uses that as the default instead of asking blindly — you can still pick a different one or `--target=<ide>` explicitly.
+
+Later, when you've customized agents/skills for this project and want to pull in DevBureau's latest improvements without losing your edits:
+
+```bash
+npx devbureau update
+```
+
+This compares your `.agent/` against the installed package version using a SHA-256 manifest — files you haven't touched get updated, files you customized are left alone and listed for manual review.
+
+### Option 2 — NPX giget (no npm package needed)
+
+Copy only the `.agent` folder directly from the GitHub repo:
+
+```bash
+npx giget@latest github:fernandotenguan/devbureau/.agent .agent --force
 ```
 
 Then install the pre-commit hook so tests run automatically:
@@ -111,13 +155,13 @@ Then install the pre-commit hook so tests run automatically:
 python .agent/scripts/install_hooks.py
 ```
 
-### Option 2 — Git Clone
+### Option 3 — Git Clone
 
 Clone the full repository and copy `.agent` into your project:
 
 ```bash
-git clone https://github.com/fernandotenguan/antigravity-kit-personalizado.git
-cd antigravity-kit-personalizado
+git clone https://github.com/fernandotenguan/devbureau.git
+cd devbureau
 # Copy .agent/ into your own project:
 xcopy .agent "C:\path\to\your-project\.agent" /E /I    # Windows
 # cp -r .agent /path/to/your-project/                  # Linux/macOS
@@ -161,6 +205,14 @@ This creates `.github/copilot-instructions.md` (loaded automatically in every ch
 
 Verify it's working: in Copilot Chat, check that the instruction files appear in the **References** list.
 
+**For Antigravity (Google):**
+
+Run the sync script to generate the root-level `GEMINI.md`, which Antigravity reads as the highest-priority workspace rules file:
+
+```bash
+python .agent/scripts/sync_ide.py --target antigravity
+```
+
 **For Gemini Code Assist (VSCode):**
 
 The `GEMINI.md` rules are loaded automatically if the file is present in the workspace.
@@ -173,7 +225,7 @@ Run the sync script to generate Cursor-specific rules:
 python .agent/scripts/sync_ide.py --target cursor
 ```
 
-This creates `.cursor/rules.md` with the full kit configuration.
+This creates `.cursor/rules/` — 5 glob-scoped `.mdc` files (Cursor's current Project Rules format) instead of one monolithic file, so only the relevant rules load per file type.
 
 **For Claude Code:**
 
@@ -182,6 +234,16 @@ python .agent/scripts/sync_ide.py --target claude
 ```
 
 This creates `.claude/CLAUDE.md`.
+
+**For Windsurf, Cline, or Roo Code:**
+
+```bash
+python .agent/scripts/sync_ide.py --target windsurf   # → .windsurfrules
+python .agent/scripts/sync_ide.py --target cline       # → .clinerules
+python .agent/scripts/sync_ide.py --target roocode     # → .roorules
+```
+
+These three read one flat rules file (no glob-scoped splitting), so the generated file bundles everything: agent roster, code quality, frontend, backend, and security rules.
 
 ### Step 3 — Install Recommended VSCode Extensions
 
@@ -226,6 +288,8 @@ In the Copilot chat panel, type any slash command:
 | `/create`        | Scaffold a new feature or application                 |
 | `/brainstorm`    | Explore options with strategic questions              |
 | `/enhance`       | Improve an existing feature                           |
+| `/lean-audit`    | Find over-engineering to delete (diff or whole-repo scope) |
+| `/lean-debt`     | Harvest `lean:` shortcut markers into a debt ledger    |
 | `/debug`         | Systematic bug investigation                          |
 | `/test`          | Generate and run tests                                |
 | `/deploy`        | Pre-flight checks + guided deployment                 |
@@ -252,8 +316,11 @@ python .agent/scripts/checklist.py .
 # Full verification before deployment
 python .agent/scripts/verify_all.py . --url http://localhost:3000
 
-# Sync kit to other IDEs (Claude, Cursor, Codex, Copilot)
+# Sync kit to other IDEs (Antigravity, Claude, Cursor, Codex, Copilot, Windsurf, Cline, Roo Code)
 python .agent/scripts/sync_ide.py --target all
+
+# Measure the kit's own context footprint (approx. tokens in generated rule files)
+python .agent/scripts/token_footprint.py
 ```
 
 ---
@@ -289,15 +356,17 @@ User request
 ```
 project-root/
 ├── .agent/
-│   ├── agents/          # 20 specialist AI personas
-│   ├── skills/          # 47 knowledge modules
-│   ├── workflows/       # 13 slash-command procedures
+│   ├── agents/          # 22 specialist AI personas
+│   ├── skills/          # 58 knowledge modules
+│   ├── workflows/       # 18 slash-command procedures
 │   ├── scripts/         # master validation scripts
 │   │   ├── doctor.py          # kit health check
 │   │   ├── checklist.py       # priority-based audit
 │   │   ├── verify_all.py      # full verification suite
 │   │   ├── sync_ide.py        # multi-IDE export
-│   │   └── install_hooks.py   # git hook installer
+│   │   ├── install_hooks.py   # git hook installer
+│   │   └── hooks/
+│   │       └── protect_generated_files.py  # Claude Code PreToolUse hook
 │   ├── tests/
 │   │   └── test_kit_integrity.py  # automated pytest suite
 │   ├── memory/
@@ -305,6 +374,7 @@ project-root/
 │   │   └── gotchas.md   # common pitfalls to avoid
 │   └── rules/
 │       └── GEMINI.md    # master rules file (P0)
+├── .mcp.json             # starter MCP config (GitHub, OAuth)
 └── README.md
 ```
 
@@ -324,8 +394,7 @@ If this kit saves you time, consider supporting:
 
 ## License
 
-MIT — FernandoTenguan
-(Forked from Vudovn's original Antigravity Kit project)
+MIT — see [LICENSE](./LICENSE)
 
 ---
 

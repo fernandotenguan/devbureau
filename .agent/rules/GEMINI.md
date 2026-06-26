@@ -2,7 +2,7 @@
 trigger: always_on
 ---
 
-# GEMINI.md - Antigravity Kit
+# GEMINI.md - DevBureau
 
 > This file defines how the AI behaves in this workspace.
 
@@ -99,7 +99,7 @@ When auto-applying an agent, inform the user:
 
 ### 1. Localização Restrita de Integridade do Kit
 
-- **Regra:** O script `python -m pytest .agent/tests/test_kit_integrity.py` deve ser executado **EXCLUSIVAMENTE** dentro do projeto `antigravity-kit-personalizado`.
+- **Regra:** O script `python -m pytest .agent/tests/test_kit_integrity.py` deve ser executado **EXCLUSIVAMENTE** dentro do projeto `devbureau`.
 - **Comportamento:** Em qualquer outro repositório que utilize este kit, ignore os testes de metadados do kit para economizar processamento. Se solicitado em outros projetos, informe ao usuário que isso é restrito ao projeto oficial de manutenção.
 
 ### 2. Validação Seletiva (Selective Validation Mode) - PADRÃO
@@ -227,6 +227,23 @@ If the user says any of the following, **immediately stop all in-progress action
 - **Testing**: Mandatory. Pyramid (Unit > Int > E2E) + AAA Pattern.
 - **Performance**: Measure first. Adhere to 2025 standards (Core Web Vitals).
 - **Infra/Safety**: 5-Phase Deployment. Verify secrets security.
+
+### 🪶 Lean Code & Output Discipline (Global Mandatory)
+
+**Write only what the task needs. Never cut validation, error handling, security, or accessibility to get there.**
+
+- **Before writing code**, climb `@[skills/lean-code-ladder]`'s ladder: does this need to exist? → already in the codebase? → stdlib? → native platform feature? → already-installed dependency? → one line? → only then, the minimum that works.
+- **Mark deliberate shortcuts** with a `lean:` comment naming the ceiling and the upgrade trigger (e.g. `// lean: global lock, per-account locks if throughput matters`) — never leave a shortcut silent. Run `/lean-debt` periodically so a marked shortcut doesn't quietly rot into permanent.
+- **Response output**: lead with the result (code, answer, fix). Explanation after is at most a few lines — what was skipped and when to revisit it, not an essay defending the simplification. Give the full explanation only when the user explicitly asked for one (a report, a walkthrough, a teaching moment).
+- **Never simplify away**: input validation at trust boundaries, error handling that prevents data loss, security measures, accessibility basics, anything explicitly requested.
+
+### 🔌 External Context-Compression Tools (Conditional, Use When Present)
+
+**If `mcp__headroom__*` MCP tools are available in this session, use them — never assume they exist, never block on their absence.**
+
+- Before reasoning over a large tool output, file read, or search result, call `headroom_compress` and work from the compressed version. Call `headroom_retrieve` if the full original is needed later.
+- If the user asks about token/cost savings for the session, call `headroom_stats`.
+- These tools come from a third-party MCP server (Headroom) the user sets up once, machine-wide — not something DevBureau installs or bundles. If absent, proceed normally; this is an optional accelerator, not a dependency.
 
 ### 📁 File Dependency Awareness
 

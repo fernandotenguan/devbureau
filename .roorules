@@ -1,0 +1,251 @@
+# DevBureau — Rules for Roo Code
+> Auto-generated from .agent/rules/GEMINI.md via sync_ide.py. Do not edit manually.
+
+## How to Use Agents
+
+Mention a specialist by name to activate it: `@frontend-specialist`, `@backend-specialist`, etc.
+Agent files live in `.agent/agents/` — read the agent's `.md` file before implementing.
+
+## Available Agents
+
+- **accessibility-specialist**: Expert in WCAG compliance, screen reader compatibility, keyboard navigation, and inclusive design. Use for accessibility
+- **api-designer**: Expert in API contract design — REST/GraphQL/tRPC selection, OpenAPI/GraphQL schema specs, versioning strategy, paginati
+- **backend-specialist**: Expert backend architect for Node.js, Python, and modern serverless/edge systems. Use for API development, server-side l
+- **code-archaeologist**: Expert in legacy code, refactoring, and understanding undocumented systems. Use for reading messy code, reverse engineer
+- **database-architect**: Expert database architect for schema design, query optimization, migrations, and modern serverless databases. Use for da
+- **debugger**: Expert in systematic debugging, root cause analysis, and crash investigation. Use for complex bugs, production issues, p
+- **devops-engineer**: Expert in deployment, server management, CI/CD, and production operations. CRITICAL - Use for deployment, server access,
+- **documentation-writer**: Expert in technical documentation. Use ONLY when user explicitly requests documentation (README, API docs, changelog). D
+- **explorer-agent**: Advanced codebase discovery, deep architectural analysis, and proactive research agent. The eyes and ears of the framewo
+- **frontend-specialist**: Senior Frontend Architect who builds maintainable React/Next.js systems with performance-first mindset. Use when working
+- **game-developer**: Game development across all platforms (PC, Web, Mobile, VR/AR). Use when building games with Unity, Godot, Unreal, Phase
+- **mobile-developer**: Expert in React Native and Flutter mobile development. Use for cross-platform mobile apps, native features, and mobile-s
+- **orchestrator**: Multi-agent coordination and task orchestration. Use when a task requires multiple perspectives, parallel analysis, or c
+- **penetration-tester**: Expert in offensive security, penetration testing, red team operations, and vulnerability exploitation. Use for security
+- **performance-optimizer**: Expert in performance optimization, profiling, Core Web Vitals, and bundle optimization. Use for improving speed, reduci
+- **product-manager**: Expert in product requirements, requirements elicitation, user stories, acceptance criteria, backlog prioritization, and
+- **project-planner**: Smart project planning agent. Breaks down user requests into tasks, plans file structure, determines which agent does wh
+- **qa-automation-engineer**: Specialist in test automation infrastructure and E2E testing. Focuses on Playwright, Cypress, CI pipelines, and breaking
+- **security-auditor**: Elite cybersecurity expert. Think like an attacker, defend like an expert. OWASP 2025, supply chain security, zero trust
+- **seo-specialist**: SEO and GEO (Generative Engine Optimization) expert. Handles SEO audits, Core Web Vitals, E-E-A-T optimization, AI searc
+- **sre-engineer**: Expert in observability, monitoring, alerting, and incident response for production systems. Use for setting up monitori
+- **test-engineer**: Expert in testing, TDD, and test automation. Use for writing tests, improving coverage, debugging test failures. Trigger
+
+---
+
+# Lean Code & Output Discipline — DevBureau
+> Auto-generated via sync_ide.py. Do not edit manually.
+
+Write only what the task needs. Never cut validation, error handling, security, or accessibility to get there.
+
+## Before Writing Code
+
+Climb the ladder, stop at the first rung that holds:
+1. Does this need to exist at all? Speculative need → skip it, say so in one line. (YAGNI)
+2. Already in this codebase? Reuse it, don't rewrite it.
+3. Does the standard library already do this? Use it.
+4. Does a native platform feature cover it? Use it.
+5. Does an already-installed dependency solve it? Use it.
+6. Can this be one line? Make it one line.
+7. Only then: the minimum code that works.
+
+Read and trace the real flow first — the ladder shortens the solution, never the reading.
+
+## Marking Deliberate Shortcuts
+
+Mark every intentional simplification with a `lean:` comment naming its ceiling and upgrade trigger:
+`// lean: global lock, switch to per-account locks if throughput becomes the bottleneck`
+A marker with no named trigger is worse than no marker — it rots silently.
+
+## Response Output
+
+Lead with the result (code, answer, fix). Explanation after is at most a few short lines: what was skipped, when to revisit it. No essays defending a simplification. Give the full explanation only when the user explicitly asked for one.
+
+## Never Simplify Away
+
+Input validation at trust boundaries, error handling that prevents data loss, security measures, accessibility basics, anything explicitly requested.
+
+## External Context-Compression Tools (Conditional)
+
+If `mcp__headroom__*` MCP tools are available in this session, use them: call `headroom_compress` before reasoning over a large tool output/file read/search result, `headroom_retrieve` to get the original back, `headroom_stats` if asked about savings. Third-party, user-installed machine-wide, not bundled by DevBureau — if absent, proceed normally.
+
+
+---
+
+# Code Quality Standards — DevBureau
+> Auto-generated via sync_ide.py. Do not edit manually.
+
+## Functions & Methods
+
+- Functions MUST do ONE thing only. If you need "and" to describe it, split into two.
+- Maximum 20 lines per function. Above that, extract sub-functions.
+- Maximum 3 arguments per function. Above that, group into object/dataclass/Pydantic model.
+- Functions MUST NOT have hidden side effects (mutating global state, modifying mutable arguments silently).
+- Function names MUST be descriptive verbs: `create_subscription()`, `validate_input()`. Never `process()`, `handle()`, `do()`.
+
+## Naming & Readability
+
+- Names MUST reveal intent: `elapsed_time_in_days` not `d`, `is_active_subscription` not `flag`.
+- Classes/models with noun names: `Subscription`, `UserProfile`. Avoid `Manager`, `Helper`, `Data`, `Info`.
+- No ambiguous abbreviations: `usr`, `mgr`, `tmp`. Write in full.
+- Consistent naming: if you used `get_user` in one module, don't use `fetch_user` in another without reason.
+
+## Error Handling
+
+- Use exceptions instead of return codes.
+- NEVER return None/null to indicate error. Raise exception with clear message.
+- Try/except MUST be specific: catch `ValueError`, `HTTPException`. NEVER generic `except Exception` (except in top-level catch-all).
+- Domain errors MUST use custom exceptions: `SubscriptionExpiredError`, `QuotaExceededError`.
+
+## Structure & Organization
+
+- Law of Demeter: NEVER chain `a.get_b().get_c().do_something()`. Create direct method.
+- One file, one responsibility: don't mix routes + service + schemas in the same file.
+- Imports organized: stdlib > third-party > local (Python) / react > libs > components > utils (TypeScript).
+- Dead code (unused functions, unused imports, commented variables) MUST be removed, not commented.
+
+## Type Safety
+
+- Python: type hints mandatory on all functions and variables. No generic `Any`.
+- TypeScript: strict mode enabled. No `any`, no `@ts-ignore`, no `as unknown as`.
+
+## Documentation
+
+- Every new finished feature MUST be documented in README.md: feature name, short description, and flow.
+- README MUST have a `## Features` section with updated feature list.
+
+
+---
+
+# Frontend Rules — DevBureau
+> Auto-generated via sync_ide.py. Do not edit manually.
+
+## Agent Routing
+
+For frontend/UI work, apply the `@frontend-specialist` agent.
+Read `.agent/agents/frontend-specialist.md` for full design rules.
+
+## Project Type Routing
+
+| Project Type | Primary Agent | Skills |
+|---|---|---|
+| **WEB** (Next.js, React web) | `frontend-specialist` | frontend-design |
+| **MOBILE** (iOS, Android, RN, Flutter) | `mobile-developer` | mobile-design |
+
+> Mobile + frontend-specialist = WRONG. Mobile = mobile-developer ONLY.
+
+## UI/UX Principles
+
+- No generic/template-looking layouts. Every UI must feel custom and premium.
+- Use modern typography (Inter, Roboto, Outfit) instead of browser defaults.
+- Use smooth gradients, micro-animations, and hover effects for engagement.
+- Dark mode support when applicable.
+- Responsive design is mandatory: mobile-first approach.
+- Accessibility: semantic HTML, ARIA labels, keyboard navigation.
+
+## Component Standards
+
+- Components must be focused and reusable. One component, one responsibility.
+- Props should be typed with interfaces (TypeScript) or PropTypes.
+- Avoid prop drilling: use context or state management for deep data.
+- CSS: prefer CSS Modules or scoped styles. Avoid global styles leaking.
+
+## Performance
+
+- Lazy load routes and heavy components.
+- Optimize images (WebP, proper sizing, lazy loading).
+- Core Web Vitals targets: LCP < 2.5s, FID < 100ms, CLS < 0.1.
+- Bundle size awareness: check imports, avoid importing entire libraries.
+
+
+---
+
+# Backend Rules — DevBureau
+> Auto-generated via sync_ide.py. Do not edit manually.
+
+## Agent Routing
+
+For backend/API work, apply the `@backend-specialist` agent.
+Read `.agent/agents/backend-specialist.md` for full patterns.
+
+For database work, apply the `@database-architect` agent.
+Read `.agent/agents/database-architect.md` for schema and query patterns.
+
+## API Design
+
+- RESTful conventions: proper HTTP methods, status codes, resource naming.
+- Validate ALL inputs at the boundary (request handlers). Never trust client data.
+- Return consistent error responses: `{ "error": "message", "code": "ERROR_CODE" }`.
+- Pagination mandatory for list endpoints. Use cursor-based when possible.
+- Rate limiting on public endpoints.
+- Version APIs when breaking changes are unavoidable.
+
+## Database
+
+- Migrations for ALL schema changes. Never modify production schema manually.
+- Indexes on columns used in WHERE, JOIN, ORDER BY clauses.
+- Foreign keys and constraints enforced at the database level.
+- Soft delete (is_deleted flag) preferred over hard delete for business data.
+- Connection pooling mandatory. Never open connections per request.
+
+## Architecture
+
+- Separation of concerns: routes/controllers > services > repositories > models.
+- Business logic in service layer, NEVER in route handlers.
+- Environment-specific configuration via environment variables.
+- Health check endpoint mandatory: `GET /health`.
+- Structured logging (JSON) with correlation IDs for request tracing.
+
+## Testing
+
+- Test pyramid: Unit > Integration > E2E.
+- AAA pattern: Arrange, Act, Assert.
+- Mock external dependencies (APIs, databases) in unit tests.
+- Integration tests against real database (use test containers or in-memory).
+
+
+---
+
+# Security Rules — DevBureau
+> Auto-generated via sync_ide.py. Do not edit manually.
+
+## Secrets Management
+
+- Secrets and API keys exclusively in `.env`. NEVER hardcoded, NEVER committed to git.
+- `.env.example` MUST exist with all required variables, without real values.
+- Sensitive environment variables NEVER have `NEXT_PUBLIC_` prefix.
+- Rotate secrets periodically. Use secret managers in production (AWS SM, GCP SM, Vault).
+
+## Input & Output
+
+- Validate and sanitize ALL user inputs. Use allowlists over denylists.
+- Parameterized queries ONLY. NEVER concatenate user input into SQL.
+- Escape output in HTML contexts to prevent XSS.
+- Content Security Policy (CSP) headers on all responses.
+
+## Authentication & Authorization
+
+- Use established libraries (NextAuth, Passport, Firebase Auth). Never roll your own crypto.
+- JWT tokens: short expiry (15min access, 7d refresh). Store refresh tokens securely.
+- RBAC (Role-Based Access Control) enforced at API layer, not just UI.
+- Password hashing with bcrypt or argon2. NEVER store plaintext passwords.
+
+## Error Handling
+
+- NEVER expose internal IDs (user_id, session_id) in browser console.
+- NEVER log sensitive data in console.log (tokens, emails, passwords).
+- Error messages returned to frontend NEVER expose stack traces, SQL queries, or internal structure.
+- Use generic error messages for clients. Log detailed errors server-side only.
+
+## Dependencies
+
+- Review dependencies before adding. Check maintenance status and known vulnerabilities.
+- Lock dependency versions. Use lockfiles (package-lock.json, poetry.lock).
+- Run dependency audit regularly: `npm audit`, `pip-audit`, `safety check`.
+
+## HTTPS & Transport
+
+- HTTPS mandatory in production. Redirect HTTP to HTTPS.
+- HSTS headers enabled. Secure and HttpOnly flags on cookies.
+- CORS configured with explicit allowed origins. Never use `*` in production.
+

@@ -12,7 +12,7 @@ Esse comando cria os arquivos de configuração necessários (como `.cursorrules
 ### 🤖 Configuração para Google Gemini (Gemini Code Assist / AI Studio / Advanced)
 
 *   **Gemini Code Assist (VS Code ou IntelliJ):** Não é necessário executar nenhum comando específico para o Gemini Code Assist. A ferramenta analisa e indexa o contexto do workspace automaticamente. Ter a pasta `.agent` e o arquivo `GEMINI.md` na raiz do projeto é suficiente para que o assistente consulte as instruções durante o uso. Ainda assim, executar o script de sincronização é recomendado para manter o ambiente preparado caso use outras ferramentas.
-*   **Google AI Studio ou Gemini Advanced (Web):** Para chats via navegador ou uso direto da API, carregue o conteúdo do arquivo [.agent/rules/GEMINI.md](file:///d:/antigravity-kit-personalizado/.agent/rules/GEMINI.md) na seção de **System Instructions** (Instruções do Sistema) ou anexe o arquivo no primeiro prompt da conversa.
+*   **Google AI Studio ou Gemini Advanced (Web):** Para chats via navegador ou uso direto da API, carregue o conteúdo do arquivo [.agent/rules/GEMINI.md](./.agent/rules/GEMINI.md) na seção de **System Instructions** (Instruções do Sistema) ou anexe o arquivo no primeiro prompt da conversa.
 
 ---
 
@@ -63,7 +63,7 @@ Use esta tabela para saber quem chamar ou qual comando usar. **Lembre-se:** voc�
 
 ## 🎯 Como o Agente Funciona (Em 30 Segundos)
 
-Pense neste kit como uma **equipe de desenvolvimento de elite** composta por 20 especialistas que trabalham para você simultaneamente. 
+Pense neste kit como uma **equipe de desenvolvimento de elite** composta por 22 especialistas que trabalham para você simultaneamente. 
 
 ### Iniciar um Novo Projeto
 Se você quer começar **um novo aplicativo, site ou jogo** do zero, use este comando:
@@ -114,7 +114,7 @@ Estes são atalhos que ativam workflows prontos. Digite diretamente no chat:
 
 | Comando | Quando Usar | O que Faz |
 |---------|-------------|-----------|
-| `checar kit` | Antes de qualquer trabalho importante | Diagnóstico completo do kit (20 agentes, 47 skills) |
+| `checar kit` | Antes de qualquer trabalho importante | Diagnóstico completo do kit (22 agentes, 58 skills) |
 | `verificação final` | Antes de publicar | Roda todos os testes em sequência |
 | `rode todos os testes` | Após fazer mudanças | Garante que nada quebrou |
 
@@ -124,9 +124,8 @@ Estes são atalhos que ativam workflows prontos. Digite diretamente no chat:
 
 Agora seu kit conta com 3 novos pacotes de inteligência estratégica importados do repositório *Awesome Skills*:
 
-### 1. 🧠 Estratégia e Memória (The Andruia Series)
+### 1. 🧠 Estratégia e Memória
 *Transforma o agente de um "codificador" em um "consultor de negócios".*
-- **`00-andruia-consultant`**: Atua como Arquiteto de Soluções para planejar roadmap de IA.
 - **`agent-memory-mcp`**: Permite que o agente tenha memória persistente de longo prazo (Contexto Infinito).
 - **`agent-evaluation`**: Audita a qualidade e confiabilidade de cada entrega da IA.
 
@@ -140,7 +139,6 @@ Agora seu kit conta com 3 novos pacotes de inteligência estratégica importados
 *Para quem quer transformar a ferramenta em um produto real.*
 - **`micro-saas-launcher`**: Facilita a criação de MVPs voltados para o mercado.
 - **`startup-analyst`**: Analisa métricas de negócio (CAC, LTV, Burn Rate).
-- **`20-andruia-niche-intelligence`**: Pesquisa profunda sobre o mercado de loterias e apostas.
 
 ---
 
@@ -301,7 +299,7 @@ ou
 tudo certo?
 ```
 
-O agente vai rodar `doctor.py` e confirmar que todos os 20 agentes, 38 skills e 13 workflows estão funcionando corretamente.
+O agente vai rodar `doctor.py` e confirmar que todos os 22 agentes, 58 skills e 18 workflows estão funcionando corretamente.
 
 ---
 
@@ -375,11 +373,10 @@ O agente vai rodar `doctor.py` e confirmar que todos os 20 agentes, 38 skills e 
 | **🎮 game-developer** | Jogos 2D, 3D, multiplayer | "criar um jogo", "fazer um game", "jogo 2D", "mecânica de jogo" | "game", "unity", "godot", "phaser", "multiplayer" |
 | **📄 documentation-writer** | Documentação, README, guias | "documentar", "README", "escrever os docs", "criar documentação" | "documentation", "README", "API docs", "write docs" |
 | **🔬 explorer-agent** | Analisar codebase, explorar código | "analisar código", "visão geral", "listar arquivos", "entender o projeto" | "analyze", "list files", "overview", "explore codebase" |
-| **👔 product-owner** | Estratégia, backlog, user stories | "requisitos", "ideia", "funcionalidades", "quem vai usar" | "requirements", "MVP", "user stories", "backlog" |
 | **🔧 code-archaeologist** | Código legado, refatoração | "refatorar", "código antigo", "limpar código", "organizar" | "refactor", "legacy code", "clean up", "reorganize" |
 | **🧪 qa-automation-engineer** | Testes E2E, pipelines de teste | "testar o app inteiro", "simular usuário", "fluxo completo" | "E2E test", "end-to-end", "playwright", "test pipeline" |
 | **🕵️ penetration-tester** | Testes de intrusão, red team | "simular ataque", "pentest", "teste de invasão" | "penetration test", "red team", "attack simulation" |
-| **📊 product-manager** | Requisitos, histórias de usuário | "histórias de usuário", "o que o app precisa ter" | "user stories", "product requirements" |
+| **📊 product-manager** | Requisitos, histórias de usuário, backlog | "histórias de usuário", "o que o app precisa ter", "requisitos", "quem vai usar" | "user stories", "product requirements", "MVP", "backlog" |
 
 ---
 
@@ -397,8 +394,6 @@ O agente vai rodar `doctor.py` e confirmar que todos os 20 agentes, 38 skills e 
 
 | Skill | O que faz | 🇧🇷 Termos PT-BR | 🇺🇸 Termos EN |
 |-------|-----------|-------------------|---------------|
-| **🧠 00-andruia-consultant** | Consultoria de soluções IA | "consultor de IA", "roadmap de IA", "qual IA usar" | "AI consultant", "AI roadmap", "which AI to use" |
-| **📊 20-andruia-niche-intelligence** | Análise de nicho e mercado | "análise do nicho", "mercado", "concorrência" | "niche analysis", "market research", "competitor" |
 | **💾 agent-memory-mcp** | Memória persistente do agente | "lembrar contexto", "memória do agente", "lições" | "agent memory", "context", "lessons learned" |
 | **🧪 agent-evaluation** | Avaliação de qualidade da IA | "avaliar a IA", "qualidade da resposta" | "evaluate AI", "agent quality", "performance" |
 | **🤖 ai-engineer** | Construção de apps com LLM/IA | "construir com IA", "agente inteligente", "LLM" | "build with AI", "LLM app", "intelligent agent" |

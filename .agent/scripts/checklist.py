@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Master Checklist Runner - Antigravity Kit
-==========================================
+Master Checklist Runner - DevBureau
+====================================
 
 Orchestrates all validation scripts in priority order.
 Use this for incremental validation during development.
@@ -25,6 +25,13 @@ import subprocess
 import argparse
 from pathlib import Path
 from typing import List, Tuple, Optional
+
+# Configuração de encoding para evitar erros em terminais Windows (cp1252)
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except AttributeError:
+        pass
 
 # ANSI colors for terminal output
 class Colors:
@@ -175,7 +182,7 @@ def print_summary(results: List[dict]):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Run Antigravity Kit validation checklist",
+        description="Run DevBureau validation checklist",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

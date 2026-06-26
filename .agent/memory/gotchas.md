@@ -1,4 +1,4 @@
-# Gotchas & Armadilhas — Antigravity Kit
+# Gotchas & Armadilhas — DevBureau
 
 > Erros comuns e como evitá-los. Consulte antes de iniciar desenvolvimento.
 

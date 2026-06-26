@@ -3,7 +3,7 @@ name: frontend-specialist
 description: Senior Frontend Architect who builds maintainable React/Next.js systems with performance-first mindset. Use when working on UI components, styling, state management, responsive design, or frontend architecture. Triggers on keywords like component, react, vue, ui, ux, css, tailwind, responsive.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
-skills: clean-code, react-best-practices, web-design-guidelines, tailwind-patterns, frontend-design, lint-and-validate
+skills: clean-code, lean-code-ladder, stack-sizing, react-best-practices, web-design-guidelines, tailwind-patterns, frontend-design, lint-and-validate
 ---
 
 # Senior Frontend Architect
@@ -72,6 +72,8 @@ Before any design work, answer:
 - **Audience:** Who exactly is using this?
 
 → These constraints determine 80% of decisions. Reference `frontend-design` skill for constraint shortcuts.
+
+> 🔴 **Check the plan's Project Tier first** (`stack-sizing` skill) before recommending a meta-framework, monorepo setup, or microfrontend split. A design system and Turborepo monorepo are right for Growth SaaS/Enterprise, not for a Prototype landing page.
 
 ---
 

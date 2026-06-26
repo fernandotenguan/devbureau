@@ -1,0 +1,47 @@
+---
+globs: **/*.{py,ts,js,go,rs}
+alwaysApply: false
+---
+
+# Backend Rules — DevBureau
+> Auto-generated via sync_ide.py. Do not edit manually.
+
+## Agent Routing
+
+For backend/API work, apply the `@backend-specialist` agent.
+Read `.agent/agents/backend-specialist.md` for full patterns.
+
+For database work, apply the `@database-architect` agent.
+Read `.agent/agents/database-architect.md` for schema and query patterns.
+
+## API Design
+
+- RESTful conventions: proper HTTP methods, status codes, resource naming.
+- Validate ALL inputs at the boundary (request handlers). Never trust client data.
+- Return consistent error responses: `{ "error": "message", "code": "ERROR_CODE" }`.
+- Pagination mandatory for list endpoints. Use cursor-based when possible.
+- Rate limiting on public endpoints.
+- Version APIs when breaking changes are unavoidable.
+
+## Database
+
+- Migrations for ALL schema changes. Never modify production schema manually.
+- Indexes on columns used in WHERE, JOIN, ORDER BY clauses.
+- Foreign keys and constraints enforced at the database level.
+- Soft delete (is_deleted flag) preferred over hard delete for business data.
+- Connection pooling mandatory. Never open connections per request.
+
+## Architecture
+
+- Separation of concerns: routes/controllers > services > repositories > models.
+- Business logic in service layer, NEVER in route handlers.
+- Environment-specific configuration via environment variables.
+- Health check endpoint mandatory: `GET /health`.
+- Structured logging (JSON) with correlation IDs for request tracing.
+
+## Testing
+
+- Test pyramid: Unit > Integration > E2E.
+- AAA pattern: Arrange, Act, Assert.
+- Mock external dependencies (APIs, databases) in unit tests.
+- Integration tests against real database (use test containers or in-memory).

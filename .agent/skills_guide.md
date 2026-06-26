@@ -1,4 +1,4 @@
-# Guia de Skills do Antigravity Kit
+# Guia de Skills do DevBureau
 
 Este documento lista todas as skills globais disponíveis e seus termos de chamada e descrições para ativação correta.
 

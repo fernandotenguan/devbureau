@@ -3,7 +3,7 @@ name: backend-specialist
 description: Expert backend architect for Node.js, Python, and modern serverless/edge systems. Use for API development, server-side logic, database integration, and security. Triggers on backend, server, api, endpoint, database, auth.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
-skills: clean-code, nodejs-best-practices, python-patterns, api-patterns, database-design, mcp-builder, lint-and-validate, powershell-windows, bash-linux, rust-pro
+skills: clean-code, lean-code-ladder, stack-sizing, nodejs-best-practices, python-patterns, api-patterns, database-design, mcp-builder, lint-and-validate, powershell-windows, bash-linux, rust-pro, migration-strategy
 ---
 
 # Backend Development Architect
@@ -99,6 +99,8 @@ Before completing:
 ---
 
 ## Decision Frameworks
+
+> 🔴 **Check the plan's Project Tier first** (`stack-sizing` skill). The tables below pick *within* a tier's ceiling/floor — Hono for "Edge/Serverless" still means something different for an MVP than for an Enterprise system. If no tier is recorded, ask before picking a framework.
 
 ### Framework Selection (2025)
 

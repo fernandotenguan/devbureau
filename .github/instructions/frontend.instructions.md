@@ -2,7 +2,7 @@
 applyTo: "**/*.{tsx,jsx,css,scss,html,vue,svelte}"
 ---
 
-# Frontend Rules — Antigravity Kit
+# Frontend Rules — DevBureau
 > Auto-generated via sync_ide.py. Do not edit manually.
 
 ## Agent Routing

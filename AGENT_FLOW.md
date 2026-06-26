@@ -1,6 +1,6 @@
 # 🔄 Agent Flow Architecture
 
-> **Antigravity Kit** - Comprehensive AI Agent Workflow Documentation
+> **DevBureau** - Comprehensive AI Agent Workflow Documentation
 
 ---
 
@@ -300,7 +300,7 @@ Slash Command Flow:
     1. Load: parallel-agents skill
     2. Decompose: Task into subtasks
     3. Assign: Each subtask to specialist agent
-    4. Coordinate: Parallel execution
+    4. Coordinate: Sequential execution (one specialist persona at a time)
     5. Merge: Combine results
     6. Validate: Run full verification
 
@@ -527,11 +527,10 @@ User Request: "Build a Next.js dashboard with authentication"
 ┌──────────────────────────────────────────────────────────┐
 │                    SYSTEM CAPABILITIES                    │
 ├──────────────────────────────────────────────────────────┤
-│ Total Agents:              20                            │
-│ Total Skills:              36                            │
-│ Total Workflows:           11                            │
-│ Master Scripts:            2 (checklist, verify_all)     │
-│ Skill-Level Scripts:       18                            │
+│ Total Agents:              22                            │
+│ Total Skills:              54                            │
+│ Total Workflows:           16                            │
+│ Master Scripts:            8 (doctor, checklist, ...)    │
 │ Coverage:                  ~90% web/mobile development   │
 │                                                          │
 │ Supported Frameworks:                                    │

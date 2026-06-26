@@ -2,7 +2,7 @@
 applyTo: "**/*.{py,ts,js,go,rs}"
 ---
 
-# Backend Rules — Antigravity Kit
+# Backend Rules — DevBureau
 > Auto-generated via sync_ide.py. Do not edit manually.
 
 ## Agent Routing

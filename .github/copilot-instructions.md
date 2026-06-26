@@ -1,12 +1,14 @@
-# Antigravity Kit — GitHub Copilot Instructions
+# DevBureau — GitHub Copilot Instructions
 > Auto-generated from .agent/rules/GEMINI.md via sync_ide.py. Do not edit manually.
 
 ## Agent System
 
-This workspace uses the **Antigravity Kit**, a multi-agent AI framework. Before writing code, identify the correct specialist agent for the domain and apply its principles.
+This workspace uses **DevBureau**, a multi-agent AI framework. Before writing code, identify the correct specialist agent for the domain and apply its principles.
 
 ## Available Agents
 
+- **accessibility-specialist**: Expert in WCAG compliance, screen reader compatibility, keyboard navigation, and inclusive design. Use for accessibility
+- **api-designer**: Expert in API contract design — REST/GraphQL/tRPC selection, OpenAPI/GraphQL schema specs, versioning strategy, paginati
 - **backend-specialist**: Expert backend architect for Node.js, Python, and modern serverless/edge systems. Use for API development, server-side l
 - **code-archaeologist**: Expert in legacy code, refactoring, and understanding undocumented systems. Use for reading messy code, reverse engineer
 - **database-architect**: Expert database architect for schema design, query optimization, migrations, and modern serverless databases. Use for da
@@ -20,12 +22,12 @@ This workspace uses the **Antigravity Kit**, a multi-agent AI framework. Before 
 - **orchestrator**: Multi-agent coordination and task orchestration. Use when a task requires multiple perspectives, parallel analysis, or c
 - **penetration-tester**: Expert in offensive security, penetration testing, red team operations, and vulnerability exploitation. Use for security
 - **performance-optimizer**: Expert in performance optimization, profiling, Core Web Vitals, and bundle optimization. Use for improving speed, reduci
-- **product-manager**: Expert in product requirements, user stories, and acceptance criteria. Use for defining features, clarifying ambiguity, 
-- **product-owner**: Strategic facilitator bridging business needs and technical execution. Expert in requirements elicitation, roadmap manag
+- **product-manager**: Expert in product requirements, requirements elicitation, user stories, acceptance criteria, backlog prioritization, and
 - **project-planner**: Smart project planning agent. Breaks down user requests into tasks, plans file structure, determines which agent does wh
 - **qa-automation-engineer**: Specialist in test automation infrastructure and E2E testing. Focuses on Playwright, Cypress, CI pipelines, and breaking
 - **security-auditor**: Elite cybersecurity expert. Think like an attacker, defend like an expert. OWASP 2025, supply chain security, zero trust
 - **seo-specialist**: SEO and GEO (Generative Engine Optimization) expert. Handles SEO audits, Core Web Vitals, E-E-A-T optimization, AI searc
+- **sre-engineer**: Expert in observability, monitoring, alerting, and incident response for production systems. Use for setting up monitori
 - **test-engineer**: Expert in testing, TDD, and test automation. Use for writing tests, improving coverage, debugging test failures. Trigger
 
 ### Activation
@@ -58,6 +60,15 @@ Agent files are located in `.agent/agents/`. Read the agent's `.md` file before 
 - No dead code, no unused imports, no commented-out blocks.
 - Type hints mandatory (Python). Strict mode, no `any` (TypeScript).
 - Secrets in `.env` only, never hardcoded.
+
+### Lean Code & Output Discipline (Mandatory)
+- Before writing code, climb the ladder: YAGNI → reuse → stdlib → native feature → existing dependency → one line → only then the minimum that works. Never cut validation, error handling, security, or accessibility.
+- Mark deliberate shortcuts with a `lean:` comment naming the ceiling and upgrade trigger.
+- Lead responses with the result; explain in a few lines after, not an essay. Full explanation only when explicitly asked.
+
+### External Context-Compression Tools (Conditional)
+- If `mcp__headroom__*` MCP tools are available in this session, use `headroom_compress` before reasoning over large tool outputs/file reads, `headroom_retrieve` for the original, `headroom_stats` if asked about savings.
+- Third-party, user-installed machine-wide, not bundled by DevBureau. If absent, proceed normally.
 
 ### Before Modifying Any File
 1. Identify dependent files (imports, references, shared types).

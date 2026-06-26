@@ -1,0 +1,25 @@
+# Benchmark Sources (Living List)
+
+> Updated whenever a `/benchmark` run discovers or re-checks a source. Add new sources here, don't let the list go stale in `SKILL.md`.
+
+## Last verified: 2026-06-26
+
+| Source | URL | Type | Notes |
+|---|---|---|---|
+| BMAD-METHOD | github.com/bmad-code-org/BMAD-METHOD | Methodology + agents | 12+ agent personas, scale-adaptive routing (Quick Flow → Enterprise track), 50+ workflows, "Party Mode" multi-persona sessions, expansion modules (Test Architect, Game Dev Studio). DevBureau's `project-planner.md` already cites this as inspiration for its 4-phase workflow. |
+| awesome-claude-code | github.com/hesreallyhim/awesome-claude-code | Curated list | 36.8k+ stars. The canonical hand-curated list — good first stop for "what's new" each run. |
+| awesome-claude-code-subagents | github.com/VoltAgent/awesome-claude-code-subagents | Subagent catalog | 154+ subagents across 10 categories. Good for checking if DevBureau is missing an obvious agent category. |
+| awesome-agent-skills | github.com/VoltAgent/awesome-agent-skills | Skill catalog | 1000+ skills, explicitly cross-tool (Claude Code, Codex, Gemini CLI, Cursor, Antigravity). Same multi-IDE ambition as DevBureau. |
+| antigravity-awesome-skills | github.com/sickn33/antigravity-awesome-skills | Skill catalog + installer | 1,600+ skills, ships an installer CLI (`npx antigravity-awesome-skills --cursor --claude --antigravity`) that places skills per-tool. DevBureau's CHANGELOG (v2.2.0) already cites this as an import source — re-check periodically for skills DevBureau is missing (its categories: architecture, security, data/AI, DevOps, testing). |
+| awesome-claude-code-toolkit | github.com/rohitg00/awesome-claude-code-toolkit | Comprehensive toolkit | 135 agents, 35 skills, 42 commands, 176+ plugins, **20 hooks**, **14 MCP configs**, 15 rules. Useful specifically to check DevBureau's hooks/MCP coverage, which is currently thin (1 hook, 0 bundled MCP configs). |
+| Reversa | github.com/sandeco/reversa | Specialized framework (legacy → spec) | Narrow purpose (reverse-engineers legacy code into executable specs, then forward/migrate/price from there) but backed by an arXiv paper (Macedo & da Costa, May 2026) and supports **13 IDE/engine targets** (vs. DevBureau's 5). Strong mechanisms worth mining even though the overall product scope doesn't match DevBureau's: confidence-scale fact-marking (🟢 CONFIRMED/🟡 INFERRED/🔴 GAP), SHA-256 update manifest that preserves user customizations, engine auto-detection, `status`/`update`/`add-agent`/`add-engine`/`uninstall` CLI commands, durable "principles.md" with impact-report-not-auto-rewrite propagation. See 2026-06-26 run #2 in benchmark-log.md for full verdicts. |
+| Ponytail | github.com/DietrichGebert/ponytail | Token-economy ruleset/skill, same architecture class as DevBureau | Plain markdown skills + rules synced to 16 agent hosts (Claude, Cursor, Codex, Copilot, Windsurf, Cline, Gemini, Antigravity, etc.) — directly comparable to DevBureau's own sync_ide.py model. Measured ~54% less code, ~20% cheaper, ~27% faster on real agentic sessions with no safety loss. Core mechanism: a 7-rung "lazy ladder" (YAGNI → reuse → stdlib → native → existing dep → one-liner → minimum) plus strict output discipline (code first, ≤3 lines after, no essays) plus a `ponytail:` shortcut-marker convention with a debt-ledger command. See 2026-06-26 run #3 in benchmark-log.md. |
+| Headroom | github.com/headroomlabs-ai/headroom | Runtime context-compression proxy/library (Rust + Python), NOT a prompt/rules framework | Operates at a different layer entirely: a network proxy/library/MCP server that intercepts and compresses tool outputs, logs, RAG chunks, and conversation history before they reach the LLM API (AST code compression, KV-cache alignment, cross-agent memory store). Most of it is not portable to a static-markdown kit like DevBureau — it requires a running process DevBureau doesn't ship. The one transferable idea: output-token verbosity steering (output costs ~5x input on Opus-class models) — same conclusion ponytail's "Output" discipline already reaches from the prompt side. See 2026-06-26 run #3 in benchmark-log.md. |
+
+## Findings Not Yet Acted On
+
+These came out of the 2026-06-26 run (see `.agent/memory/benchmark-log.md` for full verdicts) and are recorded here so they aren't lost between runs:
+
+- Cursor's current best practice (2026) is a `.cursor/rules/` directory with glob-scoped files, not a single monolithic `.cursorrules`/`rules.md`. DevBureau's `sync_ide.py` still generates one big `.cursor/rules.md`. **Verdict: Adopt** (see log).
+- Claude Code 2026 guidance treats hooks as the place for deterministic enforcement (e.g., "block writes outside src/"). DevBureau's "Agent Boundary Enforcement" in `orchestrator.md` is currently prose only — the AI is asked to follow it, nothing enforces it. **Verdict: Consider** (see log).
+- No bundled `.mcp.json` starter config, despite having an `mcp-builder` skill that teaches building one. **Verdict: Consider** (see log).

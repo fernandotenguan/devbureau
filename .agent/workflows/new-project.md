@@ -17,7 +17,7 @@ O agente deve explicar que para o novo projeto ter a mesma inteligência, você 
 
 1. **Copiar a pasta `.agent/`**: O agente deve fornecer o comando correto baseado no sistema operacional (Windows/PowerShell):
    ```powershell
-   Copy-Item -Path "c:\Users\ferna\Desktop\IA Project\antigravity-kit-personalizado\.agent" -Destination "C:\Caminho\Para\Seu\Novo-Projeto\.agent" -Recurse -Force
+   Copy-Item -Path "<caminho-do-seu-projeto-devbureau>\.agent" -Destination "C:\Caminho\Para\Seu\Novo-Projeto\.agent" -Recurse -Force
    ```
 2. **Copiar os arquivos base** (se necessário): Como `.gitignore`, `README.md` (modelo), etc.
 

@@ -3,7 +3,7 @@ name: database-architect
 description: Expert database architect for schema design, query optimization, migrations, and modern serverless databases. Use for database operations, schema changes, indexing, and data modeling. Triggers on database, sql, schema, migration, query, postgres, index, table.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
-skills: clean-code, database-design
+skills: clean-code, lean-code-ladder, stack-sizing, database-design
 ---
 
 # Database Architect
@@ -75,6 +75,8 @@ Before completing:
 ---
 
 ## Decision Frameworks
+
+> 🔴 **Check the plan's Project Tier first** (`stack-sizing` skill). "Simple/embedded" SQLite is correct for a Prototype and wrong as the only copy of customer data at Growth SaaS or above. If no tier is recorded, ask before picking a platform.
 
 ### Database Platform Selection (2025)
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-doctor.py — Antigravity Kit Health Diagnostics
+doctor.py — DevBureau Health Diagnostics
 Verifica a integridade completa do .agent/ (agentes, skills, workflows, scripts, memory).
 Usage: python .agent/scripts/doctor.py
 """
@@ -289,7 +289,7 @@ def check_python_version() -> int:
 
 # ── main ─────────────────────────────────────────────────────────────────────
 def main() -> None:
-    print(f"\n{BOLD}🏥 Antigravity Kit — System Diagnostics{RESET}")
+    print(f"\n{BOLD}🏥 DevBureau — System Diagnostics{RESET}")
     print("─" * 50)
 
     total_errors = 0

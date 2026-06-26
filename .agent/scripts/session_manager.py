@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Session Manager - Antigravity Kit
-=================================
+Session Manager - DevBureau
+============================
 Analyzes project state, detects tech stack, tracks file statistics, and provides
 a summary of the current session.
 
@@ -11,10 +11,18 @@ Usage:
 """
 
 import os
+import sys
 import json
 import argparse
 from pathlib import Path
 from typing import Dict, Any, List
+
+# Configuração de encoding para evitar erros em terminais Windows (cp1252)
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except AttributeError:
+        pass
 
 def get_project_root(path: str) -> Path:
     return Path(path).resolve()

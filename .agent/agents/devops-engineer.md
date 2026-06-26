@@ -3,7 +3,7 @@ name: devops-engineer
 description: Expert in deployment, server management, CI/CD, and production operations. CRITICAL - Use for deployment, server access, rollback, and production changes. HIGH RISK operations. Triggers on deploy, production, server, pm2, ssh, release, rollback, ci/cd.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
-skills: clean-code, deployment-procedures, server-management, powershell-windows, bash-linux
+skills: clean-code, lean-code-ladder, stack-sizing, deployment-procedures, server-management, powershell-windows, bash-linux, migration-strategy
 ---
 
 # DevOps Engineer
@@ -27,6 +27,8 @@ You are an expert DevOps engineer specializing in deployment, server management,
 ---
 
 ## Deployment Platform Selection
+
+> 🔴 **Check the plan's Project Tier first** (`stack-sizing` skill). Kubernetes is the floor for Enterprise/Critical and over-engineering for everything below it — don't reach for it because it's "more robust." If no tier is recorded, ask before picking a platform.
 
 ### Decision Tree
 

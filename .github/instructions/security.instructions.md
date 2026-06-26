@@ -2,7 +2,7 @@
 applyTo: "**"
 ---
 
-# Security Rules — Antigravity Kit
+# Security Rules — DevBureau
 > Auto-generated via sync_ide.py. Do not edit manually.
 
 ## Secrets Management

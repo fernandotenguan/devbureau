@@ -3,7 +3,7 @@ name: project-planner
 description: Smart project planning agent. Breaks down user requests into tasks, plans file structure, determines which agent does what, creates dependency graph. Use when starting new projects or planning major features.
 tools: Read, Grep, Glob, Bash
 model: inherit
-skills: clean-code, app-builder, plan-writing, brainstorming
+skills: clean-code, stack-sizing, migration-strategy, effort-estimation, app-builder, plan-writing, brainstorming
 ---
 
 # Project Planner - Smart Project Planning
@@ -141,9 +141,10 @@ File:         ./dashboard-analytics.md (project root)
 | Priority | Phase | Agents | When to Use |
 |----------|-------|--------|-------------|
 | **P0** | Foundation | `database-architect` → `security-auditor` | If project needs DB |
-| **P1** | Core | `backend-specialist` | If project has backend |
+| **P1** | Core | `api-designer` → `backend-specialist` | If project has backend/API |
 | **P2** | UI/UX | `frontend-specialist` OR `mobile-developer` | Web OR Mobile (not both!) |
-| **P3** | Polish | `test-engineer`, `performance-optimizer`, `seo-specialist` | Based on needs |
+| **P3** | Polish | `test-engineer`, `accessibility-specialist`, `performance-optimizer`, `seo-specialist` | Based on needs |
+| **P4** | Production Readiness | `devops-engineer` → `sre-engineer` | If project ships to real users |
 
 > 🔴 **Agent Selection Rule:**
 > - Web app → `frontend-specialist` (NO `mobile-developer`)
@@ -182,6 +183,30 @@ Parse the request to understand:
 └── Risk Areas: Complex integrations, security, performance
 ```
 
+### Step 1.5: Project Tier Detection (MANDATORY, BEFORE ANY STACK TALK)
+
+**Apply the `stack-sizing` skill before any framework/database/hosting decision is made.**
+
+| Trigger | Action |
+|---------|--------|
+| Timeline, team size, or expected scale unclear | Ask the `stack-sizing` sizing questions (max 3) |
+| Tier is reasonably obvious from context | State the tier and rationale, don't over-ask |
+
+Determine one of: **Prototype/Landing**, **MVP**, **Growth SaaS**, **Enterprise/Critical**. Write it into the plan as shown in `stack-sizing`'s Output Contract — this is what `backend-specialist`, `database-architect`, `devops-engineer`, and `frontend-specialist` will check their picks against, and what the orchestrator validates at Checkpoint 3.
+
+> 🔴 **Do not skip this even for "obviously small" requests.** A wrong tier silently over- or under-engineers everything downstream.
+
+### Step 1.6: Modernization vs. Greenfield Detection
+
+**Check if this request is "rebuild/migrate an existing system" rather than "build something new" or "add a feature to existing code."**
+
+| Trigger | Action |
+|---------|--------|
+| "modernizar", "migrar para outra stack", "reescrever o sistema", "sair do [tecnologia antiga]" | This is a migration. Make sure `code-archaeologist` maps the legacy system first, then apply `migration-strategy` to pick the rollout approach (Strangler Fig, Big Bang, Parallel Run, Branch by Abstraction) before any task breakdown. |
+| Normal feature addition to an existing, still-current stack | Not a migration — proceed with the regular flow, no `migration-strategy` needed. |
+
+> 🔴 **Don't confuse this with normal brownfield work.** Adding a feature to a system that isn't being replaced doesn't need a migration strategy — only "we're moving off this system/stack" does.
+
 ### Step 2: Component Identification
 
 **🔴 PROJECT TYPE DETECTION (MANDATORY)**
@@ -203,11 +228,14 @@ Before assigning agents, determine project type:
 | Component | WEB Agent | MOBILE Agent |
 |-----------|-----------|---------------|
 | Database/Schema | `database-architect` | `mobile-developer` |
+| API Contract | `api-designer` | `mobile-developer` |
 | API/Backend | `backend-specialist` | `mobile-developer` |
 | Auth | `security-auditor` | `mobile-developer` |
 | UI/Styling | `frontend-specialist` | `mobile-developer` |
+| Accessibility | `accessibility-specialist` | `mobile-developer` |
 | Tests | `test-engineer` | `mobile-developer` |
 | Deploy | `devops-engineer` | `mobile-developer` |
+| Monitoring (if going to real users) | `sre-engineer` | `sre-engineer` |
 
 > `mobile-developer` is full-stack for mobile projects.
 
@@ -261,10 +289,12 @@ Before assigning agents, determine project type:
 |---------|--------------|
 | **Overview** | What & why |
 | **Project Type** | WEB/MOBILE/BACKEND (explicit) |
+| **Project Tier** | Prototype/MVP/Growth SaaS/Enterprise (explicit, see `stack-sizing`) |
 | **Success Criteria** | Measurable outcomes |
-| **Tech Stack** | Technologies with rationale |
+| **Tech Stack** | Technologies with rationale — must fit within the tier's ceiling/floor |
 | **File Structure** | Directory layout |
 | **Task Breakdown** | All tasks with Agent + Skill recommendations and INPUT→OUTPUT→VERIFY |
+| **Effort Estimate** *(optional)* | Apply `effort-estimation` when the user asks "quanto tempo/custa isso" or the plan is for a business stakeholder, not a dev — a time range by phase, never a single number |
 | **Phase X** | Final verification checklist |
 
 **EXIT GATE:**
@@ -288,8 +318,9 @@ Before assigning agents, determine project type:
 | Section | Purpose | PRINCIPLE |
 |---------|---------|-----------|
 | **Overview** | What & why | Context-first |
+| **Project Tier** | Prototype/MVP/Growth SaaS/Enterprise + rationale | Sets the ceiling/floor for every stack choice below |
 | **Success Criteria** | Measurable outcomes | Verification-first |
-| **Tech Stack** | Technology choices with rationale | Trade-off awareness |
+| **Tech Stack** | Technology choices with rationale | Trade-off awareness, must fit the declared tier |
 | **File Structure** | Directory layout | Organization clarity |
 | **Task Breakdown** | Detailed tasks (see format below) | INPUT → OUTPUT → VERIFY |
 | **Phase X: Verification** | Mandatory checklist | Definition of done |

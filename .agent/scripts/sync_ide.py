@@ -1,18 +1,31 @@
 #!/usr/bin/env python3
 """
-sync_ide.py — Antigravity Kit Multi-IDE Synchronization
-Gera arquivos de configuração do kit para outros IDEs (Claude, Cursor, Codex).
+sync_ide.py — DevBureau Multi-IDE Synchronization
+Gera arquivos de configuração do kit para outros IDEs (Claude, Cursor, Codex,
+Antigravity, Copilot, Windsurf, Cline, Roo Code).
 Usage:
   python .agent/scripts/sync_ide.py --target claude
   python .agent/scripts/sync_ide.py --target cursor
   python .agent/scripts/sync_ide.py --target codex
+  python .agent/scripts/sync_ide.py --target antigravity
+  python .agent/scripts/sync_ide.py --target windsurf
+  python .agent/scripts/sync_ide.py --target cline
+  python .agent/scripts/sync_ide.py --target roocode
   python .agent/scripts/sync_ide.py --target all
   python .agent/scripts/sync_ide.py --dry-run --target all
 """
 
 import argparse
+import json
 import sys
 from pathlib import Path
+
+# Configuração de encoding para evitar erros em terminais Windows (cp1252)
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except AttributeError:
+        pass
 
 # ── constants ─────────────────────────────────────────────────────────────────
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -45,6 +58,38 @@ def write_output(path: Path, content: str, dry_run: bool) -> None:
         print(f"  {GREEN}✔{RESET} Written: {path}")
 
 
+def ensure_claude_protect_hook(dry_run: bool) -> None:
+    """Merge the protect-generated-files PreToolUse hook into .claude/settings.json
+    without disturbing any other settings the user already has configured there."""
+    settings_path = REPO_ROOT / ".claude" / "settings.json"
+    settings: dict = {}
+    if settings_path.exists():
+        try:
+            settings = json.loads(settings_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            print(f"  {YELLOW}⚠{RESET} Could not parse {settings_path} — skipping hook merge.")
+            return
+
+    hook_command = (
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/protect_generated_files.py"'
+    )
+    pre_tool_use = settings.setdefault("hooks", {}).setdefault("PreToolUse", [])
+    already_registered = any(
+        hook_command == entry.get("command", "")
+        for group in pre_tool_use
+        for entry in group.get("hooks", [])
+    )
+    if not already_registered:
+        pre_tool_use.append(
+            {
+                "matcher": "Edit|Write|MultiEdit",
+                "hooks": [{"type": "command", "command": hook_command}],
+            }
+        )
+
+    write_output(settings_path, json.dumps(settings, indent=2) + "\n", dry_run)
+
+
 def build_agent_summary() -> str:
     """Build a compact summary of available agents for injection into IDE configs."""
     agents = sorted(AGENTS_DIR.glob("*.md")) if AGENTS_DIR.exists() else []
@@ -68,173 +113,9 @@ def build_agent_summary() -> str:
     return "\n".join(lines)
 
 
-# ── target: claude ────────────────────────────────────────────────────────────
-def generate_claude_config(dry_run: bool) -> None:
-    """Generate .claude/CLAUDE.md with core rules from GEMINI.md."""
-    print(f"\n{CYAN}{BOLD}→ Syncing: Claude Code{RESET}")
-
-    gemini_content = read_file_safe(RULES_PATH)
-    agent_summary = build_agent_summary()
-
-    content = f"""# CLAUDE.md — Antigravity Kit Rules
-> Auto-generated from .agent/rules/GEMINI.md. Do not edit manually — run sync_ide.py to update.
-
----
-
-## How to Use Agents
-
-Activate any specialist by mentioning them:
-```
-@agent-name your request here
-```
-
-{agent_summary}
-
----
-
-## Core Rules (from GEMINI.md)
-
-{gemini_content}
-"""
-    output_path = REPO_ROOT / ".claude" / "CLAUDE.md"
-    write_output(output_path, content, dry_run)
-
-
-# ── target: cursor ────────────────────────────────────────────────────────────
-def generate_cursor_config(dry_run: bool) -> None:
-    """Generate .cursor/rules.md with condensed ruleset for Cursor."""
-    print(f"\n{CYAN}{BOLD}→ Syncing: Cursor{RESET}")
-
-    gemini_content = read_file_safe(RULES_PATH)
-    agent_summary = build_agent_summary()
-
-    # Extract only TIER 0 and TIER 1 sections for Cursor (more concise)
-    tier_content = gemini_content
-    if "## TIER 0" in gemini_content:
-        start = gemini_content.index("## TIER 0")
-        tier_content = gemini_content[start:]
-
-    content = f"""# Antigravity Kit — Cursor Rules
-> Auto-generated from .agent/rules/GEMINI.md via sync_ide.py
-
-{agent_summary}
-
----
-
-{tier_content}
-"""
-    output_path = REPO_ROOT / ".cursor" / "rules.md"
-    write_output(output_path, content, dry_run)
-
-
-# ── target: codex ─────────────────────────────────────────────────────────────
-def generate_codex_config(dry_run: bool) -> None:
-    """Generate AGENTS.md (Codex CLI standard) with agent list and rules."""
-    print(f"\n{CYAN}{BOLD}→ Syncing: Codex CLI{RESET}")
-
-    agent_summary = build_agent_summary()
-    gemini_content = read_file_safe(RULES_PATH)
-
-    content = f"""# AGENTS.md — Antigravity Kit for Codex CLI
-> Auto-generated by sync_ide.py. Do not edit manually.
-
-This file configures the Antigravity Kit specialist agents for Codex CLI.
-
----
-
-{agent_summary}
-
----
-
-## Behavior Rules
-
-{gemini_content}
-"""
-    output_path = REPO_ROOT / "AGENTS.md"
-    write_output(output_path, content, dry_run)
-
-
-# ── target: copilot ───────────────────────────────────────────────────────────
-def generate_copilot_config(dry_run: bool) -> None:
-    """Generate .github/copilot-instructions.md and modular .github/instructions/ files."""
-    print(f"\n{CYAN}{BOLD}→ Syncing: GitHub Copilot (VSCode){RESET}")
-
-    agent_summary = build_agent_summary()
-
-    # ── 1. Core instructions (always loaded, kept compact) ────────────────
-    core_content = f"""# Antigravity Kit — GitHub Copilot Instructions
-> Auto-generated from .agent/rules/GEMINI.md via sync_ide.py. Do not edit manually.
-
-## Agent System
-
-This workspace uses the **Antigravity Kit**, a multi-agent AI framework. Before writing code, identify the correct specialist agent for the domain and apply its principles.
-
-{agent_summary}
-
-### Activation
-
-Mention an agent by name to activate it: `@frontend-specialist`, `@backend-specialist`, etc.
-When auto-selecting, announce: `🤖 Applying knowledge of @[agent-name]...`
-
-Agent files are located in `.agent/agents/`. Read the agent's `.md` file before implementing.
-
-## Core Principles
-
-### Zero-Break Protocol
-- Never break existing code. All changes must be additive or safely encapsulated.
-- Verify the app compiles, runs, and renders correctly before reporting success.
-- If a change breaks the current state, revert immediately.
-
-### Anti-Hallucination
-- If the same approach fails 3 times, STOP and present alternatives to the user.
-- Never guess. If unsure, ask. If 1% is unclear, clarify before implementing.
-- After every failed attempt, ask: "Am I repeating the same thing expecting a different result?"
-
-### User Profile
-- The user is a **business-minded professional**, not a developer.
-- Explain decisions in plain language. Make technical decisions autonomously.
-- Respond in the user's language (PT-BR or EN). Keep technical terms in English.
-
-### Clean Code (Mandatory)
-- Functions do ONE thing. Max 20 lines. Max 3 arguments.
-- Names reveal intent: `elapsed_time_in_days` not `d`.
-- No dead code, no unused imports, no commented-out blocks.
-- Type hints mandatory (Python). Strict mode, no `any` (TypeScript).
-- Secrets in `.env` only, never hardcoded.
-
-### Before Modifying Any File
-1. Identify dependent files (imports, references, shared types).
-2. Update ALL affected files together.
-3. Verify no broken imports after changes.
-
-## Kit Structure
-
-| Path | Purpose |
-|------|---------|
-| `.agent/agents/` | Specialist AI personas (20 agents) |
-| `.agent/skills/` | Domain knowledge modules |
-| `.agent/scripts/` | Validation scripts (doctor.py, checklist.py) |
-| `.agent/memory/` | Persistent lessons and gotchas |
-| `.agent/rules/GEMINI.md` | Full ruleset (read for deep context) |
-
-## Modular Instructions
-
-Domain-specific rules are in `.github/instructions/`:
-- `code-quality.instructions.md` — naming, functions, error handling, structure
-- `frontend.instructions.md` — UI/UX, React, CSS, accessibility
-- `backend.instructions.md` — API, database, server patterns
-- `security.instructions.md` — security checklist, secrets, input validation
-"""
-    write_output(
-        REPO_ROOT / ".github" / "copilot-instructions.md", core_content, dry_run
-    )
-
-    # ── 2. Code Quality (modular) ─────────────────────────────────────────
-    code_quality = """---
-applyTo: "**"
----
-
-# Code Quality Standards — Antigravity Kit
+# ── shared modular rule bodies (reused by Copilot and Cursor targets) ──────────
+def build_code_quality_body() -> str:
+    return """# Code Quality Standards — DevBureau
 > Auto-generated via sync_ide.py. Do not edit manually.
 
 ## Functions & Methods
@@ -276,18 +157,10 @@ applyTo: "**"
 - Every new finished feature MUST be documented in README.md: feature name, short description, and flow.
 - README MUST have a `## Features` section with updated feature list.
 """
-    write_output(
-        REPO_ROOT / ".github" / "instructions" / "code-quality.instructions.md",
-        code_quality,
-        dry_run,
-    )
 
-    # ── 3. Frontend (modular) ─────────────────────────────────────────────
-    frontend = """---
-applyTo: "**/*.{tsx,jsx,css,scss,html,vue,svelte}"
----
 
-# Frontend Rules — Antigravity Kit
+def build_frontend_body() -> str:
+    return """# Frontend Rules — DevBureau
 > Auto-generated via sync_ide.py. Do not edit manually.
 
 ## Agent Routing
@@ -327,18 +200,10 @@ Read `.agent/agents/frontend-specialist.md` for full design rules.
 - Core Web Vitals targets: LCP < 2.5s, FID < 100ms, CLS < 0.1.
 - Bundle size awareness: check imports, avoid importing entire libraries.
 """
-    write_output(
-        REPO_ROOT / ".github" / "instructions" / "frontend.instructions.md",
-        frontend,
-        dry_run,
-    )
 
-    # ── 4. Backend (modular) ──────────────────────────────────────────────
-    backend = """---
-applyTo: "**/*.{py,ts,js,go,rs}"
----
 
-# Backend Rules — Antigravity Kit
+def build_backend_body() -> str:
+    return """# Backend Rules — DevBureau
 > Auto-generated via sync_ide.py. Do not edit manually.
 
 ## Agent Routing
@@ -381,18 +246,10 @@ Read `.agent/agents/database-architect.md` for schema and query patterns.
 - Mock external dependencies (APIs, databases) in unit tests.
 - Integration tests against real database (use test containers or in-memory).
 """
-    write_output(
-        REPO_ROOT / ".github" / "instructions" / "backend.instructions.md",
-        backend,
-        dry_run,
-    )
 
-    # ── 5. Security (modular) ─────────────────────────────────────────────
-    security = """---
-applyTo: "**"
----
 
-# Security Rules — Antigravity Kit
+def build_security_body() -> str:
+    return """# Security Rules — DevBureau
 > Auto-generated via sync_ide.py. Do not edit manually.
 
 ## Secrets Management
@@ -435,6 +292,341 @@ applyTo: "**"
 - HSTS headers enabled. Secure and HttpOnly flags on cookies.
 - CORS configured with explicit allowed origins. Never use `*` in production.
 """
+
+
+def build_lean_code_body() -> str:
+    return """# Lean Code & Output Discipline — DevBureau
+> Auto-generated via sync_ide.py. Do not edit manually.
+
+Write only what the task needs. Never cut validation, error handling, security, or accessibility to get there.
+
+## Before Writing Code
+
+Climb the ladder, stop at the first rung that holds:
+1. Does this need to exist at all? Speculative need → skip it, say so in one line. (YAGNI)
+2. Already in this codebase? Reuse it, don't rewrite it.
+3. Does the standard library already do this? Use it.
+4. Does a native platform feature cover it? Use it.
+5. Does an already-installed dependency solve it? Use it.
+6. Can this be one line? Make it one line.
+7. Only then: the minimum code that works.
+
+Read and trace the real flow first — the ladder shortens the solution, never the reading.
+
+## Marking Deliberate Shortcuts
+
+Mark every intentional simplification with a `lean:` comment naming its ceiling and upgrade trigger:
+`// lean: global lock, switch to per-account locks if throughput becomes the bottleneck`
+A marker with no named trigger is worse than no marker — it rots silently.
+
+## Response Output
+
+Lead with the result (code, answer, fix). Explanation after is at most a few short lines: what was skipped, when to revisit it. No essays defending a simplification. Give the full explanation only when the user explicitly asked for one.
+
+## Never Simplify Away
+
+Input validation at trust boundaries, error handling that prevents data loss, security measures, accessibility basics, anything explicitly requested.
+
+## External Context-Compression Tools (Conditional)
+
+If `mcp__headroom__*` MCP tools are available in this session, use them: call `headroom_compress` before reasoning over a large tool output/file read/search result, `headroom_retrieve` to get the original back, `headroom_stats` if asked about savings. Third-party, user-installed machine-wide, not bundled by DevBureau — if absent, proceed normally.
+"""
+
+
+# ── target: claude ────────────────────────────────────────────────────────────
+def generate_claude_config(dry_run: bool) -> None:
+    """Generate .claude/CLAUDE.md with core rules from GEMINI.md."""
+    print(f"\n{CYAN}{BOLD}→ Syncing: Claude Code{RESET}")
+
+    gemini_content = read_file_safe(RULES_PATH)
+    agent_summary = build_agent_summary()
+
+    content = f"""# CLAUDE.md — DevBureau Rules
+> Auto-generated from .agent/rules/GEMINI.md. Do not edit manually — run sync_ide.py to update.
+
+---
+
+## How to Use Agents
+
+Activate any specialist by mentioning them:
+```
+@agent-name your request here
+```
+
+{agent_summary}
+
+---
+
+## Core Rules (from GEMINI.md)
+
+{gemini_content}
+"""
+    output_path = REPO_ROOT / ".claude" / "CLAUDE.md"
+    write_output(output_path, content, dry_run)
+
+    ensure_claude_protect_hook(dry_run)
+
+
+# ── target: cursor ────────────────────────────────────────────────────────────
+def generate_cursor_config(dry_run: bool) -> None:
+    """Generate .cursor/rules/*.mdc — Cursor's current Project Rules format
+    (glob-scoped, conditionally-loaded files), replacing the old single
+    monolithic .cursor/rules.md."""
+    print(f"\n{CYAN}{BOLD}→ Syncing: Cursor{RESET}")
+
+    legacy_rules_md = REPO_ROOT / ".cursor" / "rules.md"
+    if legacy_rules_md.exists():
+        legacy_rules_md.unlink()
+        print(f"  {YELLOW}✔{RESET} Removed legacy {legacy_rules_md} (superseded by rules/*.mdc)")
+
+    gemini_content = read_file_safe(RULES_PATH)
+    agent_summary = build_agent_summary()
+
+    # Extract only TIER 0 (universal, always-apply rules). TIER 1's code rules
+    # are covered by the glob-scoped modular files below instead.
+    tier0_content = gemini_content
+    if "## TIER 0" in gemini_content:
+        start = gemini_content.index("## TIER 0")
+        end = gemini_content.index("## TIER 1") if "## TIER 1" in gemini_content else len(gemini_content)
+        tier0_content = gemini_content[start:end]
+
+    rules_dir = REPO_ROOT / ".cursor" / "rules"
+
+    core_content = f"""---
+alwaysApply: true
+---
+
+# DevBureau — Core Rules
+> Auto-generated from .agent/rules/GEMINI.md via sync_ide.py. Do not edit manually.
+
+{agent_summary}
+
+---
+
+{tier0_content}
+"""
+    write_output(rules_dir / "00-core.mdc", core_content, dry_run)
+
+    code_quality_content = f"""---
+alwaysApply: true
+---
+
+{build_code_quality_body()}"""
+    write_output(rules_dir / "code-quality.mdc", code_quality_content, dry_run)
+
+    security_content = f"""---
+alwaysApply: true
+---
+
+{build_security_body()}"""
+    write_output(rules_dir / "security.mdc", security_content, dry_run)
+
+    frontend_content = f"""---
+globs: **/*.{{tsx,jsx,css,scss,html,vue,svelte}}
+alwaysApply: false
+---
+
+{build_frontend_body()}"""
+    write_output(rules_dir / "frontend.mdc", frontend_content, dry_run)
+
+    backend_content = f"""---
+globs: **/*.{{py,ts,js,go,rs}}
+alwaysApply: false
+---
+
+{build_backend_body()}"""
+    write_output(rules_dir / "backend.mdc", backend_content, dry_run)
+
+    print(f"  {GREEN}✔{RESET} Generated 5 files in .cursor/rules/")
+
+
+# ── target: codex ─────────────────────────────────────────────────────────────
+def generate_codex_config(dry_run: bool) -> None:
+    """Generate AGENTS.md (Codex CLI standard) with agent list and rules."""
+    print(f"\n{CYAN}{BOLD}→ Syncing: Codex CLI{RESET}")
+
+    agent_summary = build_agent_summary()
+    gemini_content = read_file_safe(RULES_PATH)
+
+    content = f"""# AGENTS.md — DevBureau for Codex CLI
+> Auto-generated by sync_ide.py. Do not edit manually.
+
+This file configures the DevBureau specialist agents for Codex CLI.
+
+---
+
+{agent_summary}
+
+---
+
+## Behavior Rules
+
+{gemini_content}
+"""
+    output_path = REPO_ROOT / "AGENTS.md"
+    write_output(output_path, content, dry_run)
+
+
+# ── target: antigravity ───────────────────────────────────────────────────────
+def generate_antigravity_config(dry_run: bool) -> None:
+    """Generate root-level GEMINI.md — the highest-priority native rules file
+    read by Google Antigravity (and Gemini CLI) at the project root."""
+    print(f"\n{CYAN}{BOLD}→ Syncing: Antigravity (Google){RESET}")
+
+    gemini_content = read_file_safe(RULES_PATH)
+    agent_summary = build_agent_summary()
+
+    content = f"""# GEMINI.md — DevBureau Rules
+> Auto-generated from .agent/rules/GEMINI.md. Do not edit manually — run sync_ide.py to update.
+> Antigravity reads this file at the project root as the highest-priority workspace rules.
+
+---
+
+## How to Use Agents
+
+Activate any specialist by mentioning them:
+```
+@agent-name your request here
+```
+
+{agent_summary}
+
+---
+
+## Core Rules (from .agent/rules/GEMINI.md)
+
+{gemini_content}
+"""
+    output_path = REPO_ROOT / "GEMINI.md"
+    write_output(output_path, content, dry_run)
+
+
+# ── target: copilot ───────────────────────────────────────────────────────────
+def generate_copilot_config(dry_run: bool) -> None:
+    """Generate .github/copilot-instructions.md and modular .github/instructions/ files."""
+    print(f"\n{CYAN}{BOLD}→ Syncing: GitHub Copilot (VSCode){RESET}")
+
+    agent_summary = build_agent_summary()
+
+    # ── 1. Core instructions (always loaded, kept compact) ────────────────
+    core_content = f"""# DevBureau — GitHub Copilot Instructions
+> Auto-generated from .agent/rules/GEMINI.md via sync_ide.py. Do not edit manually.
+
+## Agent System
+
+This workspace uses **DevBureau**, a multi-agent AI framework. Before writing code, identify the correct specialist agent for the domain and apply its principles.
+
+{agent_summary}
+
+### Activation
+
+Mention an agent by name to activate it: `@frontend-specialist`, `@backend-specialist`, etc.
+When auto-selecting, announce: `🤖 Applying knowledge of @[agent-name]...`
+
+Agent files are located in `.agent/agents/`. Read the agent's `.md` file before implementing.
+
+## Core Principles
+
+### Zero-Break Protocol
+- Never break existing code. All changes must be additive or safely encapsulated.
+- Verify the app compiles, runs, and renders correctly before reporting success.
+- If a change breaks the current state, revert immediately.
+
+### Anti-Hallucination
+- If the same approach fails 3 times, STOP and present alternatives to the user.
+- Never guess. If unsure, ask. If 1% is unclear, clarify before implementing.
+- After every failed attempt, ask: "Am I repeating the same thing expecting a different result?"
+
+### User Profile
+- The user is a **business-minded professional**, not a developer.
+- Explain decisions in plain language. Make technical decisions autonomously.
+- Respond in the user's language (PT-BR or EN). Keep technical terms in English.
+
+### Clean Code (Mandatory)
+- Functions do ONE thing. Max 20 lines. Max 3 arguments.
+- Names reveal intent: `elapsed_time_in_days` not `d`.
+- No dead code, no unused imports, no commented-out blocks.
+- Type hints mandatory (Python). Strict mode, no `any` (TypeScript).
+- Secrets in `.env` only, never hardcoded.
+
+### Lean Code & Output Discipline (Mandatory)
+- Before writing code, climb the ladder: YAGNI → reuse → stdlib → native feature → existing dependency → one line → only then the minimum that works. Never cut validation, error handling, security, or accessibility.
+- Mark deliberate shortcuts with a `lean:` comment naming the ceiling and upgrade trigger.
+- Lead responses with the result; explain in a few lines after, not an essay. Full explanation only when explicitly asked.
+
+### External Context-Compression Tools (Conditional)
+- If `mcp__headroom__*` MCP tools are available in this session, use `headroom_compress` before reasoning over large tool outputs/file reads, `headroom_retrieve` for the original, `headroom_stats` if asked about savings.
+- Third-party, user-installed machine-wide, not bundled by DevBureau. If absent, proceed normally.
+
+### Before Modifying Any File
+1. Identify dependent files (imports, references, shared types).
+2. Update ALL affected files together.
+3. Verify no broken imports after changes.
+
+## Kit Structure
+
+| Path | Purpose |
+|------|---------|
+| `.agent/agents/` | Specialist AI personas (20 agents) |
+| `.agent/skills/` | Domain knowledge modules |
+| `.agent/scripts/` | Validation scripts (doctor.py, checklist.py) |
+| `.agent/memory/` | Persistent lessons and gotchas |
+| `.agent/rules/GEMINI.md` | Full ruleset (read for deep context) |
+
+## Modular Instructions
+
+Domain-specific rules are in `.github/instructions/`:
+- `code-quality.instructions.md` — naming, functions, error handling, structure
+- `frontend.instructions.md` — UI/UX, React, CSS, accessibility
+- `backend.instructions.md` — API, database, server patterns
+- `security.instructions.md` — security checklist, secrets, input validation
+"""
+    write_output(
+        REPO_ROOT / ".github" / "copilot-instructions.md", core_content, dry_run
+    )
+
+    # ── 2. Code Quality (modular) ─────────────────────────────────────────
+    code_quality = f"""---
+applyTo: "**"
+---
+
+{build_code_quality_body()}"""
+    write_output(
+        REPO_ROOT / ".github" / "instructions" / "code-quality.instructions.md",
+        code_quality,
+        dry_run,
+    )
+
+    # ── 3. Frontend (modular) ─────────────────────────────────────────────
+    frontend = f"""---
+applyTo: "**/*.{{tsx,jsx,css,scss,html,vue,svelte}}"
+---
+
+{build_frontend_body()}"""
+    write_output(
+        REPO_ROOT / ".github" / "instructions" / "frontend.instructions.md",
+        frontend,
+        dry_run,
+    )
+
+    # ── 4. Backend (modular) ──────────────────────────────────────────────
+    backend = f"""---
+applyTo: "**/*.{{py,ts,js,go,rs}}"
+---
+
+{build_backend_body()}"""
+    write_output(
+        REPO_ROOT / ".github" / "instructions" / "backend.instructions.md",
+        backend,
+        dry_run,
+    )
+
+    # ── 5. Security (modular) ─────────────────────────────────────────────
+    security = f"""---
+applyTo: "**"
+---
+
+{build_security_body()}"""
     write_output(
         REPO_ROOT / ".github" / "instructions" / "security.instructions.md",
         security,
@@ -444,19 +636,85 @@ applyTo: "**"
     print(f"  {GREEN}✔{RESET} Generated 5 files for GitHub Copilot")
 
 
+# ── shared: single flat-file engines (Windsurf, Cline, Roo Code) ───────────────
+def build_single_file_engine_content(tool_label: str) -> str:
+    """These engines read one flat rules file with no conditional/glob loading,
+    so all modular bodies (code-quality, frontend, backend, security) are
+    concatenated into a single document instead of split like Cursor/Copilot."""
+    agent_summary = build_agent_summary()
+    return f"""# DevBureau — Rules for {tool_label}
+> Auto-generated from .agent/rules/GEMINI.md via sync_ide.py. Do not edit manually.
+
+## How to Use Agents
+
+Mention a specialist by name to activate it: `@frontend-specialist`, `@backend-specialist`, etc.
+Agent files live in `.agent/agents/` — read the agent's `.md` file before implementing.
+
+{agent_summary}
+
+---
+
+{build_lean_code_body()}
+
+---
+
+{build_code_quality_body()}
+
+---
+
+{build_frontend_body()}
+
+---
+
+{build_backend_body()}
+
+---
+
+{build_security_body()}
+"""
+
+
+# ── target: windsurf ────────────────────────────────────────────────────────────
+def generate_windsurf_config(dry_run: bool) -> None:
+    """Generate .windsurfrules — Windsurf's flat-file rules convention."""
+    print(f"\n{CYAN}{BOLD}→ Syncing: Windsurf{RESET}")
+    content = build_single_file_engine_content("Windsurf")
+    write_output(REPO_ROOT / ".windsurfrules", content, dry_run)
+
+
+# ── target: cline ───────────────────────────────────────────────────────────────
+def generate_cline_config(dry_run: bool) -> None:
+    """Generate .clinerules — Cline's flat-file rules convention."""
+    print(f"\n{CYAN}{BOLD}→ Syncing: Cline{RESET}")
+    content = build_single_file_engine_content("Cline")
+    write_output(REPO_ROOT / ".clinerules", content, dry_run)
+
+
+# ── target: roocode ──────────────────────────────────────────────────────────────
+def generate_roocode_config(dry_run: bool) -> None:
+    """Generate .roorules — Roo Code's flat-file rules convention."""
+    print(f"\n{CYAN}{BOLD}→ Syncing: Roo Code{RESET}")
+    content = build_single_file_engine_content("Roo Code")
+    write_output(REPO_ROOT / ".roorules", content, dry_run)
+
+
 # ── registry ──────────────────────────────────────────────────────────────────
 TARGETS: dict[str, callable] = {
     "claude": generate_claude_config,
     "cursor": generate_cursor_config,
     "codex": generate_codex_config,
     "copilot": generate_copilot_config,
+    "antigravity": generate_antigravity_config,
+    "windsurf": generate_windsurf_config,
+    "cline": generate_cline_config,
+    "roocode": generate_roocode_config,
 }
 
 
 # ── main ──────────────────────────────────────────────────────────────────────
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Sync Antigravity Kit to other IDEs.",
+        description="Sync DevBureau to other IDEs.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -469,7 +727,7 @@ Examples:
         "--target",
         choices=[*TARGETS.keys(), "all"],
         required=True,
-        help="IDE target to sync to (claude, cursor, codex, or all)",
+        help="IDE target to sync to (claude, cursor, codex, copilot, antigravity, windsurf, cline, roocode, or all)",
     )
     parser.add_argument(
         "--dry-run",
@@ -483,7 +741,7 @@ def main() -> None:
     args = parse_args()
 
     mode = "DRY-RUN" if args.dry_run else "SYNC"
-    print(f"\n{BOLD}🔄 Antigravity Kit — Multi-IDE Sync [{mode}]{RESET}")
+    print(f"\n{BOLD}🔄 DevBureau — Multi-IDE Sync [{mode}]{RESET}")
     print("─" * 50)
 
     if not RULES_PATH.exists():
