@@ -176,6 +176,18 @@ When auto-applying an agent, inform the user:
 3. **Double Verification:** Run tests (`pytest`) + Visual check (Browser subagent) if it's UI.
 4. **Fallback:** If a change breaks the current state, revert immediately. Do not push broken code in progress.
 
+**No completion claim without fresh evidence from this message.** "Should work now," "looks correct," and a previous run's output are not evidence — re-run the actual command and read its output before claiming a status.
+
+| Claim | Required evidence | NOT sufficient |
+|---|---|---|
+| Tests pass | Fresh test-command output, 0 failures | Previous run, "should pass now" |
+| Build succeeds | Fresh build command, exit 0 | Linter passing, logs "look good" |
+| Bug fixed | Original symptom re-tested and gone | Code changed, assumed fixed |
+| Lint clean | Fresh linter output, 0 errors | Partial check, extrapolation |
+| Subagent/delegate completed | Diff or test output you verified yourself | The subagent's own success report |
+
+Catch yourself using "should," "probably," or expressing satisfaction ("Done!", "Perfect!") before that evidence exists — that's the signal to stop and run the command first.
+
 ### 🧠 ANTI-HALLUCINATION & LOOP PROTECTION (MANDATORY)
 
 **Trigger: Activate on ANY repeated failure, circular reasoning, or unresolvable task.**

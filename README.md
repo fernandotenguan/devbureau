@@ -6,8 +6,8 @@
 
 [![Kit Version](https://img.shields.io/badge/DevBureau-v3.0.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-22-green)](https://github.com/fernandotenguan/devbureau)
-[![Skills](https://img.shields.io/badge/Skills-59-orange)](https://github.com/fernandotenguan/devbureau)
-[![Workflows](https://img.shields.io/badge/Workflows-19-red)](https://github.com/fernandotenguan/devbureau)
+[![Skills](https://img.shields.io/badge/Skills-62-orange)](https://github.com/fernandotenguan/devbureau)
+[![Workflows](https://img.shields.io/badge/Workflows-20-red)](https://github.com/fernandotenguan/devbureau)
 [![Tests](https://img.shields.io/badge/Tests-Automated-brightgreen)](https://github.com/fernandotenguan/devbureau)
 
 > Badge links assume the repo is published as `fernandotenguan/devbureau`. Update them if the final published path differs.
@@ -19,8 +19,8 @@
 | Components         | Count | Description                                                                  |
 | ------------------ | ----- | ---------------------------------------------------------------------------- |
 | **Agents**         | 22    | Specialist AI personas (frontend, backend, security, SRE, a11y, game dev, etc.) |
-| **Skills**         | 59    | Domain-specific knowledge modules with automated scripts                     |
-| **Workflows**      | 19    | Slash-command procedures including the autonomous `/ade` pipeline             |
+| **Skills**         | 62    | Domain-specific knowledge modules with automated scripts                     |
+| **Workflows**      | 20    | Slash-command procedures including the autonomous `/ade` pipeline             |
 | **Master Scripts** | 5     | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py` |
 | **Kit Tests**      | ✅    | Automated pytest suite — runs before every commit                            |
 | **Memory Layer**   | ✅    | Persistent lessons and gotchas across sessions                               |
@@ -60,7 +60,7 @@ The most powerful mode. You describe a feature, the kit plans it, shows you the 
 python .agent/scripts/doctor.py
 ```
 
-Validates all 22 agents, 59 skills, 19 workflows, and master scripts in seconds.
+Validates all 22 agents, 62 skills, 20 workflows, and master scripts in seconds.
 
 ### 🔒 Automated Pre-Commit Guard
 
@@ -302,6 +302,7 @@ In the Copilot chat panel, type any slash command:
 | `/create`        | Scaffold a new feature or application                 |
 | `/brainstorm`    | Explore options with strategic questions              |
 | `/enhance`       | Improve an existing feature                           |
+| `/finish-branch` | Structured close-out (merge/PR/keep/discard) once work is done |
 | `/lean-audit`    | Find over-engineering to delete (diff or whole-repo scope) |
 | `/lean-debt`     | Harvest `lean:` shortcut markers into a debt ledger    |
 | `/debug`         | Systematic bug investigation                          |
@@ -371,8 +372,8 @@ User request
 project-root/
 ├── .agent/
 │   ├── agents/          # 22 specialist AI personas
-│   ├── skills/          # 59 knowledge modules
-│   ├── workflows/       # 18 slash-command procedures
+│   ├── skills/          # 62 knowledge modules
+│   ├── workflows/       # 20 slash-command procedures
 │   ├── scripts/         # master validation scripts
 │   │   ├── doctor.py          # kit health check
 │   │   ├── checklist.py       # priority-based audit

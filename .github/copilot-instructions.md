@@ -43,6 +43,7 @@ Agent files are located in `.agent/agents/`. Read the agent's `.md` file before 
 - Never break existing code. All changes must be additive or safely encapsulated.
 - Verify the app compiles, runs, and renders correctly before reporting success.
 - If a change breaks the current state, revert immediately.
+- No completion claim without fresh evidence from this turn: re-run the actual test/build/lint command and read its output before claiming "tests pass," "build succeeds," or "bug fixed" — a previous run, "should pass now," or a subagent's own success report is not evidence.
 
 ### Anti-Hallucination
 - If the same approach fails 3 times, STOP and present alternatives to the user.

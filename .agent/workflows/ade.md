@@ -134,6 +134,8 @@ Riscos identificados:
 
 > 🔴 NÃO prosseguir para Fase 4 sem confirmação explícita.
 
+**Opcional:** se o usuário quiser isolar essa execução do branch atual, invocar a skill `using-git-worktrees` aqui, antes da Fase 4 — não é obrigatório por padrão.
+
 ---
 
 ## Fase 4: Execution
@@ -225,6 +227,8 @@ QA:
 - Checklist: ✅
 
 Memory: atualizada em .agent/memory/lessons.md
+
+Se a execução foi isolada num worktree (ou se há um branch para decidir o destino), rode `/finish-branch` a seguir.
 
 Próximos passos sugeridos:
 - {sugestão 1}

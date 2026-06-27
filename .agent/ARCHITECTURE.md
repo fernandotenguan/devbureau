@@ -9,8 +9,8 @@
 DevBureau is a modular system consisting of:
 
 - **22 Specialist Agents** - Role-based AI personas
-- **59 Skills** - Domain-specific knowledge modules
-- **19 Workflows** - Slash command procedures
+- **62 Skills** - Domain-specific knowledge modules
+- **20 Workflows** - Slash command procedures
 
 ---
 
@@ -20,8 +20,8 @@ DevBureau is a modular system consisting of:
 .agent/
 ├── ARCHITECTURE.md          # This file
 ├── agents/                  # 22 Specialist Agents
-├── skills/                  # 59 Skills
-├── workflows/                # 19 Slash Commands
+├── skills/                  # 62 Skills
+├── workflows/                # 20 Slash Commands
 ├── rules/                   # Global Rules (GEMINI.md P0)
 ├── scripts/                 # 9 Master Validation Scripts
 ├── tests/                   # Kit Integrity Tests
@@ -61,7 +61,7 @@ Specialist AI personas for different domains.
 
 ---
 
-## 🧩 Skills (59)
+## 🧩 Skills (62)
 
 Modular knowledge domains that agents load on-demand, based on task context. Grouped here by theme; the authoritative source of truth for what exists is always `.agent/skills/` itself — run `python .agent/scripts/doctor.py` to verify this list against reality.
 
@@ -82,6 +82,8 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 | `saas-stack-rules` | Stack-specific rules for the Next.js + FastAPI + Supabase + Stripe reference stack |
 | `framework-benchmarking` | Process for comparing this kit against external agent-framework collections (`/benchmark`) and scoring gaps Adopt/Consider/Skip |
 | `codebase-audit` | Senior-advisor survey across 9 categories (bugs, security, perf, tests, tech debt, deps, DX, docs, direction), vetted findings ranked by leverage, self-contained handoff plans (`/audit`) — never edits code itself |
+| `using-git-worktrees` | Isolates work in its own workspace — detects existing isolation, prefers a native tool, falls back to plain `git worktree`, never fights the harness |
+| `finishing-a-branch` | Structured close-out once work is done — merge/PR/keep/discard (`/finish-branch`), provenance-aware worktree cleanup |
 
 ### Frontend & UI
 
@@ -135,7 +137,8 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 | `webapp-testing` | E2E testing, Playwright, deep audit strategies |
 | `tdd-workflow` | RED-GREEN-REFACTOR cycle, test-first development |
 | `code-review-checklist` | Code review guidelines — quality, security, best practices |
-| `confidence-scale` | Marks every claim a code-reading agent makes as CONFIRMED 🟢, INFERRED 🟡, or GAP 🔴 |
+| `receiving-code-review` | How to respond to review feedback — verify before implementing, no performative agreement, YAGNI-check "do it properly" suggestions |
+| `confidence-scale` | Marks every claim a code-reading agent makes as CONFIRMED 🟢, INFERRED 🟡, or GAP 🔴; also covers vetting subagent-sourced findings before they carry a 🟢 |
 | `lint-and-validate` | Linting and static analysis after every code change |
 | `performance-profiling` | Measurement, Core Web Vitals, bundle/runtime profiling |
 
@@ -203,7 +206,7 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 
 ---
 
-## 🔄 Workflows (19)
+## 🔄 Workflows (20)
 
 Slash command procedures. Invoke with `/command`.
 
@@ -219,6 +222,7 @@ Slash command procedures. Invoke with `/command`.
 | `/debug`           | Systematic problem investigation                       |
 | `/deploy`          | Pre-flight checks + guided deployment                   |
 | `/enhance`         | Improve existing code/features                          |
+| `/finish-branch`   | Structured close-out (merge/PR/keep/discard) once work is done |
 | `/lean-audit`      | Finds over-engineering to delete in the current diff (default) or the whole repo |
 | `/lean-debt`       | Harvests `lean:` shortcut markers into a one-shot debt ledger |
 | `/new-project`     | Bootstrap a new project from this base                 |
@@ -253,7 +257,7 @@ skill-name/
 
 ### Skills With Scripts
 
-13 of the 59 skills ship an executable script alongside their `SKILL.md`:
+13 of the 62 skills ship an executable script alongside their `SKILL.md`:
 
 | Skill | Script(s) |
 | --- | --- |
@@ -341,8 +345,8 @@ python .agent/scripts/sync_ide.py --target all
 | Metric              | Value                                                  |
 | -------------------- | --------------------------------------------------------- |
 | **Total Agents**     | 22                                                         |
-| **Total Skills**     | 59 (+ 10 nested under `game-development`)                  |
-| **Total Workflows**  | 19                                                         |
+| **Total Skills**     | 62 (+ 10 nested under `game-development`)                  |
+| **Total Workflows**  | 20                                                         |
 | **Master Scripts**   | 9 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`) |
 | **Skills With Scripts** | 13                                                       |
 | **Kit Tests**        | 1 file, parametrized (`test_kit_integrity.py`)              |

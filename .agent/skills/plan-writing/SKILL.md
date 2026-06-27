@@ -134,6 +134,24 @@ One sentence: What are we building/fixing?
 
 ---
 
+## No Placeholders
+
+A plan with these is a plan failure, regardless of how short it is — never write them:
+- "TBD", "TODO", "implement later", "fill in details"
+- "Add appropriate error handling" / "add validation" / "handle edge cases" (name the actual check)
+- "Similar to Task N" (repeat the actual content — a reader may hit tasks out of order)
+- A verification step without a command and expected output
+
+## Self-Review (Before Calling the Plan Done)
+
+After writing the plan, check it against the original request with fresh eyes — this is a checklist you run yourself, not a separate pass:
+
+1. **Coverage**: can you point to a task for every part of what was asked? List any gaps.
+2. **Placeholder scan**: search the plan for the patterns above. Fix them inline.
+3. **Consistency**: do names/paths used in later tasks match what earlier tasks defined? A function called `clearLayers()` in Task 2 but `clearFullLayers()` in Task 4 is a bug in the plan itself.
+
+Fix issues inline as you find them — no need to re-run the whole review after a fix.
+
 ## Best Practices (Quick Reference)
 
 1. **Start with goal** - What are we building/fixing?
