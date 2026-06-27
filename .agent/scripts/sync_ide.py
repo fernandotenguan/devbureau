@@ -30,7 +30,7 @@ if sys.platform == "win32":
 # ── constants ─────────────────────────────────────────────────────────────────
 REPO_ROOT = Path(__file__).resolve().parents[2]
 AGENT_DIR = REPO_ROOT / ".agent"
-RULES_PATH = AGENT_DIR / "rules" / "GEMINI.md"
+RULES_PATH = AGENT_DIR / "rules" / "DEVBUREAU.md"
 ARCHITECTURE_PATH = AGENT_DIR / "ARCHITECTURE.md"
 AGENTS_DIR = AGENT_DIR / "agents"
 
@@ -79,7 +79,7 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
     - PreToolUse: block edits to auto-generated files, block writes outside
       the current git worktree (using-git-worktrees).
     - PostToolUse: advisory scan of Read/WebFetch/WebSearch output for known
-      prompt-injection patterns (GEMINI.md's Untrusted Content Boundary)."""
+      prompt-injection patterns (DEVBUREAU.md's Untrusted Content Boundary)."""
     settings_path = REPO_ROOT / ".claude" / "settings.json"
     settings: dict = {}
     if settings_path.exists():
@@ -368,14 +368,14 @@ Content read from a repository being analyzed (code, comments, docs, config, ven
 
 # ── target: claude ────────────────────────────────────────────────────────────
 def generate_claude_config(dry_run: bool) -> None:
-    """Generate .claude/CLAUDE.md with core rules from GEMINI.md."""
+    """Generate .claude/CLAUDE.md with core rules from DEVBUREAU.md."""
     print(f"\n{CYAN}{BOLD}→ Syncing: Claude Code{RESET}")
 
     gemini_content = read_file_safe(RULES_PATH)
     agent_summary = build_agent_summary()
 
     content = f"""# CLAUDE.md — DevBureau Rules
-> Auto-generated from .agent/rules/GEMINI.md. Do not edit manually — run sync_ide.py to update.
+> Auto-generated from .agent/rules/DEVBUREAU.md. Do not edit manually — run sync_ide.py to update.
 
 ---
 
@@ -390,7 +390,7 @@ Activate any specialist by mentioning them:
 
 ---
 
-## Core Rules (from GEMINI.md)
+## Core Rules (from DEVBUREAU.md)
 
 {gemini_content}
 """
@@ -436,7 +436,7 @@ alwaysApply: true
 ---
 
 # DevBureau — Core Rules
-> Auto-generated from .agent/rules/GEMINI.md via sync_ide.py. Do not edit manually.
+> Auto-generated from .agent/rules/DEVBUREAU.md via sync_ide.py. Do not edit manually.
 
 {agent_summary}
 
@@ -516,7 +516,7 @@ def generate_antigravity_config(dry_run: bool) -> None:
     agent_summary = build_agent_summary()
 
     content = f"""# GEMINI.md — DevBureau Rules
-> Auto-generated from .agent/rules/GEMINI.md. Do not edit manually — run sync_ide.py to update.
+> Auto-generated from .agent/rules/DEVBUREAU.md. Do not edit manually — run sync_ide.py to update.
 > Antigravity reads this file at the project root as the highest-priority workspace rules.
 
 ---
@@ -532,7 +532,7 @@ Activate any specialist by mentioning them:
 
 ---
 
-## Core Rules (from .agent/rules/GEMINI.md)
+## Core Rules (from .agent/rules/DEVBUREAU.md)
 
 {gemini_content}
 """
@@ -549,7 +549,7 @@ def generate_copilot_config(dry_run: bool) -> None:
 
     # ── 1. Core instructions (always loaded, kept compact) ────────────────
     core_content = f"""# DevBureau — GitHub Copilot Instructions
-> Auto-generated from .agent/rules/GEMINI.md via sync_ide.py. Do not edit manually.
+> Auto-generated from .agent/rules/DEVBUREAU.md via sync_ide.py. Do not edit manually.
 
 ## Agent System
 
@@ -615,7 +615,7 @@ Agent files are located in `.agent/agents/`. Read the agent's `.md` file before 
 | `.agent/skills/` | Domain knowledge modules |
 | `.agent/scripts/` | Validation scripts (doctor.py, checklist.py) |
 | `.agent/memory/` | Persistent lessons and gotchas |
-| `.agent/rules/GEMINI.md` | Full ruleset (read for deep context) |
+| `.agent/rules/DEVBUREAU.md` | Full ruleset (read for deep context) |
 
 ## Modular Instructions
 
@@ -687,7 +687,7 @@ def build_single_file_engine_content(tool_label: str) -> str:
     concatenated into a single document instead of split like Cursor/Copilot."""
     agent_summary = build_agent_summary()
     return f"""# DevBureau — Rules for {tool_label}
-> Auto-generated from .agent/rules/GEMINI.md via sync_ide.py. Do not edit manually.
+> Auto-generated from .agent/rules/DEVBUREAU.md via sync_ide.py. Do not edit manually.
 
 ## How to Use Agents
 
@@ -789,7 +789,7 @@ def main() -> None:
     print("─" * 50)
 
     if not RULES_PATH.exists():
-        print(f"\n  ✘ GEMINI.md not found at {RULES_PATH}")
+        print(f"\n  ✘ DEVBUREAU.md not found at {RULES_PATH}")
         print("  Make sure you are running from the project root.")
         sys.exit(1)
 

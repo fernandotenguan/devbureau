@@ -206,7 +206,7 @@ Make sure your project has the `.agent/` folder at the root level.
 
 ### Step 2 — Configure the AI to Read the Kit
 
-The kit's rules are stored in `.agent/rules/GEMINI.md`. For the AI to follow them automatically:
+The kit's rules are stored in `.agent/rules/DEVBUREAU.md`. For the AI to follow them automatically:
 
 **For GitHub Copilot (VSCode):**
 
@@ -348,7 +348,7 @@ python .agent/scripts/token_footprint.py
 User request
     │
     ▼
-[GEMINI.md Rules]         ← P0: global rules, anti-hallucination, clean code
+[DEVBUREAU.md Rules]      ← P0: global rules, anti-hallucination, clean code
     │
     ▼
 [Intelligent Routing]     ← auto-detects domain from request
@@ -369,10 +369,10 @@ User request
 ### Architecture Diagrams
 
 <p align="center">
-  <img src="docs/diagrams/devbureau-architecture.drawio.png" alt="DevBureau macro architecture: request through GEMINI.md rules, intelligent routing, the four catalogs, verification, and memory" width="720" />
+  <img src="docs/diagrams/devbureau-architecture.drawio.png" alt="DevBureau macro architecture: request through DEVBUREAU.md rules, intelligent routing, the four catalogs, verification, and memory" width="720" />
 </p>
 
-> Macro view: request → GEMINI.md rules → intelligent routing → the 4 catalogs (agents/skills/workflows/scripts) → output verification → memory.
+> Macro view: request → DEVBUREAU.md rules → intelligent routing → the 4 catalogs (agents/skills/workflows/scripts) → output verification → memory.
 
 <p align="center">
   <img src="docs/diagrams/ade-pipeline.drawio.png" alt="The /ade 6-phase autonomous pipeline, including the Fase 3 approval gate and the Fase 5 QA retry loop" width="600" />
@@ -408,7 +408,7 @@ project-root/
 │   │   ├── lessons.md   # patterns that worked well
 │   │   └── gotchas.md   # common pitfalls to avoid
 │   └── rules/
-│       └── GEMINI.md    # master rules file (P0)
+│       └── DEVBUREAU.md # master rules file (P0)
 ├── .mcp.json             # starter MCP config (GitHub, OAuth)
 └── README.md
 ```

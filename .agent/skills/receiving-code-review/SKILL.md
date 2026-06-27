@@ -14,7 +14,7 @@ Code review requires technical evaluation, not emotional performance. Pairs with
 
 **Core principle:** Verify before implementing. Ask before assuming. Technical correctness over social comfort.
 
-This directly extends GEMINI.md's Anti-Bajulação (anti-sycophancy) principle — the same discipline of not capitulating to flawed input applies whether the speaker is the end user or a code reviewer mid-implementation.
+This directly extends DEVBUREAU.md's Anti-Bajulação (anti-sycophancy) principle — the same discipline of not capitulating to flawed input applies whether the speaker is the end user or a code reviewer mid-implementation.
 
 ## The Response Pattern
 

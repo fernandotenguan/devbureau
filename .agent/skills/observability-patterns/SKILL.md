@@ -49,7 +49,7 @@ Start with metrics + logs. Add traces only once a request crosses more than one 
 ## 3. Structured Logging
 
 - Every log line: timestamp, level, correlation/request ID, service name, message.
-- NEVER log secrets, tokens, full request bodies with PII, or passwords (this is also a GEMINI.md security rule, not just an observability one).
+- NEVER log secrets, tokens, full request bodies with PII, or passwords (this is also a DEVBUREAU.md security rule, not just an observability one).
 - Log at boundaries (incoming request, outgoing call, error) — not every internal function call.
 - Use log levels deliberately: `ERROR` = needs human attention, `WARN` = degraded but self-healing, `INFO` = normal lifecycle events, `DEBUG` = local dev only.
 

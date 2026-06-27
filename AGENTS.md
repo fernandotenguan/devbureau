@@ -38,7 +38,7 @@ This file configures the DevBureau specialist agents for Codex CLI.
 trigger: always_on
 ---
 
-# GEMINI.md - DevBureau
+# DEVBUREAU.md
 
 > This file defines how the AI behaves in this workspace.
 
@@ -53,7 +53,7 @@ trigger: always_on
 Agent activated → Check frontmatter "skills:" → Read SKILL.md (INDEX) → Read specific sections.
 
 - **Selective Reading:** DO NOT read ALL files in a skill folder. Read `SKILL.md` first, then only read sections matching the user's request.
-- **Rule Priority:** P0 (GEMINI.md) > P1 (Agent .md) > P2 (SKILL.md). All rules are binding.
+- **Rule Priority:** P0 (DEVBUREAU.md) > P1 (Agent .md) > P2 (SKILL.md). All rules are binding.
 
 ### 2. Enforcement Protocol
 
@@ -537,7 +537,7 @@ If the user says any of the following, **immediately stop all in-progress action
 
 - **Agents**: `.agent/agents/` | **Skills**: `.agent/skills/` | **Workflows**: `.agent/workflows/`
 - **Scripts**: `.agent/scripts/` | **Tests**: `.agent/tests/` | **Memory**: `.agent/memory/`
-- **Rules**: `.agent/rules/GEMINI.md` (P0) | **Architecture**: `.agent/ARCHITECTURE.md`
+- **Rules**: `.agent/rules/DEVBUREAU.md` (P0) | **Architecture**: `.agent/ARCHITECTURE.md`
 
 ### Workflows (/slash commands)
 

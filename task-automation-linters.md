@@ -18,7 +18,7 @@
 - [ ] Update `/ade` and other major workflows to include a "Clean & Optimize" step at the end.
 
 ### Phase 3: Rule Enforcement
-- [ ] Update `GEMINI.md` (TIER 0) to mandate running `auto_fixer.py` before reporting task success.
+- [ ] Update `DEVBUREAU.md` (TIER 0) to mandate running `auto_fixer.py` before reporting task success.
 
 ---
 

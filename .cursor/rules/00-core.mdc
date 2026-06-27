@@ -3,7 +3,7 @@ alwaysApply: true
 ---
 
 # DevBureau — Core Rules
-> Auto-generated from .agent/rules/GEMINI.md via sync_ide.py. Do not edit manually.
+> Auto-generated from .agent/rules/DEVBUREAU.md via sync_ide.py. Do not edit manually.
 
 ## Available Agents
 

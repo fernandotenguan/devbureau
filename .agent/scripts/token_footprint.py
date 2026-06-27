@@ -32,7 +32,7 @@ BOLD = "\033[1m"
 # its rules — these are the ones worth watching for growth, not arbitrary
 # project files.
 WATCHED: dict[str, list[str]] = {
-    "Source (read by every IDE target)": [".agent/rules/GEMINI.md"],
+    "Source (read by every IDE target)": [".agent/rules/DEVBUREAU.md"],
     "Claude Code": [".claude/CLAUDE.md"],
     "Antigravity / Gemini CLI": ["GEMINI.md"],
     "Codex CLI": ["AGENTS.md"],

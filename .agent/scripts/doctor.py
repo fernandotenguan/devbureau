@@ -265,13 +265,13 @@ def check_memory_layer() -> int:
     return 0
 
 
-def check_gemini_rules() -> int:
-    """Verify GEMINI.md rules file exists."""
-    gemini_path = RULES_DIR / "GEMINI.md"
-    if gemini_path.exists() and gemini_path.stat().st_size > 1000:
-        ok(f"GEMINI.md (P0 rules): ✅ ({gemini_path.stat().st_size} bytes)")
+def check_devbureau_rules() -> int:
+    """Verify DEVBUREAU.md rules file exists."""
+    rules_path = RULES_DIR / "DEVBUREAU.md"
+    if rules_path.exists() and rules_path.stat().st_size > 1000:
+        ok(f"DEVBUREAU.md (P0 rules): ✅ ({rules_path.stat().st_size} bytes)")
     else:
-        fail("GEMINI.md: MISSING or too small")
+        fail("DEVBUREAU.md: MISSING or too small")
         return 1
     return 0
 
@@ -300,8 +300,8 @@ def main() -> None:
     section("Directory Structure")
     total_errors += check_directory_structure()
 
-    section("GEMINI.md Rules (P0)")
-    total_errors += check_gemini_rules()
+    section("DEVBUREAU.md Rules (P0)")
+    total_errors += check_devbureau_rules()
 
     section("Agents")
     total_errors += check_agents()

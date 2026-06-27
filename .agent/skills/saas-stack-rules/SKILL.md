@@ -9,7 +9,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 > Stack-specific coding rules for the standard SaaS architecture:
 > **Next.js + FastAPI + Supabase + iron-session + LangGraph + Stripe**
 
-These rules are **activated per-project**, not global. They complement the universal rules in GEMINI.md.
+These rules are **activated per-project**, not global. They complement the universal rules in DEVBUREAU.md.
 
 ---
 

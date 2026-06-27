@@ -7,12 +7,12 @@ Após copiar a pasta, execute o script de sincronização no terminal do novo pr
 python .agent/scripts/sync_ide.py --target all
 ```
 
-Esse comando cria os arquivos de configuração necessários (como `.cursorrules` ou `.clauderules`) apontando para `.agent/rules/GEMINI.md`, ativando o comportamento automático.
+Esse comando cria os arquivos de configuração necessários (como `.cursorrules` ou `.clauderules`) apontando para `.agent/rules/DEVBUREAU.md`, ativando o comportamento automático.
 
 ### 🤖 Configuração para Google Gemini (Gemini Code Assist / AI Studio / Advanced)
 
 *   **Gemini Code Assist (VS Code ou IntelliJ):** Não é necessário executar nenhum comando específico para o Gemini Code Assist. A ferramenta analisa e indexa o contexto do workspace automaticamente. Ter a pasta `.agent` e o arquivo `GEMINI.md` na raiz do projeto é suficiente para que o assistente consulte as instruções durante o uso. Ainda assim, executar o script de sincronização é recomendado para manter o ambiente preparado caso use outras ferramentas.
-*   **Google AI Studio ou Gemini Advanced (Web):** Para chats via navegador ou uso direto da API, carregue o conteúdo do arquivo [.agent/rules/GEMINI.md](./.agent/rules/GEMINI.md) na seção de **System Instructions** (Instruções do Sistema) ou anexe o arquivo no primeiro prompt da conversa.
+*   **Google AI Studio ou Gemini Advanced (Web):** Para chats via navegador ou uso direto da API, carregue o conteúdo do arquivo [.agent/rules/DEVBUREAU.md](./.agent/rules/DEVBUREAU.md) na seção de **System Instructions** (Instruções do Sistema) ou anexe o arquivo no primeiro prompt da conversa.
 
 ---
 

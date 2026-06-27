@@ -1,5 +1,5 @@
 # DevBureau — GitHub Copilot Instructions
-> Auto-generated from .agent/rules/GEMINI.md via sync_ide.py. Do not edit manually.
+> Auto-generated from .agent/rules/DEVBUREAU.md via sync_ide.py. Do not edit manually.
 
 ## Agent System
 
@@ -88,7 +88,7 @@ Agent files are located in `.agent/agents/`. Read the agent's `.md` file before 
 | `.agent/skills/` | Domain knowledge modules |
 | `.agent/scripts/` | Validation scripts (doctor.py, checklist.py) |
 | `.agent/memory/` | Persistent lessons and gotchas |
-| `.agent/rules/GEMINI.md` | Full ruleset (read for deep context) |
+| `.agent/rules/DEVBUREAU.md` | Full ruleset (read for deep context) |
 
 ## Modular Instructions
 

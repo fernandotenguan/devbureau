@@ -206,7 +206,7 @@ Confirme que o seu projeto tem a pasta `.agent/` na raiz.
 
 ### Passo 2 — Configure a IA para Ler o Kit
 
-As regras do kit ficam em `.agent/rules/GEMINI.md`. Para a IA seguir automaticamente:
+As regras do kit ficam em `.agent/rules/DEVBUREAU.md`. Para a IA seguir automaticamente:
 
 **Para o GitHub Copilot (VSCode):**
 
@@ -348,7 +348,7 @@ python .agent/scripts/token_footprint.py
 Pedido do usuário
     │
     ▼
-[Regras do GEMINI.md]     ← P0: regras globais, anti-alucinação, código limpo
+[Regras do DEVBUREAU.md]  ← P0: regras globais, anti-alucinação, código limpo
     │
     ▼
 [Roteamento Inteligente]  ← detecta automaticamente o domínio do pedido
@@ -369,10 +369,10 @@ Pedido do usuário
 ### Diagramas de Arquitetura
 
 <p align="center">
-  <img src="docs/diagrams/devbureau-architecture.drawio.png" alt="Arquitetura macro do DevBureau: pedido passando pelas regras do GEMINI.md, roteamento inteligente, os quatro catálogos, verificação e memória" width="720" />
+  <img src="docs/diagrams/devbureau-architecture.drawio.png" alt="Arquitetura macro do DevBureau: pedido passando pelas regras do DEVBUREAU.md, roteamento inteligente, os quatro catálogos, verificação e memória" width="720" />
 </p>
 
-> Visão macro: pedido → regras do GEMINI.md → roteamento inteligente → os 4 catálogos (agentes/skills/workflows/scripts) → verificação da saída → memória.
+> Visão macro: pedido → regras do DEVBUREAU.md → roteamento inteligente → os 4 catálogos (agentes/skills/workflows/scripts) → verificação da saída → memória.
 
 <p align="center">
   <img src="docs/diagrams/ade-pipeline.drawio.png" alt="O pipeline autônomo de 6 fases do /ade, incluindo o gate de aprovação da Fase 3 e o loop de retry de QA da Fase 5" width="600" />
@@ -408,7 +408,7 @@ raiz-do-projeto/
 │   │   ├── lessons.md   # padrões que funcionaram bem
 │   │   └── gotchas.md   # armadilhas comuns a evitar
 │   └── rules/
-│       └── GEMINI.md    # arquivo mestre de regras (P0)
+│       └── DEVBUREAU.md # arquivo mestre de regras (P0)
 ├── .mcp.json             # configuração MCP inicial (GitHub, OAuth)
 └── README.md
 ```

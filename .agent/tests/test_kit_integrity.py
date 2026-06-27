@@ -20,7 +20,7 @@ RULES_DIR = AGENT_DIR / "rules"
 
 REQUIRED_DIRS = [AGENTS_DIR, SKILLS_DIR, WORKFLOWS_DIR, SCRIPTS_DIR, RULES_DIR]
 REQUIRED_MASTER_SCRIPTS = ["checklist.py", "verify_all.py"]
-REQUIRED_RULES_FILES = ["GEMINI.md"]
+REQUIRED_RULES_FILES = ["DEVBUREAU.md"]
 
 
 def extract_frontmatter(content: str) -> dict[str, str]:
@@ -80,27 +80,27 @@ class TestRules:
         path = RULES_DIR / rules_file
         assert path.exists(), f".agent/rules/{rules_file} not found"
 
-    def test_gemini_md_has_content(self) -> None:
-        gemini = RULES_DIR / "GEMINI.md"
-        if not gemini.exists():
-            pytest.skip("GEMINI.md not found — skipping content check")
-        assert gemini.stat().st_size > 5000, "GEMINI.md seems too small (< 5KB)"
+    def test_devbureau_md_has_content(self) -> None:
+        rules = RULES_DIR / "DEVBUREAU.md"
+        if not rules.exists():
+            pytest.skip("DEVBUREAU.md not found — skipping content check")
+        assert rules.stat().st_size > 5000, "DEVBUREAU.md seems too small (< 5KB)"
 
-    def test_gemini_md_has_tier0_rules(self) -> None:
-        gemini = RULES_DIR / "GEMINI.md"
-        if not gemini.exists():
-            pytest.skip("GEMINI.md not found")
-        content = gemini.read_text(encoding="utf-8", errors="ignore")
-        assert "TIER 0" in content, "GEMINI.md missing TIER 0 universal rules section"
-        assert "SOCRATIC GATE" in content, "GEMINI.md missing SOCRATIC GATE section"
+    def test_devbureau_md_has_tier0_rules(self) -> None:
+        rules = RULES_DIR / "DEVBUREAU.md"
+        if not rules.exists():
+            pytest.skip("DEVBUREAU.md not found")
+        content = rules.read_text(encoding="utf-8", errors="ignore")
+        assert "TIER 0" in content, "DEVBUREAU.md missing TIER 0 universal rules section"
+        assert "SOCRATIC GATE" in content, "DEVBUREAU.md missing SOCRATIC GATE section"
 
-    def test_gemini_md_references_ade(self) -> None:
-        gemini = RULES_DIR / "GEMINI.md"
-        if not gemini.exists():
-            pytest.skip("GEMINI.md not found")
-        content = gemini.read_text(encoding="utf-8", errors="ignore")
+    def test_devbureau_md_references_ade(self) -> None:
+        rules = RULES_DIR / "DEVBUREAU.md"
+        if not rules.exists():
+            pytest.skip("DEVBUREAU.md not found")
+        content = rules.read_text(encoding="utf-8", errors="ignore")
         assert "/ade" in content.lower() or "ADE PIPELINE" in content, (
-            "GEMINI.md does not reference /ade workflow — run agent tuning"
+            "DEVBUREAU.md does not reference /ade workflow — run agent tuning"
         )
 
 

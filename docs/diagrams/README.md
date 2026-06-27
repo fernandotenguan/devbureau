@@ -4,7 +4,7 @@ Generated with [drawio-skill](https://github.com/Agents365-ai/drawio-skill) (MIT
 
 | File | What it shows |
 |---|---|
-| `devbureau-architecture.drawio(.png)` | Macro view: request → GEMINI.md rules → routing → the 4 catalogs (agents/skills/workflows/scripts) → verification → memory |
+| `devbureau-architecture.drawio(.png)` | Macro view: request → DEVBUREAU.md rules → routing → the 4 catalogs (agents/skills/workflows/scripts) → verification → memory |
 | `ade-pipeline.drawio(.png)` | The `/ade` 6-phase pipeline, including the approval gate (Fase 3) and the QA retry loop (Fase 5 → `@debugger`) |
 
 Each `.png` has the diagram XML embedded (`-e` export) — open it directly in draw.io desktop to edit, no need to track down the `.drawio` source separately (though it's here too, for convenience and smaller diffs).

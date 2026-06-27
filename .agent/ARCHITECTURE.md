@@ -22,7 +22,7 @@ DevBureau is a modular system consisting of:
 ├── agents/                  # 22 Specialist Agents
 ├── skills/                  # 63 Skills
 ├── workflows/                # 20 Slash Commands
-├── rules/                   # Global Rules (GEMINI.md P0)
+├── rules/                   # Global Rules (DEVBUREAU.md P0)
 ├── scripts/                 # 9 Master Validation Scripts
 ├── tests/                   # Kit Integrity Tests
 └── memory/                  # Persistent Memory Layer
@@ -292,7 +292,7 @@ Master validation scripts that orchestrate skill-level scripts.
 | `install_hooks.py`'s git pre-commit | Git (any IDE) | `git commit` | Runs `doctor.py` + the kit integrity tests; blocks the commit on failure |
 | `.agent/scripts/hooks/protect_generated_files.py` | Claude Code only (`.claude/settings.json`, `PreToolUse`) | Edit/Write/MultiEdit on an auto-generated file (`.claude/CLAUDE.md`, root `AGENTS.md`/`GEMINI.md`, `.cursor/rules/*.mdc`, `.github/copilot-instructions.md`, `.github/instructions/*`, `.windsurfrules`, `.clinerules`, `.roorules`) | Blocks the write, tells the agent which real source file to edit instead |
 | `.agent/scripts/hooks/guard_worktree_path.py` | Claude Code only (`PreToolUse`) | Edit/Write/MultiEdit while `cwd` is inside a git worktree | Blocks the write if the target path is outside the current worktree's root — makes `using-git-worktrees`'s prose guard hard-blocking |
-| `.agent/scripts/hooks/scan_injection.py` | Claude Code only (`PostToolUse`) | Read/WebFetch/WebSearch returns content | Advisory-only: prints a warning if known prompt-injection patterns or invisible Unicode are found, reinforcing GEMINI.md's Untrusted Content Boundary — never blocks |
+| `.agent/scripts/hooks/scan_injection.py` | Claude Code only (`PostToolUse`) | Read/WebFetch/WebSearch returns content | Advisory-only: prints a warning if known prompt-injection patterns or invisible Unicode are found, reinforcing DEVBUREAU.md's Untrusted Content Boundary — never blocks |
 
 > Cursor does not yet expose a pre-write blocking hook (`afterFileEdit` is informational only as of this writing), so the hooks above are Claude-Code-specific. See `.agent/memory/benchmark-log.md` (2026-06-26 and 2026-06-27 Run #6) for the research behind this.
 

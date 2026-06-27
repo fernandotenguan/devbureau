@@ -17,19 +17,19 @@ if sys.platform == "win32":
 
 # Exact paths (relative to repo root) that sync_ide.py overwrites on every run.
 PROTECTED_FILES: dict[str, str] = {
-    ".claude/CLAUDE.md": ".agent/rules/GEMINI.md",
-    "AGENTS.md": ".agent/rules/GEMINI.md",
-    "GEMINI.md": ".agent/rules/GEMINI.md",
-    ".github/copilot-instructions.md": ".agent/rules/GEMINI.md",
-    ".windsurfrules": ".agent/rules/GEMINI.md",
-    ".clinerules": ".agent/rules/GEMINI.md",
-    ".roorules": ".agent/rules/GEMINI.md",
+    ".claude/CLAUDE.md": ".agent/rules/DEVBUREAU.md",
+    "AGENTS.md": ".agent/rules/DEVBUREAU.md",
+    "GEMINI.md": ".agent/rules/DEVBUREAU.md",
+    ".github/copilot-instructions.md": ".agent/rules/DEVBUREAU.md",
+    ".windsurfrules": ".agent/rules/DEVBUREAU.md",
+    ".clinerules": ".agent/rules/DEVBUREAU.md",
+    ".roorules": ".agent/rules/DEVBUREAU.md",
 }
 
 # Directory prefixes that are entirely auto-generated.
 PROTECTED_PREFIXES: dict[str, str] = {
-    ".cursor/rules/": ".agent/rules/GEMINI.md or the relevant .agent/agents/*.md file",
-    ".github/instructions/": ".agent/rules/GEMINI.md or the relevant .agent/agents/*.md file",
+    ".cursor/rules/": ".agent/rules/DEVBUREAU.md or the relevant .agent/agents/*.md file",
+    ".github/instructions/": ".agent/rules/DEVBUREAU.md or the relevant .agent/agents/*.md file",
 }
 
 
