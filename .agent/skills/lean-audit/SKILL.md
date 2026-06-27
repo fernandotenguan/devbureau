@@ -27,7 +27,7 @@ Complements `lean-code-ladder` (which governs what gets written) by catching wha
 | **Diff** (default) | "review this", "review for over-engineering", `/lean-audit` with no argument | `git diff` (staged + unstaged) against the base branch |
 | **Repo** | "audit the whole repo", "find bloat", `/lean-audit repo` | The whole tracked tree, excluding `node_modules`, build output, vendored/generated files |
 
-Repo-scope audits rank findings biggest-cut-first; diff-scope audits list them in diff order.
+Repo-scope audits rank findings biggest-cut-first; diff-scope audits list them in diff order. "Biggest cut first" is this skill's leverage proxy — cuts here are uniformly low-effort by construction (delete, rename, one-line swap), so size of the cut already tracks impact ÷ effort without a separate formula.
 
 ---
 

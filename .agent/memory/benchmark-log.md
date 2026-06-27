@@ -170,12 +170,12 @@ The Skip verdict above covers Headroom's *proxy* mode correctly, but it does not
 3. ~~"Vet before presenting" step.~~ **Done 2026-06-27** — see CHANGELOG v3.10.0. New section in `confidence-scale` skill.
 
 ### Consider (needs a decision)
-1. Extend a leverage/impact-effort formula from `product-manager`'s RICE to audit-style findings (`security-auditor`, `lean-audit`, `debugger`) — decide reuse-RICE vs. simpler impact÷effort.
-2. ADR/PRD/`CONTEXT.md`/`DESIGN.md`/`PRODUCT.md`-aware recon — decide whether it belongs in the new audit skill (#1 above) only, or more broadly.
-3. STOP conditions + git-SHA drift check for `/ade` plans specifically (not a `plan-writing` rewrite).
-4. Model-tiered execution (expensive planner / cheap worktree-isolated executor / tech-lead-style review) for `/ade` — bigger decision, depends on host-agent worktree support across all 8 targets.
-5. `reconcile`-style backlog lifecycle command — reinforces run #2's still-open "disk-persisted pipeline state" item with a simpler mechanism.
-6. `--issues` flag to publish plans as GitHub issues, gated on a public-repo visibility warning — depends on #1 existing first.
+1. ~~Extend a leverage/impact-effort formula from `product-manager`'s RICE to audit-style findings (`security-auditor`, `lean-audit`, `debugger`).~~ **Resolved 2026-06-27** — see CHANGELOG v3.11.0. Decided per-skill on the merits rather than forcing one formula everywhere: `security-auditor` gained an effort estimate + severity-weighted leverage tiebreaker (its own Risk = Likelihood × Impact stays primary); `lean-audit`'s existing "biggest cut first" was already a leverage proxy, just documented as such; `debugger` was skipped — it investigates one bug at a time, not a findings backlog, so the formula doesn't apply to what it produces.
+2. ~~ADR/PRD/`CONTEXT.md`/`DESIGN.md`/`PRODUCT.md`-aware recon.~~ **Done 2026-06-27** — see CHANGELOG v3.11.0. Scoped to `codebase-audit`'s Recon phase only, as reasoned in run #4; not retrofitted onto `/ade`'s Discovery phase.
+3. ~~STOP conditions + git-SHA drift check for `/ade` plans specifically.~~ **Done 2026-06-27** — see CHANGELOG v3.11.0. Spec template now stamps the approval SHA and lists STOP conditions; Execution phase runs the drift check first.
+4. Model-tiered execution (expensive planner / cheap worktree-isolated executor / tech-lead-style review) for `/ade`. **Declined 2026-06-27** — asked directly: worktree-isolated subagent dispatch isn't guaranteed across the 7 non-Claude-Code IDE targets DevBureau also supports, and a Claude-Code-only build was judged not worth the cross-IDE inconsistency. `codebase-audit`'s "Out of Scope" section documents this explicitly.
+5. ~~`reconcile`-style backlog lifecycle command.~~ **Done 2026-06-27** — see CHANGELOG v3.11.0. New invocation variant on `codebase-audit`/`/audit`, simpler than what run #2 originally considered (no new state file, just re-reading `plans/README.md` + each plan's drift check).
+6. ~~`--issues` flag to publish plans as GitHub issues.~~ **Done 2026-06-27** — see CHANGELOG v3.11.0. New invocation variant, gated on the explicit flag plus a public-repo visibility warning before publishing sensitive findings.
 
 ### Skip
 (none this run — even the lowest-priority findings above got a Consider, not a Skip, since `improve` is unusually close to DevBureau's own architecture and audience-adjacent enough that nothing was an obvious non-fit.)

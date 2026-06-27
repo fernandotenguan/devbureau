@@ -80,6 +80,9 @@ A spec deve conter:
 ```markdown
 ## ADE Spec: {nome da feature}
 
+### Aprovado no commit
+- `git rev-parse --short HEAD` no momento em que o usuário aprovar na Fase 3 — usado no drift check da Fase 4.
+
 ### Arquivos a criar
 - `caminho/arquivo.ext` — propósito
 
@@ -93,6 +96,12 @@ A spec deve conter:
 - [ ] Teste A passa
 - [ ] Comportamento B funciona
 - [ ] Nenhum arquivo existente quebrado
+
+### Condições de PARE
+Parar a execução e reportar ao usuário em vez de improvisar, se:
+- [ ] um arquivo listado em "a modificar" não existir mais, ou seu conteúdo não corresponder ao que a spec assumiu
+- [ ] uma dependência listada não estiver disponível/instalada
+- [ ] um teste de verificação falhar duas vezes após uma tentativa razoável de correção
 ```
 
 ---
@@ -133,11 +142,21 @@ Riscos identificados:
 **Delegação:** skills específicas por subtask
 
 ```
+Drift check (rodar ANTES do primeiro passo, sempre):
+  git diff --stat <SHA aprovado na Fase 3>..HEAD -- <arquivos a modificar listados na spec>
+  Se algum arquivo em escopo mudou desde a aprovação → NÃO prosseguir direto.
+  Comparar o estado atual contra o que a spec descreve; se divergir, é uma
+  Condição de PARE — reportar ao usuário e pedir reconfirmação da spec antes
+  de continuar. Isso só importa quando a execução é retomada depois de um
+  intervalo (aprovação numa sessão, execução em outra); no fluxo comum
+  (aprovar e executar na mesma sessão) o diff vem vazio e a checagem é instantânea.
+
 Protocolo de execução:
 1. Criar arquivos novos primeiro (nunca modificar existentes antes)
 2. Modificar arquivos existentes com edições cirúrgicas (multi_replace)
 3. Verificar zero-break após cada arquivo modificado
 4. Se qualquer arquivo quebrar → ROLLBACK imediato dessa subtask
+5. Se uma Condição de PARE da spec ocorrer → parar e reportar, não improvisar
 ```
 
 **Durante execução, reportar progresso:**

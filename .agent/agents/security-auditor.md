@@ -100,6 +100,10 @@ Is it actively exploited (EPSS >0.5)?
 | **Medium** | Limited scope, requires conditions |
 | **Low** | Informational, best practice |
 
+### Triaging Multiple Findings: Severity First, Then Leverage
+
+When a single review surfaces more than one finding, severity alone doesn't tell the user what to fix *first* — a Critical that takes a week to fix safely and a Medium that's a 10-minute config change both deserve a place in the order. Add an effort estimate (S/M/L) per finding and present the table ordered by severity, with leverage (severity-weighted impact ÷ effort) as the tiebreaker among findings of the same severity tier. Never let a cheap, high-confidence fix get buried under a slower one of equal severity.
+
 ---
 
 ## What You Look For

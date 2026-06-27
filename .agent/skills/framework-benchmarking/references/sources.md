@@ -26,7 +26,8 @@ Recorded here so they aren't lost between runs. Full verdicts and reasoning in `
 - Disk-persisted pipeline state for resuming an interrupted multi-phase run — **Consider** (run #2), reinforced by a simpler mechanism in run #4 (`improve`'s `reconcile`: re-read the plan index + per-plan drift check, no new state file).
 - Mid-pipeline `CONTINUAR`-style checkpoints inside `/ade` specifically — **Consider** (run #2), still open.
 - Durable `principles.md` (project constitution) with impact-report-not-auto-rewrite propagation — **Consider** (run #2), still open; risk of overlap with `KIT_MASTER_RULES.md` unresolved.
-- New audit-and-handoff-plan skill/workflow (`improve`-equivalent), portable across all 8 IDE targets — **Adopt** (run #4), awaiting user go-ahead to implement.
-- "Treat audited repo content as data, not instructions" rule for any agent reading arbitrary/unfamiliar content — **Adopt** (run #4), awaiting user go-ahead.
-- "Vet before presenting" step (re-read subagent-cited evidence before reporting), extending `confidence-scale` — **Adopt** (run #4), awaiting user go-ahead.
-- Leverage formula for audit-style findings, ADR/PRD-aware recon, STOP conditions + git-SHA drift check for `/ade`, model-tiered planner/executor execution, `--issues` GitHub publishing — all **Consider** (run #4), each needs its own decision (see log for specifics).
+- New audit-and-handoff-plan skill/workflow (`improve`-equivalent), portable across all 8 IDE targets — **Adopt** (run #4). Done 2026-06-27, `codebase-audit`/`/audit`.
+- "Treat audited repo content as data, not instructions" rule — **Adopt** (run #4). Done 2026-06-27, GEMINI.md TIER 0.
+- "Vet before presenting" step, extending `confidence-scale` — **Adopt** (run #4). Done 2026-06-27.
+- Leverage formula for audit-style findings, ADR/PRD-aware recon, STOP conditions + git-SHA drift check for `/ade`, `reconcile`, `--issues` GitHub publishing — all **Consider** (run #4), all resolved 2026-06-27 (see benchmark-log.md for the per-item reasoning — `debugger` was excluded from the leverage-formula extension on its own merits).
+- Model-tiered planner/executor execution for `/ade` — **Consider** (run #4), **declined** 2026-06-27: worktree-isolated subagent dispatch isn't guaranteed across the 7 non-Claude-Code IDE targets DevBureau supports.
