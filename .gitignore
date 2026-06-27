@@ -6,3 +6,7 @@ antigravity-doc
 /others
 CHANGELOG.md
 __pycache__/
+
+# Third-party Claude Code skills installed locally (not part of DevBureau's own kit,
+# e.g. drawio-skill — install per .claude/skills/README.md if you need it again)
+.claude/skills/
