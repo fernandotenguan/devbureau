@@ -125,21 +125,40 @@ function runPythonScript(pythonCmd, targetDir, relativeScriptPath, extraArgs) {
   return result.status === 0;
 }
 
+// Splits on comma, comma+space, or plain whitespace, then validates each
+// token against IDE_TARGETS. "all" short-circuits the rest since it already
+// covers every target on its own.
+function parseIdeTargets(rawInput) {
+  const tokens = rawInput.trim().toLowerCase().split(/[,\s]+/).filter(Boolean);
+  if (tokens.includes("all")) return { valid: ["all"], invalid: [] };
+
+  const valid = [];
+  const invalid = [];
+  for (const token of tokens) {
+    if (token === "skip") continue;
+    if (!IDE_TARGETS.includes(token)) invalid.push(token);
+    else if (!valid.includes(token)) valid.push(token);
+  }
+  return { valid, invalid };
+}
+
 function promptIdeTarget(detectedEngines) {
-  if (!process.stdin.isTTY) return Promise.resolve(null);
+  if (!process.stdin.isTTY) return Promise.resolve({ valid: [], invalid: [] });
 
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   const defaultChoice = detectedEngines.length === 1 ? detectedEngines[0] : "skip";
   const detectedHint = detectedEngines.length > 0 ? ` (detected: ${detectedEngines.join(", ")})` : "";
   const question =
-    `\nWhich IDE do you want to sync rules to?${detectedHint} [${IDE_TARGETS.join(", ")}, skip] (default: ${defaultChoice}): `;
+    `\nWhich IDE(s) do you want to sync rules to? Separate multiple with a comma or space.${detectedHint} [${IDE_TARGETS.join(", ")}, skip] (default: ${defaultChoice}): `;
 
   return new Promise((resolve) => {
     rl.question(question, (answer) => {
       rl.close();
-      const choice = answer.trim().toLowerCase();
-      if (choice === "") return resolve(defaultChoice === "skip" ? null : defaultChoice);
-      resolve(IDE_TARGETS.includes(choice) ? choice : null);
+      const trimmed = answer.trim();
+      if (trimmed === "") {
+        return resolve(defaultChoice === "skip" ? { valid: [], invalid: [] } : { valid: [defaultChoice], invalid: [] });
+      }
+      resolve(parseIdeTargets(trimmed));
     });
   });
 }
@@ -187,20 +206,25 @@ async function init(args) {
   }
 
   const detectedEngines = detectInstalledEngines(targetDir);
-  let ideTarget;
+  let ideTargets = [];
+  let invalidTargets = [];
   if (explicitTargetArg) {
-    ideTarget = explicitTargetArg.split("=")[1];
+    ({ valid: ideTargets, invalid: invalidTargets } = parseIdeTargets(explicitTargetArg.split("=")[1] || ""));
   } else if (process.stdin.isTTY) {
-    ideTarget = await promptIdeTarget(detectedEngines);
+    ({ valid: ideTargets, invalid: invalidTargets } = await promptIdeTarget(detectedEngines));
   } else if (detectedEngines.length === 1) {
-    ideTarget = detectedEngines[0];
-    console.log(`ℹ Detected ${ideTarget} in this project — syncing automatically (non-interactive mode).`);
-  } else {
-    ideTarget = null;
+    ideTargets = [detectedEngines[0]];
+    console.log(`ℹ Detected ${ideTargets[0]} in this project — syncing automatically (non-interactive mode).`);
   }
 
-  if (ideTarget && IDE_TARGETS.includes(ideTarget)) {
-    runPythonScript(pythonCmd, targetDir, ".agent/scripts/sync_ide.py", ["--target", ideTarget]);
+  if (invalidTargets.length > 0) {
+    console.log(`⚠ Ignoring unrecognized IDE name(s): ${invalidTargets.join(", ")}`);
+  }
+
+  if (ideTargets.length > 0) {
+    for (const target of ideTargets) {
+      runPythonScript(pythonCmd, targetDir, ".agent/scripts/sync_ide.py", ["--target", target]);
+    }
   } else {
     console.log("ℹ Skipped IDE sync. Run `python .agent/scripts/sync_ide.py --target <ide>` whenever you're ready.");
   }
