@@ -12,6 +12,7 @@ Este repositório NÃO é uma aplicação final. Ele é um **Framework de Desenv
 4.  **Auto-Diagnóstico:** Qualquer script novo (`.py`) deve ser integrado ao `doctor.py` para validação automática de saúde do kit.
 5.  **Zero-Break na Base:** Como este kit será copiado para outros projetos, ele deve ser extremamente estável. Nunca suba código que quebre os testes do `pytest`.
 6.  **Benchmarking Contínuo (P2):** Periodicamente, rode `/benchmark` para comparar agentes/skills/workflows do kit contra coleções externas bem avaliadas (ver `.agent/skills/framework-benchmarking/`). O comando só gera recomendações em `.agent/memory/benchmark-log.md` — nenhuma mudança é aplicada automaticamente. Mais agentes/skills não é o objetivo; preencher gaps reais sem violar a filosofia de tiers (`stack-sizing`) é.
+7.  **Toda Skill Nova Segue `writing-skills` (P1):** Ao criar uma skill nova (não retroativo às já existentes), a `description:` declara quando usar, não o que contém, e a instrução foi validada contra um cenário de pressão real antes de entrar no catálogo. Ver `.agent/skills/writing-skills/SKILL.md`.
 
 ## 👥 Conceito de Equipe Profissional
 Sempre que o usuário interagir, trate os agentes como uma equipe:

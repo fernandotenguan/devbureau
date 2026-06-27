@@ -114,7 +114,7 @@ Estes são atalhos que ativam workflows prontos. Digite diretamente no chat:
 
 | Comando | Quando Usar | O que Faz |
 |---------|-------------|-----------|
-| `checar kit` | Antes de qualquer trabalho importante | Diagnóstico completo do kit (22 agentes, 62 skills) |
+| `checar kit` | Antes de qualquer trabalho importante | Diagnóstico completo do kit (22 agentes, 63 skills) |
 | `verificação final` | Antes de publicar | Roda todos os testes em sequência |
 | `rode todos os testes` | Após fazer mudanças | Garante que nada quebrou |
 
@@ -299,7 +299,7 @@ ou
 tudo certo?
 ```
 
-O agente vai rodar `doctor.py` e confirmar que todos os 22 agentes, 62 skills e 20 workflows estão funcionando corretamente.
+O agente vai rodar `doctor.py` e confirmar que todos os 22 agentes, 63 skills e 20 workflows estão funcionando corretamente.
 
 ---
 

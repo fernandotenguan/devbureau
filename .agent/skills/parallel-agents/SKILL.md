@@ -27,6 +27,30 @@ This skill enables coordinating multiple specialized agents through Antigravity'
 
 ---
 
+## When NOT to Fan Out (Source: obra/superpowers)
+
+This skill answers "which specialist for which domain." Before fanning out N agents in parallel, also check whether the tasks should run in parallel at all — a different question.
+
+**Don't parallelize when:**
+- **Tasks are related, not independent** — agent B needs to see what agent A actually changed (not just "agent A is done"), e.g. two agents touching the same function from different angles.
+- **They share mutable state** — same file, same migration, same config — parallel writes race or silently overwrite each other.
+- **One task needs full-system context** the others don't have — e.g. an architecture decision that should inform every other agent's approach, not run alongside them blind to it.
+
+**Safe to parallelize when:** tasks are genuinely independent investigations or fixes — different files/modules, no shared state, no task's output changes another's approach. Pattern 1 (Comprehensive Analysis) above is the canonical safe case: each domain agent reads the same code but writes nothing, so there's no race.
+
+## Prompt Construction for Parallel Dispatch
+
+Each dispatched agent starts cold with no memory of this conversation — the prompt is its only context. Common mistakes when writing one:
+
+| Mistake | Fix |
+|---|---|
+| Too broad ("look into the auth module") | Too specific ceiling: state the exact question the agent must answer |
+| No context ("fix the bug") | Context: what you've ruled out, why this matters, relevant file paths |
+| No constraints ("refactor this") | Constraints: what must NOT change, scope boundaries, files out of bounds |
+| Vague output ("let me know what you find") | Specific output: the exact format/fields the synthesis step needs back |
+
+---
+
 ## Native Agent Invocation
 
 ### Single Agent

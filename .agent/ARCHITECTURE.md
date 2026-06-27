@@ -9,7 +9,7 @@
 DevBureau is a modular system consisting of:
 
 - **22 Specialist Agents** - Role-based AI personas
-- **62 Skills** - Domain-specific knowledge modules
+- **63 Skills** - Domain-specific knowledge modules
 - **20 Workflows** - Slash command procedures
 
 ---
@@ -20,7 +20,7 @@ DevBureau is a modular system consisting of:
 .agent/
 ├── ARCHITECTURE.md          # This file
 ├── agents/                  # 22 Specialist Agents
-├── skills/                  # 62 Skills
+├── skills/                  # 63 Skills
 ├── workflows/                # 20 Slash Commands
 ├── rules/                   # Global Rules (GEMINI.md P0)
 ├── scripts/                 # 9 Master Validation Scripts
@@ -61,7 +61,7 @@ Specialist AI personas for different domains.
 
 ---
 
-## 🧩 Skills (62)
+## 🧩 Skills (63)
 
 Modular knowledge domains that agents load on-demand, based on task context. Grouped here by theme; the authoritative source of truth for what exists is always `.agent/skills/` itself — run `python .agent/scripts/doctor.py` to verify this list against reality.
 
@@ -84,6 +84,7 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 | `codebase-audit` | Senior-advisor survey across 9 categories (bugs, security, perf, tests, tech debt, deps, DX, docs, direction), vetted findings ranked by leverage, self-contained handoff plans (`/audit`) — never edits code itself |
 | `using-git-worktrees` | Isolates work in its own workspace — detects existing isolation, prefers a native tool, falls back to plain `git worktree`, never fights the harness |
 | `finishing-a-branch` | Structured close-out once work is done — merge/PR/keep/discard (`/finish-branch`), provenance-aware worktree cleanup |
+| `writing-skills` | Authoring discipline for NEW skills going forward — description states when to use (not what it contains), RED-GREEN-REFACTOR validation against a real pressure scenario before adding to the catalog |
 
 ### Frontend & UI
 
@@ -257,7 +258,7 @@ skill-name/
 
 ### Skills With Scripts
 
-13 of the 62 skills ship an executable script alongside their `SKILL.md`:
+13 of the 63 skills ship an executable script alongside their `SKILL.md`:
 
 | Skill | Script(s) |
 | --- | --- |
@@ -345,7 +346,7 @@ python .agent/scripts/sync_ide.py --target all
 | Metric              | Value                                                  |
 | -------------------- | --------------------------------------------------------- |
 | **Total Agents**     | 22                                                         |
-| **Total Skills**     | 62 (+ 10 nested under `game-development`)                  |
+| **Total Skills**     | 63 (+ 10 nested under `game-development`)                  |
 | **Total Workflows**  | 20                                                         |
 | **Master Scripts**   | 9 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`) |
 | **Skills With Scripts** | 13                                                       |

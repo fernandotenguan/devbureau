@@ -143,6 +143,18 @@ Riscos identificados:
 **Agent:** `@orchestrator`
 **Delegação:** skills específicas por subtask
 
+**Seleção de modelo por subtask** (Source: obra/superpowers — sem depender de nenhuma capacidade especial do host, apenas o parâmetro `model` do Agent tool quando disponível):
+
+| Tipo de subtask | Modelo | Exemplo |
+|---|---|---|
+| Mecânica, 1-2 arquivos, spec já completa (sem julgamento a fazer) | barato (haiku) | aplicar um rename, gerar um arquivo de teste a partir de um padrão já definido |
+| Integração ou exige julgamento (decidir como dois módulos se conectam) | padrão (sonnet) | a maioria dos passos da Fase 4 |
+| Decisão de arquitetura ou revisão final antes de reportar ao usuário | mais capaz (opus) | escolher a abordagem entre duas alternativas, revisar o resultado da Fase 4 antes da Fase 5 |
+
+> 🔴 Sempre especificar o modelo explicitamente ao despachar a subtask. Se omitido, herda o modelo da sessão principal — geralmente o mais caro, mesmo para a subtask mais mecânica. Em hosts sem suporte a seleção de modelo por subagente, esta tabela não tem efeito (degrada graciosamente — nada quebra).
+
+**Ledger de progresso (reaproveita o `{task-slug}.md` já criado na Fase 2 — não cria um arquivo novo):** cada checkbox de "Critério de sucesso" é marcado como feito **no próprio arquivo**, ao vivo, conforme cada subtask conclui — não só escrito uma vez no início. Se a execução for retomada após uma interrupção (compactação de contexto, sessão encerrada no meio), o primeiro passo é reler `{task-slug}.md` e tratar os checkboxes já marcados como já feitos, não refazer. Se o próprio arquivo se perder, `git log`/`git diff` no SHA aprovado (campo "Aprovado no commit" da Fase 2) mostra o que já foi criado/modificado em disco como sinal de recuperação.
+
 ```
 Drift check (rodar ANTES do primeiro passo, sempre):
   git diff --stat <SHA aprovado na Fase 3>..HEAD -- <arquivos a modificar listados na spec>
@@ -159,6 +171,7 @@ Protocolo de execução:
 3. Verificar zero-break após cada arquivo modificado
 4. Se qualquer arquivo quebrar → ROLLBACK imediato dessa subtask
 5. Se uma Condição de PARE da spec ocorrer → parar e reportar, não improvisar
+6. Marcar o checkbox correspondente em `{task-slug}.md` como feito imediatamente após cada subtask concluir
 ```
 
 **Durante execução, reportar progresso:**
