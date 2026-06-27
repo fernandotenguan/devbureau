@@ -9,8 +9,8 @@
 DevBureau is a modular system consisting of:
 
 - **22 Specialist Agents** - Role-based AI personas
-- **58 Skills** - Domain-specific knowledge modules
-- **18 Workflows** - Slash command procedures
+- **59 Skills** - Domain-specific knowledge modules
+- **19 Workflows** - Slash command procedures
 
 ---
 
@@ -20,8 +20,8 @@ DevBureau is a modular system consisting of:
 .agent/
 ├── ARCHITECTURE.md          # This file
 ├── agents/                  # 22 Specialist Agents
-├── skills/                  # 58 Skills
-├── workflows/                # 18 Slash Commands
+├── skills/                  # 59 Skills
+├── workflows/                # 19 Slash Commands
 ├── rules/                   # Global Rules (GEMINI.md P0)
 ├── scripts/                 # 9 Master Validation Scripts
 ├── tests/                   # Kit Integrity Tests
@@ -61,7 +61,7 @@ Specialist AI personas for different domains.
 
 ---
 
-## 🧩 Skills (58)
+## 🧩 Skills (59)
 
 Modular knowledge domains that agents load on-demand, based on task context. Grouped here by theme; the authoritative source of truth for what exists is always `.agent/skills/` itself — run `python .agent/scripts/doctor.py` to verify this list against reality.
 
@@ -81,6 +81,7 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 | `effort-estimation` | Translates a task breakdown into a tier-aware time/cost range for non-technical stakeholders |
 | `saas-stack-rules` | Stack-specific rules for the Next.js + FastAPI + Supabase + Stripe reference stack |
 | `framework-benchmarking` | Process for comparing this kit against external agent-framework collections (`/benchmark`) and scoring gaps Adopt/Consider/Skip |
+| `codebase-audit` | Senior-advisor survey across 9 categories (bugs, security, perf, tests, tech debt, deps, DX, docs, direction), vetted findings ranked by leverage, self-contained handoff plans (`/audit`) — never edits code itself |
 
 ### Frontend & UI
 
@@ -202,13 +203,14 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 
 ---
 
-## 🔄 Workflows (18)
+## 🔄 Workflows (19)
 
 Slash command procedures. Invoke with `/command`.
 
 | Command          | Description                                          |
 | ----------------- | ----------------------------------------------------- |
 | `/ade`             | Autonomous Development Engine — 6-phase pipeline       |
+| `/audit`           | Senior-advisor codebase survey, vetted findings ranked by leverage, self-contained handoff plans (no auto-apply) |
 | `/benchmark`       | Compares the kit against external agent-framework collections, logs findings (no auto-apply) |
 | `/brainstorm`      | Socratic discovery                                     |
 | `/build-saas`      | Guided 7-step SaaS planning                            |
@@ -251,7 +253,7 @@ skill-name/
 
 ### Skills With Scripts
 
-13 of the 58 skills ship an executable script alongside their `SKILL.md`:
+13 of the 59 skills ship an executable script alongside their `SKILL.md`:
 
 | Skill | Script(s) |
 | --- | --- |
@@ -339,8 +341,8 @@ python .agent/scripts/sync_ide.py --target all
 | Metric              | Value                                                  |
 | -------------------- | --------------------------------------------------------- |
 | **Total Agents**     | 22                                                         |
-| **Total Skills**     | 58 (+ 10 nested under `game-development`)                  |
-| **Total Workflows**  | 18                                                         |
+| **Total Skills**     | 59 (+ 10 nested under `game-development`)                  |
+| **Total Workflows**  | 19                                                         |
 | **Master Scripts**   | 9 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`) |
 | **Skills With Scripts** | 13                                                       |
 | **Kit Tests**        | 1 file, parametrized (`test_kit_integrity.py`)              |

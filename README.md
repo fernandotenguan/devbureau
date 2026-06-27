@@ -6,8 +6,8 @@
 
 [![Kit Version](https://img.shields.io/badge/DevBureau-v3.0.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-22-green)](https://github.com/fernandotenguan/devbureau)
-[![Skills](https://img.shields.io/badge/Skills-58-orange)](https://github.com/fernandotenguan/devbureau)
-[![Workflows](https://img.shields.io/badge/Workflows-18-red)](https://github.com/fernandotenguan/devbureau)
+[![Skills](https://img.shields.io/badge/Skills-59-orange)](https://github.com/fernandotenguan/devbureau)
+[![Workflows](https://img.shields.io/badge/Workflows-19-red)](https://github.com/fernandotenguan/devbureau)
 [![Tests](https://img.shields.io/badge/Tests-Automated-brightgreen)](https://github.com/fernandotenguan/devbureau)
 
 > Badge links assume the repo is published as `fernandotenguan/devbureau`. Update them if the final published path differs.
@@ -19,8 +19,8 @@
 | Components         | Count | Description                                                                  |
 | ------------------ | ----- | ---------------------------------------------------------------------------- |
 | **Agents**         | 22    | Specialist AI personas (frontend, backend, security, SRE, a11y, game dev, etc.) |
-| **Skills**         | 58    | Domain-specific knowledge modules with automated scripts                     |
-| **Workflows**      | 18    | Slash-command procedures including the autonomous `/ade` pipeline             |
+| **Skills**         | 59    | Domain-specific knowledge modules with automated scripts                     |
+| **Workflows**      | 19    | Slash-command procedures including the autonomous `/ade` pipeline             |
 | **Master Scripts** | 5     | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py` |
 | **Kit Tests**      | ✅    | Automated pytest suite — runs before every commit                            |
 | **Memory Layer**   | ✅    | Persistent lessons and gotchas across sessions                               |
@@ -60,7 +60,7 @@ The most powerful mode. You describe a feature, the kit plans it, shows you the 
 python .agent/scripts/doctor.py
 ```
 
-Validates all 22 agents, 58 skills, 18 workflows, and master scripts in seconds.
+Validates all 22 agents, 59 skills, 19 workflows, and master scripts in seconds.
 
 ### 🔒 Automated Pre-Commit Guard
 
@@ -80,6 +80,19 @@ Every coding agent climbs a 7-rung decision ladder before writing code — YAGNI
 /lean-debt           # harvest every lean: marker into a ledger
 python .agent/scripts/token_footprint.py   # measure the kit's own context footprint
 ```
+
+### 🔭 Codebase Audit & Handoff Plans (`/audit`)
+
+A senior-advisor survey, not a builder. Audits the codebase across nine categories (bugs, security, performance, tests, tech debt, dependencies, DX, docs, and direction — what to build next), re-reads every finding itself before showing it to you (subagents over-report), ranks by leverage (impact ÷ effort), and writes self-contained plans for a *different* agent or a future session to execute. It never edits source code — the plan is the product.
+
+```bash
+/audit                  # full survey, all 9 categories
+/audit quick            # cheap pass, top findings only
+/audit security         # one category, deeper
+/audit next             # feature/direction suggestions only
+```
+
+Distinct from `/plan` (short, same-session plan) and `/ade` (plans and executes itself after approval) — `/audit` is for "survey now, hand off the work later."
 
 #### Optional: Headroom MCP (third-party, not bundled)
 
@@ -283,6 +296,7 @@ In the Copilot chat panel, type any slash command:
 | Command          | Purpose                                               |
 | ---------------- | ----------------------------------------------------- |
 | `/ade`           | **Autonomous pipeline** — full feature end-to-end     |
+| `/audit`         | Senior-advisor survey — vetted, leverage-ranked findings, self-contained handoff plans |
 | `/build-saas`    | Plan a complete SaaS in 7 guided steps                |
 | `/plan`          | Create a detailed plan without writing code yet       |
 | `/create`        | Scaffold a new feature or application                 |
@@ -357,7 +371,7 @@ User request
 project-root/
 ├── .agent/
 │   ├── agents/          # 22 specialist AI personas
-│   ├── skills/          # 58 knowledge modules
+│   ├── skills/          # 59 knowledge modules
 │   ├── workflows/       # 18 slash-command procedures
 │   ├── scripts/         # master validation scripts
 │   │   ├── doctor.py          # kit health check

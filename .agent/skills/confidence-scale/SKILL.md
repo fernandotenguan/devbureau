@@ -48,7 +48,15 @@ Do **not** apply this to code the agent is writing in the current session — th
 
 ---
 
-## 4. Anti-Patterns
+## 4. Vet Before Presenting (Multi-Agent / Subagent Findings)
+
+When findings come from a dispatched subagent (e.g. `Explore` agents fanned out by `codebase-audit` or `orchestrator`) rather than your own direct read, the marks above aren't enough on their own — subagents over-report, and a 🟢 a subagent attached to its own claim is not the same as you having confirmed it.
+
+- **Before presenting any subagent-sourced finding, re-read the cited `file:line` yourself.** Only then does it earn 🟢. If you can't verify it (file moved, line doesn't say what was claimed), downgrade to 🟡 or 🔴 — never forward a subagent's 🟢 unverified.
+- Expect three failure classes when vetting: **by-design behavior** misreported as a bug (e.g. honoring `https_proxy` flagged as SSRF), **mis-attributed evidence** (real issue, wrong file or line), and **duplicates** across subagents covering overlapping ground.
+- Record what you rejected and why, in one line — so a future run doesn't re-surface the same false positive.
+
+## 5. Anti-Patterns
 
 - Marking everything 🟢 because admitting uncertainty feels less authoritative — defeats the entire purpose.
 - Burying 🔴 gaps inline instead of surfacing them as explicit questions — the user will scroll past them.
