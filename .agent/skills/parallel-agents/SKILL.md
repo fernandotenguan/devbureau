@@ -38,6 +38,17 @@ This skill answers "which specialist for which domain." Before fanning out N age
 
 **Safe to parallelize when:** tasks are genuinely independent investigations or fixes — different files/modules, no shared state, no task's output changes another's approach. Pattern 1 (Comprehensive Analysis) above is the canonical safe case: each domain agent reads the same code but writes nothing, so there's no race.
 
+## Dependency Waves (Source: open-gsd/gsd-core)
+
+Real task sets are rarely *all* independent or *all* dependent — usually some subset can run together and the rest waits on their output. Instead of one flat fan-out or one fully sequential chain, group into waves:
+
+1. **Wave 1** — every task with no dependency on another task in this batch. Dispatch all of them in parallel.
+2. Wait for Wave 1 to fully land (all agents report back, state merged — e.g. files written, checkboxes updated in `{task-slug}.md`).
+3. **Wave 2** — tasks that only needed Wave 1's output. Dispatch those in parallel.
+4. Repeat until every task is placed in a wave.
+
+The rule for grouping: two tasks belong in the same wave only if neither needs to read something the other one is about to write. If unsure, put them in separate waves — a wave boundary costs a little time, a same-wave race costs a debugging session. This is the sequencing answer to "when NOT to fan out" above: don't skip parallelism just because *some* tasks are dependent — isolate the dependent ones into their own wave and parallelize the rest.
+
 ## Prompt Construction for Parallel Dispatch
 
 Each dispatched agent starts cold with no memory of this conversation — the prompt is its only context. Common mistakes when writing one:

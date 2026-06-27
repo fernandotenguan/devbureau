@@ -9,6 +9,26 @@
             "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/protect_generated_files.py\""
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/guard_worktree_path.py\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Read|WebFetch|WebSearch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/scan_injection.py\""
+          }
+        ]
       }
     ]
   }

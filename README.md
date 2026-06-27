@@ -1,5 +1,7 @@
 # DevBureau
 
+**English** · [Português](README.pt-BR.md)
+
 > A production-grade multi-agent AI framework for building software with professional quality —
 > without needing to know how to code. Works across Claude Code, Cursor, Codex CLI, GitHub Copilot,
 > Antigravity, Windsurf, Cline, and Roo Code.
@@ -24,7 +26,7 @@
 | **Master Scripts** | 5     | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py` |
 | **Kit Tests**      | ✅    | Automated pytest suite — runs before every commit                            |
 | **Memory Layer**   | ✅    | Persistent lessons and gotchas across sessions                               |
-| **Hooks**          | 2     | Git pre-commit (all IDEs) + a Claude Code `PreToolUse` hook that blocks edits to auto-generated files |
+| **Hooks**          | 4     | Git pre-commit (all IDEs) + 3 Claude Code hooks: block edits to auto-generated files, block writes outside the current worktree, advisory prompt-injection scan on Read/WebFetch/WebSearch |
 | **MCP**            | 1     | Starter `.mcp.json` with the GitHub MCP server (OAuth, no token in the file) |
 
 ---
@@ -381,7 +383,9 @@ project-root/
 │   │   ├── sync_ide.py        # multi-IDE export
 │   │   ├── install_hooks.py   # git hook installer
 │   │   └── hooks/
-│   │       └── protect_generated_files.py  # Claude Code PreToolUse hook
+│   │       ├── protect_generated_files.py  # blocks edits to auto-generated files
+│   │       ├── guard_worktree_path.py      # blocks writes outside the worktree
+│   │       └── scan_injection.py           # advisory prompt-injection scan
 │   ├── tests/
 │   │   └── test_kit_integrity.py  # automated pytest suite
 │   ├── memory/

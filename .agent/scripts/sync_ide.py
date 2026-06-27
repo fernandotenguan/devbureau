@@ -58,34 +58,57 @@ def write_output(path: Path, content: str, dry_run: bool) -> None:
         print(f"  {GREEN}✔{RESET} Written: {path}")
 
 
+def _merge_claude_hook(settings: dict, event: str, matcher: str, command: str) -> None:
+    """Add a hook command under settings['hooks'][event] for the given matcher,
+    unless that exact command is already registered there."""
+    group_list = settings.setdefault("hooks", {}).setdefault(event, [])
+    already_registered = any(
+        command == entry.get("command", "")
+        for group in group_list
+        for entry in group.get("hooks", [])
+    )
+    if not already_registered:
+        group_list.append(
+            {"matcher": matcher, "hooks": [{"type": "command", "command": command}]}
+        )
+
+
 def ensure_claude_protect_hook(dry_run: bool) -> None:
-    """Merge the protect-generated-files PreToolUse hook into .claude/settings.json
-    without disturbing any other settings the user already has configured there."""
+    """Merge DevBureau's Claude Code hooks into .claude/settings.json without
+    disturbing any other settings the user already has configured there:
+    - PreToolUse: block edits to auto-generated files, block writes outside
+      the current git worktree (using-git-worktrees).
+    - PostToolUse: advisory scan of Read/WebFetch/WebSearch output for known
+      prompt-injection patterns (GEMINI.md's Untrusted Content Boundary)."""
     settings_path = REPO_ROOT / ".claude" / "settings.json"
     settings: dict = {}
     if settings_path.exists():
         try:
             settings = json.loads(settings_path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
-            print(f"  {YELLOW}⚠{RESET} Could not parse {settings_path} — skipping hook merge.")
+            print(
+                f"  {YELLOW}⚠{RESET} Could not parse {settings_path} — skipping hook merge."
+            )
             return
 
-    hook_command = (
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/protect_generated_files.py"'
+    _merge_claude_hook(
+        settings,
+        "PreToolUse",
+        "Edit|Write|MultiEdit",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/protect_generated_files.py"',
     )
-    pre_tool_use = settings.setdefault("hooks", {}).setdefault("PreToolUse", [])
-    already_registered = any(
-        hook_command == entry.get("command", "")
-        for group in pre_tool_use
-        for entry in group.get("hooks", [])
+    _merge_claude_hook(
+        settings,
+        "PreToolUse",
+        "Edit|Write|MultiEdit",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/guard_worktree_path.py"',
     )
-    if not already_registered:
-        pre_tool_use.append(
-            {
-                "matcher": "Edit|Write|MultiEdit",
-                "hooks": [{"type": "command", "command": hook_command}],
-            }
-        )
+    _merge_claude_hook(
+        settings,
+        "PostToolUse",
+        "Read|WebFetch|WebSearch",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/scan_injection.py"',
+    )
 
     write_output(settings_path, json.dumps(settings, indent=2) + "\n", dry_run)
 
@@ -387,7 +410,9 @@ def generate_cursor_config(dry_run: bool) -> None:
     legacy_rules_md = REPO_ROOT / ".cursor" / "rules.md"
     if legacy_rules_md.exists():
         legacy_rules_md.unlink()
-        print(f"  {YELLOW}✔{RESET} Removed legacy {legacy_rules_md} (superseded by rules/*.mdc)")
+        print(
+            f"  {YELLOW}✔{RESET} Removed legacy {legacy_rules_md} (superseded by rules/*.mdc)"
+        )
 
     gemini_content = read_file_safe(RULES_PATH)
     agent_summary = build_agent_summary()
@@ -397,7 +422,11 @@ def generate_cursor_config(dry_run: bool) -> None:
     tier0_content = gemini_content
     if "## TIER 0" in gemini_content:
         start = gemini_content.index("## TIER 0")
-        end = gemini_content.index("## TIER 1") if "## TIER 1" in gemini_content else len(gemini_content)
+        end = (
+            gemini_content.index("## TIER 1")
+            if "## TIER 1" in gemini_content
+            else len(gemini_content)
+        )
         tier0_content = gemini_content[start:end]
 
     rules_dir = REPO_ROOT / ".cursor" / "rules"

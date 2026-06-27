@@ -57,6 +57,8 @@ $ARGUMENTS
 
 ```
 Ação: Analisar o pedido em $ARGUMENTS e identificar:
+0. Se existir `STATE.md` na raiz do projeto (produto de um /build-saas anterior), lê-lo
+   primeiro — diz em qual batch/milestone este pedido provavelmente se encaixa.
 1. Domínio principal (web, backend, mobile, kit, infra)
 2. Arquivos impactados (existentes ou novos)
 3. Dependências do kit (.agent/ refs, imports)
@@ -153,6 +155,8 @@ Riscos identificados:
 
 > 🔴 Sempre especificar o modelo explicitamente ao despachar a subtask. Se omitido, herda o modelo da sessão principal — geralmente o mais caro, mesmo para a subtask mais mecânica. Em hosts sem suporte a seleção de modelo por subagente, esta tabela não tem efeito (degrada graciosamente — nada quebra).
 
+**Se houver múltiplas subtasks independentes:** agrupar em ondas antes de despachar — ver a seção "Dependency Waves" da skill `parallel-agents`. Subtasks sem dependência entre si vão na mesma onda e disparam em paralelo; uma subtask que precisa do resultado de outra vai na onda seguinte.
+
 **Ledger de progresso (reaproveita o `{task-slug}.md` já criado na Fase 2 — não cria um arquivo novo):** cada checkbox de "Critério de sucesso" é marcado como feito **no próprio arquivo**, ao vivo, conforme cada subtask conclui — não só escrito uma vez no início. Se a execução for retomada após uma interrupção (compactação de contexto, sessão encerrada no meio), o primeiro passo é reler `{task-slug}.md` e tratar os checkboxes já marcados como já feitos, não refazer. Se o próprio arquivo se perder, `git log`/`git diff` no SHA aprovado (campo "Aprovado no commit" da Fase 2) mostra o que já foi criado/modificado em disco como sinal de recuperação.
 
 ```
@@ -198,6 +202,13 @@ python .agent/scripts/checklist.py .
 npm test 2>/dev/null || python -m pytest . 2>/dev/null || echo "No tests configured"
 ```
 
+**Passo 4 — Cobertura de decisão (Source: open-gsd/gsd-core):** "testes passam" não é o mesmo que "o que foi decidido na Fase 2 foi de fato implementado." Reler a spec da Fase 2 e confirmar, item por item:
+- Cada item de "Critério de sucesso" tem o checkbox marcado E corresponde a um comportamento real verificável (não só "parece que está lá").
+- Nenhuma decisão registrada na spec foi silenciosamente trocada por outra durante a Fase 4 (ex.: a spec dizia "validação no backend", o código só validou no frontend).
+- Nenhum item de "Arquivos a criar/modificar" ficou de fora sem uma Condição de PARE registrada explicando por quê.
+
+Se algo não corresponder, isso é um achado de QA como qualquer outro — registrar e corrigir antes de declarar a Fase 5 concluída, não só quando os testes automatizados falham.
+
 **Se falhar:** `@debugger` é invocado automaticamente para investigar e corrigir.
 
 ---
@@ -205,6 +216,8 @@ npm test 2>/dev/null || python -m pytest . 2>/dev/null || echo "No tests configu
 ## Fase 6: Memory
 
 **Agent:** `@project-planner`
+
+Se `STATE.md` existir na raiz (ver Fase 1, passo 0), atualizar a linha do batch correspondente para `done` (ou `in-progress` se a feature só cobriu parte do batch), e o campo "Last updated". Se não existir, pular este passo — é infraestrutura opcional, só relevante para projetos multi-batch nascidos de um `/build-saas`.
 
 Registrar em `.agent/memory/lessons.md`:
 

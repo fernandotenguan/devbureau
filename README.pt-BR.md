@@ -1,0 +1,420 @@
+# DevBureau
+
+[English](README.md) · **Português**
+
+> Um framework de IA multiagente de nível profissional para construir software com qualidade de
+> equipe especializada, sem precisar saber programar. Funciona no Claude Code, Cursor, Codex CLI,
+> GitHub Copilot, Antigravity, Windsurf, Cline e Roo Code.
+
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.0.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Agents](https://img.shields.io/badge/Agents-22-green)](https://github.com/fernandotenguan/devbureau)
+[![Skills](https://img.shields.io/badge/Skills-63-orange)](https://github.com/fernandotenguan/devbureau)
+[![Workflows](https://img.shields.io/badge/Workflows-20-red)](https://github.com/fernandotenguan/devbureau)
+[![Tests](https://img.shields.io/badge/Tests-Automated-brightgreen)](https://github.com/fernandotenguan/devbureau)
+
+> Os links dos badges assumem que o repositório está publicado como `fernandotenguan/devbureau`. Atualize-os se o caminho final publicado for diferente.
+
+---
+
+## O que está incluído
+
+| Componente          | Quantidade | Descrição                                                                    |
+| -------------------- | ---------- | ----------------------------------------------------------------------------- |
+| **Agentes**          | 22         | Personas de IA especialistas (frontend, backend, segurança, SRE, a11y, jogos, etc.) |
+| **Skills**           | 63         | Módulos de conhecimento de domínio com scripts automatizados                  |
+| **Workflows**        | 20         | Procedimentos de comando de barra, incluindo o pipeline autônomo `/ade`       |
+| **Scripts Mestres**  | 5          | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`  |
+| **Testes do Kit**    | ✅         | Suíte pytest automatizada — roda antes de cada commit                         |
+| **Camada de Memória**| ✅         | Lições e armadilhas persistentes entre sessões                                |
+| **Hooks**            | 4          | Git pre-commit (todos os IDEs) + 3 hooks do Claude Code: bloqueia edições em arquivos auto-gerados, bloqueia escritas fora da worktree atual, varredura consultiva de prompt-injection em Read/WebFetch/WebSearch |
+| **MCP**              | 1          | `.mcp.json` inicial com o servidor MCP do GitHub (OAuth, sem token no arquivo) |
+
+---
+
+## Funcionalidades
+
+### 🤖 Roteamento Inteligente Automático
+
+Descreva o que precisa em português simples. O kit detecta o domínio e aplica o especialista certo automaticamente, sem precisar de comandos.
+
+```
+Você: "O botão de login não está funcionando"   → @debugger
+Você: "Deixa a interface mais moderna"           → @frontend-specialist
+Você: "O app está seguro pra publicar?"          → @security-auditor
+Você: "checar kit" / "diagnóstico"               → Diagnóstico de saúde (doctor.py)
+```
+
+### 🚀 Pipeline Autônomo de Desenvolvimento (`/ade`)
+
+O modo mais poderoso. Você descreve uma funcionalidade, o kit planeja, mostra a especificação e espera sua aprovação antes de escrever qualquer código.
+
+```
+/ade adicione um sistema de notificação por email
+/ade crie um painel de vendas com gráficos
+/ade implemente login com Google
+```
+
+**Pipeline de 6 fases:** Descoberta → Especificação → ✋ Sua Aprovação → Código → QA → Memória
+
+### 🏥 Diagnóstico de Saúde do Kit
+
+```bash
+python .agent/scripts/doctor.py
+```
+
+Valida os 22 agentes, 63 skills, 20 workflows e scripts mestres em segundos.
+
+### 🔒 Guarda Automática de Pre-Commit
+
+Os testes rodam automaticamente antes de cada `git commit`. Se algo quebrar, o commit é bloqueado até a correção.
+
+### 🧠 Camada de Memória Persistente
+
+O kit lembra padrões e lições aprendidas entre sessões, guardadas em `.agent/memory/`.
+
+### 🪶 Escada de Código Magro (Economia de Tokens, Sem Cortar Qualidade)
+
+Todo agente que escreve código sobe uma escada de decisão de 7 degraus antes de codificar: YAGNI, depois reaproveitar, depois biblioteca padrão, depois recurso nativo da plataforma, depois uma dependência já instalada, depois uma linha, só então o mínimo que funciona. Nunca corta validação, tratamento de erro, segurança ou acessibilidade. Atalhos deliberados recebem um comentário `lean:` nomeando o teto e o gatilho de melhoria futura, para que "depois" não se torne "nunca":
+
+```bash
+/lean-audit          # encontra excesso de engenharia para remover no diff atual
+/lean-audit repo      # o mesmo, no repositório inteiro
+/lean-debt            # coleta todos os marcadores lean: num relatório
+python .agent/scripts/token_footprint.py   # mede a própria pegada de contexto do kit
+```
+
+### 🔭 Auditoria de Código & Planos de Entrega (`/audit`)
+
+Uma análise de consultor sênior, não um construtor. Audita o código em nove categorias (bugs, segurança, performance, testes, dívida técnica, dependências, experiência do desenvolvedor, documentação e direção, o que construir a seguir), relê cada achado antes de mostrar a você (subagentes exageram), classifica por alavancagem (impacto ÷ esforço) e escreve planos autocontidos para um agente *diferente* ou uma sessão futura executar. Nunca edita o código-fonte: o plano é o produto.
+
+```bash
+/audit                  # análise completa, todas as 9 categorias
+/audit quick             # passada rápida, só os principais achados
+/audit security          # uma categoria, mais profunda
+/audit next              # só sugestões de funcionalidade/direção
+```
+
+Diferente do `/plan` (plano curto, mesma sessão) e do `/ade` (planeja e executa após aprovação): o `/audit` é para "analisar agora, entregar o trabalho depois."
+
+#### Opcional: Headroom MCP (terceiros, não incluído)
+
+As regras do DevBureau já dizem "use as ferramentas `mcp__headroom__*` se estiverem presentes", mas deixá-las presentes é uma configuração única, por máquina, que você mesmo faz, não algo que o `npx devbureau init` instala:
+
+```bash
+pip install "headroom-ai[mcp]"
+claude mcp add headroom --scope user -- headroom mcp serve
+```
+
+`--scope user` registra uma vez para todo projeto que você abrir no Claude Code depois, sem configuração por projeto, sem proxy, sem privilégios de administrador. Uma vez conectado, todo agente deste kit vai chamar `headroom_compress` automaticamente em saídas grandes de ferramentas/leituras de arquivo, sem você precisar pedir. Se não estiver instalado, os agentes seguem normalmente: é um acelerador, não uma dependência.
+
+### 🔄 Sincronização Multi-IDE
+
+Exporte a configuração do kit para Antigravity, Claude Code, Cursor, Codex CLI, GitHub Copilot, Windsurf, Cline e Roo Code:
+
+```bash
+python .agent/scripts/sync_ide.py --target all
+# ou um único destino: claude | cursor | codex | copilot | antigravity | windsurf | cline | roocode
+```
+
+## 🚀 Iniciando um Novo Projeto
+
+Este repositório é o seu **cérebro de desenvolvimento**. Para iniciar um novo projeto (ex.: um e-commerce, um app mobile) usando esta base:
+
+1.  **Crie a pasta do seu novo projeto.**
+2.  **No chat do seu agente**, digite:
+    ```
+    /new-project
+    ```
+3.  O agente guia você na cópia do `.agent/` (a "alma" do kit) e na configuração inicial da sua nova aplicação.
+
+---
+
+## 📜 Regras de Manutenção
+
+Se você está mantendo o próprio DevBureau (não só usando em um projeto derivado), siga sempre:
+[Regras de Manutenção & Evolução (KIT_MASTER_RULES.md)](./KIT_MASTER_RULES.md)
+
+---
+
+## Instalação
+
+> **Requisitos:** Python 3.9+ e Git
+
+### Opção 1 — CLI via NPX (Recomendado, mais rápido)
+
+```bash
+npx devbureau init
+```
+
+Isso copia a pasta `.agent/` para o seu projeto, roda o diagnóstico de saúde (`doctor.py`), instala o hook de pre-commit e sincroniza as regras para o seu IDE. Detecta automaticamente qual IDE/engine já está em uso no projeto (Claude Code, Cursor, Codex, Antigravity, Copilot, Windsurf, Cline, Roo Code) e usa isso como padrão em vez de perguntar no vazio — você ainda pode escolher outro ou usar `--target=<ide>` explicitamente.
+
+Mais tarde, quando você já tiver customizado agentes/skills para o seu projeto e quiser trazer as melhorias mais recentes do DevBureau sem perder suas edições:
+
+```bash
+npx devbureau update
+```
+
+Isso compara o seu `.agent/` com a versão do pacote instalado usando um manifesto SHA-256: arquivos que você não tocou são atualizados, arquivos que você customizou ficam intactos e são listados para revisão manual.
+
+### Opção 2 — NPX giget (sem precisar de pacote npm)
+
+Copie só a pasta `.agent` direto do repositório do GitHub:
+
+```bash
+npx giget@latest github:fernandotenguan/devbureau/.agent .agent --force
+```
+
+Depois instale o hook de pre-commit para os testes rodarem automaticamente:
+
+```bash
+python .agent/scripts/install_hooks.py
+```
+
+### Opção 3 — Clone do Git
+
+Clone o repositório completo e copie o `.agent` para o seu projeto:
+
+```bash
+git clone https://github.com/fernandotenguan/devbureau.git
+cd devbureau
+# Copie o .agent/ para o seu próprio projeto:
+xcopy .agent "C:\caminho\do\seu-projeto\.agent" /E /I    # Windows
+# cp -r .agent /caminho/do/seu-projeto/                  # Linux/macOS
+```
+
+### Verificar a Instalação
+
+```bash
+python .agent/scripts/doctor.py
+```
+
+Saída esperada: `✅ All checks passed! Kit is healthy.`
+
+---
+
+## Configuração no VSCode (com GitHub Copilot ou Gemini Code Assist)
+
+O kit funciona com qualquer assistente de IA no VSCode que consiga ler os arquivos do workspace. Veja como ter a melhor experiência:
+
+### Passo 1 — Abra o Projeto no VSCode
+
+```bash
+code .
+```
+
+Confirme que o seu projeto tem a pasta `.agent/` na raiz.
+
+### Passo 2 — Configure a IA para Ler o Kit
+
+As regras do kit ficam em `.agent/rules/GEMINI.md`. Para a IA seguir automaticamente:
+
+**Para o GitHub Copilot (VSCode):**
+
+Rode o script de sincronização para gerar os arquivos de instrução otimizados para o Copilot:
+
+```bash
+python .agent/scripts/sync_ide.py --target copilot
+```
+
+Isso cria o `.github/copilot-instructions.md` (carregado automaticamente em todo chat) e arquivos modulares em `.github/instructions/` (carregados de forma contextual por tipo de arquivo).
+
+Verifique se está funcionando: no chat do Copilot, confira se os arquivos de instrução aparecem na lista de **Referências**.
+
+**Para o Antigravity (Google):**
+
+Rode o script de sincronização para gerar o `GEMINI.md` na raiz, que o Antigravity lê como o arquivo de regras de workspace de maior prioridade:
+
+```bash
+python .agent/scripts/sync_ide.py --target antigravity
+```
+
+**Para o Gemini Code Assist (VSCode):**
+
+As regras do `GEMINI.md` são carregadas automaticamente se o arquivo estiver presente no workspace.
+
+**Para o Cursor:**
+
+Rode o script de sincronização para gerar as regras específicas do Cursor:
+
+```bash
+python .agent/scripts/sync_ide.py --target cursor
+```
+
+Isso cria `.cursor/rules/`: 5 arquivos `.mdc` com escopo por glob (o formato atual de Project Rules do Cursor) em vez de um arquivo monolítico, então só a regra relevante carrega por tipo de arquivo.
+
+**Para o Claude Code:**
+
+```bash
+python .agent/scripts/sync_ide.py --target claude
+```
+
+Isso cria o `.claude/CLAUDE.md`.
+
+**Para Windsurf, Cline ou Roo Code:**
+
+```bash
+python .agent/scripts/sync_ide.py --target windsurf   # → .windsurfrules
+python .agent/scripts/sync_ide.py --target cline       # → .clinerules
+python .agent/scripts/sync_ide.py --target roocode     # → .roorules
+```
+
+Esses três leem um único arquivo de regras plano (sem divisão por glob), então o arquivo gerado reúne tudo: o time de agentes, qualidade de código, regras de frontend, backend e segurança.
+
+### Passo 3 — Instale as Extensões Recomendadas do VSCode
+
+Para a melhor experiência de desenvolvimento:
+
+| Extensão                          | Finalidade                         |
+| ---------------------------------- | ----------------------------------- |
+| `esbenp.prettier-vscode`           | Formatação de código                |
+| `dbaeumer.vscode-eslint`           | Lint                                 |
+| `ms-python.python`                 | Rodar `.agent/scripts/*.py` direto   |
+| `ms-vscode.vscode-github-copilot`  | Assistente de IA para código         |
+| `github.copilot-chat`              | Interface de chat para comandos      |
+
+### Passo 4 — Rode o Diagnóstico de Saúde do Kit no VSCode
+
+1. Abra o terminal integrado: `` Ctrl+` ``
+2. Rode:
+
+```bash
+python .agent/scripts/doctor.py
+```
+
+### Passo 5 — Usando Comandos de Barra no Chat do VSCode
+
+No painel de chat do Copilot, digite qualquer comando de barra:
+
+```
+/ade adicione um modo escuro ao app
+/debug por que o formulário não está enviando
+/build-saas plataforma de assinatura para freelancers
+```
+
+---
+
+## Referência de Comandos de Barra
+
+| Comando           | Finalidade                                                |
+| ------------------ | ----------------------------------------------------------- |
+| `/ade`              | **Pipeline autônomo** — funcionalidade completa de ponta a ponta |
+| `/audit`            | Análise de consultor sênior — achados vetados e classificados por alavancagem, planos autocontidos de entrega |
+| `/build-saas`       | Planeje um SaaS completo em 7 etapas guiadas                |
+| `/plan`             | Crie um plano detalhado sem escrever código ainda            |
+| `/create`           | Estruture uma nova funcionalidade ou aplicação                |
+| `/brainstorm`       | Explore opções com perguntas estratégicas                     |
+| `/enhance`          | Melhore uma funcionalidade existente                           |
+| `/finish-branch`    | Fechamento estruturado (merge/PR/manter/descartar) ao terminar o trabalho |
+| `/lean-audit`       | Encontre excesso de engenharia para remover (diff ou repositório inteiro) |
+| `/lean-debt`        | Colete os marcadores `lean:` em um relatório de dívida          |
+| `/debug`            | Investigação sistemática de bugs                                |
+| `/test`             | Gere e rode testes                                               |
+| `/deploy`           | Checagens prévias + deploy guiado                                |
+| `/preview`          | Inicie o servidor de desenvolvimento local                       |
+| `/status`           | Confira o progresso do projeto                                    |
+| `/ui-ux-pro-max`    | Design premium de UI/UX em 50 estilos                             |
+| `/clean`            | **Auto-correção e otimização** de código (suporta caminho específico) |
+| `/orchestrate`      | Coordene múltiplos agentes em tarefas complexas                    |
+
+---
+
+## Scripts de Validação & Qualidade
+
+```bash
+# Diagnóstico de saúde do kit (rode primeiro, sempre)
+python .agent/scripts/doctor.py
+
+# Auto-correção e formatação de código (suporta caminhos específicos)
+python .agent/scripts/auto_fixer.py src/   # Limpeza de uma pasta específica
+
+# Auditoria completa do projeto (segurança, lint, UX, SEO)
+python .agent/scripts/checklist.py .
+
+# Verificação completa antes do deploy
+python .agent/scripts/verify_all.py . --url http://localhost:3000
+
+# Sincroniza o kit para outros IDEs (Antigravity, Claude, Cursor, Codex, Copilot, Windsurf, Cline, Roo Code)
+python .agent/scripts/sync_ide.py --target all
+
+# Mede a própria pegada de contexto do kit (tokens aproximados nos arquivos de regras gerados)
+python .agent/scripts/token_footprint.py
+```
+
+---
+
+## Como Funciona
+
+```
+Pedido do usuário
+    │
+    ▼
+[Regras do GEMINI.md]     ← P0: regras globais, anti-alucinação, código limpo
+    │
+    ▼
+[Roteamento Inteligente]  ← detecta automaticamente o domínio do pedido
+    │
+    ▼
+[Agente Selecionado]      ← @frontend-specialist, @debugger, @security-auditor...
+    │
+    ▼
+[Skills Carregadas]       ← conhecimento de domínio específico para a tarefa
+    │
+    ▼
+[Saída + Verificação]     ← protocolo zero-quebra, testes rodam
+    │
+    ▼
+[Memória Atualizada]      ← lessons.md + gotchas.md
+```
+
+---
+
+## Estrutura do Projeto
+
+```
+raiz-do-projeto/
+├── .agent/
+│   ├── agents/          # 22 personas de IA especialistas
+│   ├── skills/          # 63 módulos de conhecimento
+│   ├── workflows/       # 20 procedimentos de comando de barra
+│   ├── scripts/         # scripts mestres de validação
+│   │   ├── doctor.py          # diagnóstico de saúde do kit
+│   │   ├── checklist.py       # auditoria por prioridade
+│   │   ├── verify_all.py      # suíte completa de verificação
+│   │   ├── sync_ide.py        # exportação multi-IDE
+│   │   ├── install_hooks.py   # instalador de hook do git
+│   │   └── hooks/
+│   │       ├── protect_generated_files.py  # bloqueia edições em arquivos auto-gerados
+│   │       ├── guard_worktree_path.py      # bloqueia escritas fora da worktree
+│   │       └── scan_injection.py           # varredura consultiva de prompt-injection
+│   ├── tests/
+│   │   └── test_kit_integrity.py  # suíte pytest automatizada
+│   ├── memory/
+│   │   ├── lessons.md   # padrões que funcionaram bem
+│   │   └── gotchas.md   # armadilhas comuns a evitar
+│   └── rules/
+│       └── GEMINI.md    # arquivo mestre de regras (P0)
+├── .mcp.json             # configuração MCP inicial (GitHub, OAuth)
+└── README.md
+```
+
+---
+
+## Apoie o Projeto
+
+Se este kit economiza seu tempo, considere apoiar:
+
+<p align="center">
+  <img src="pix-fernando.png" alt="QR Code PIX" width="180" />
+</p>
+
+**Chave PIX:** `fernando.tenguan@gmail.com`
+
+---
+
+## Licença
+
+MIT — veja [LICENSE](./LICENSE)
+
+---
+
+> _Construa de forma mais inteligente. Entregue mais rápido. Com confiança._

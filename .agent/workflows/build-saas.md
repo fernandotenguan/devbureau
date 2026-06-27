@@ -265,7 +265,33 @@ Break into 5-15 min tasks organized by batch:
 
 Each task must have: clear description, files involved, and how to verify it worked.
 
-**After completion:** Present the 3 files and ask: "Documents generated! Want to review any before starting implementation?"
+### 7.4: Project State → `STATE.md` (Source: open-gsd/gsd-core)
+
+Implementation of these batches happens later, across many separate `/ade` sessions (one feature at a time, possibly days or weeks apart) — chat history won't survive that gap. Create `STATE.md` at the project root, one row per batch from 7.3, all starting `pending`:
+
+```markdown
+# STATE.md — Project State
+> Read first by /ade at the start of each run, updated at the end. Source of
+> truth for "where is this project," not chat history. Do not edit manually
+> while a /ade run is in progress.
+
+**Milestone:** {product name from Stage 1}
+**Last updated:** {date}
+
+## Batches (from docs/implementation-plan.md)
+| Batch | Status | Notes |
+|---|---|---|
+| 1: Infrastructure | pending | |
+| 2: Database | pending | |
+| ... | pending | |
+
+## Blockers
+- (none yet)
+```
+
+This file is **optional infrastructure** — only create it when the project is genuinely multi-batch/multi-session (the normal `/build-saas` case). A single-feature `/ade` run on its own has no use for it; its own `{task-slug}.md` is the only ledger it needs (see `/ade` Fase 4).
+
+**After completion:** Present the 3 PRD/plan files (and mention `STATE.md` if created) and ask: "Documents generated! Want to review any before starting implementation?"
 
 ---
 
