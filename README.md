@@ -6,7 +6,7 @@
 > without needing to know how to code. Works across Claude Code, Cursor, Codex CLI, GitHub Copilot,
 > Antigravity, Windsurf, Cline, and Roo Code.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.0.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.14.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-22-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-63-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-20-red)](https://github.com/fernandotenguan/devbureau)
@@ -23,7 +23,7 @@
 | **Agents**         | 22    | Specialist AI personas (frontend, backend, security, SRE, a11y, game dev, etc.) |
 | **Skills**         | 63    | Domain-specific knowledge modules with automated scripts                     |
 | **Workflows**      | 20    | Slash-command procedures including the autonomous `/ade` pipeline             |
-| **Master Scripts** | 5     | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py` |
+| **Master Scripts** | 9     | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py` |
 | **Kit Tests**      | ✅    | Automated pytest suite — runs before every commit                            |
 | **Memory Layer**   | ✅    | Persistent lessons and gotchas across sessions                               |
 | **Hooks**          | 4     | Git pre-commit (all IDEs) + 3 Claude Code hooks: block edits to auto-generated files, block writes outside the current worktree, advisory prompt-injection scan on Read/WebFetch/WebSearch |
@@ -136,7 +136,7 @@ If you're maintaining DevBureau itself (not just consuming it in a downstream pr
 
 ---
 
-## What's Included
+## Installation
 
 > **Requirements:** Python 3.9+ and Git
 
@@ -365,6 +365,22 @@ User request
     ▼
 [Memory Updated]          ← lessons.md + gotchas.md
 ```
+
+### Architecture Diagrams
+
+<p align="center">
+  <img src="docs/diagrams/devbureau-architecture.drawio.png" alt="DevBureau macro architecture: request through GEMINI.md rules, intelligent routing, the four catalogs, verification, and memory" width="720" />
+</p>
+
+> Macro view: request → GEMINI.md rules → intelligent routing → the 4 catalogs (agents/skills/workflows/scripts) → output verification → memory.
+
+<p align="center">
+  <img src="docs/diagrams/ade-pipeline.drawio.png" alt="The /ade 6-phase autonomous pipeline, including the Fase 3 approval gate and the Fase 5 QA retry loop" width="600" />
+</p>
+
+> The `/ade` 6-phase pipeline: Discovery → Spec → ✋ approval gate → Execution → QA (retries into `@debugger` on failure) → Memory.
+
+Both diagrams are editable `.drawio` XML (embedded in the `.png` itself) — see [docs/diagrams/README.md](./docs/diagrams/README.md) for provenance and how to regenerate them.
 
 ---
 

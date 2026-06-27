@@ -6,7 +6,7 @@
 > equipe especializada, sem precisar saber programar. Funciona no Claude Code, Cursor, Codex CLI,
 > GitHub Copilot, Antigravity, Windsurf, Cline e Roo Code.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.0.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.14.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-22-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-63-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-20-red)](https://github.com/fernandotenguan/devbureau)
@@ -23,7 +23,7 @@
 | **Agentes**          | 22         | Personas de IA especialistas (frontend, backend, segurança, SRE, a11y, jogos, etc.) |
 | **Skills**           | 63         | Módulos de conhecimento de domínio com scripts automatizados                  |
 | **Workflows**        | 20         | Procedimentos de comando de barra, incluindo o pipeline autônomo `/ade`       |
-| **Scripts Mestres**  | 5          | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`  |
+| **Scripts Mestres**  | 9          | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py` |
 | **Testes do Kit**    | ✅         | Suíte pytest automatizada — roda antes de cada commit                         |
 | **Camada de Memória**| ✅         | Lições e armadilhas persistentes entre sessões                                |
 | **Hooks**            | 4          | Git pre-commit (todos os IDEs) + 3 hooks do Claude Code: bloqueia edições em arquivos auto-gerados, bloqueia escritas fora da worktree atual, varredura consultiva de prompt-injection em Read/WebFetch/WebSearch |
@@ -365,6 +365,22 @@ Pedido do usuário
     ▼
 [Memória Atualizada]      ← lessons.md + gotchas.md
 ```
+
+### Diagramas de Arquitetura
+
+<p align="center">
+  <img src="docs/diagrams/devbureau-architecture.drawio.png" alt="Arquitetura macro do DevBureau: pedido passando pelas regras do GEMINI.md, roteamento inteligente, os quatro catálogos, verificação e memória" width="720" />
+</p>
+
+> Visão macro: pedido → regras do GEMINI.md → roteamento inteligente → os 4 catálogos (agentes/skills/workflows/scripts) → verificação da saída → memória.
+
+<p align="center">
+  <img src="docs/diagrams/ade-pipeline.drawio.png" alt="O pipeline autônomo de 6 fases do /ade, incluindo o gate de aprovação da Fase 3 e o loop de retry de QA da Fase 5" width="600" />
+</p>
+
+> O pipeline de 6 fases do `/ade`: Discovery → Spec → ✋ gate de aprovação → Execution → QA (retry para `@debugger` em caso de falha) → Memory.
+
+Os dois diagramas são XML `.drawio` editável (incorporado no próprio `.png`) — veja [docs/diagrams/README.md](./docs/diagrams/README.md) para a proveniência e como regerá-los.
 
 ---
 
