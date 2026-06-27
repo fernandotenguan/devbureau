@@ -2,6 +2,7 @@
 node_modules/
 .temp_ag_kit/
 antigravity-doc
-tests
-others
+/tests
+/others
 CHANGELOG.md
+__pycache__/

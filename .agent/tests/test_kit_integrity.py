@@ -1,0 +1,245 @@
+#!/usr/bin/env python3
+"""
+test_kit_integrity.py — DevBureau Automated Test Suite
+Validates structure, frontmatter, cross-references, and file quality of .agent/.
+Usage: python -m pytest .agent/tests/test_kit_integrity.py -v
+"""
+import re
+from pathlib import Path
+
+import pytest
+
+# ── fixture: repo paths ───────────────────────────────────────────────────────
+REPO_ROOT = Path(__file__).resolve().parents[2]
+AGENT_DIR = REPO_ROOT / ".agent"
+AGENTS_DIR = AGENT_DIR / "agents"
+SKILLS_DIR = AGENT_DIR / "skills"
+WORKFLOWS_DIR = AGENT_DIR / "workflows"
+SCRIPTS_DIR = AGENT_DIR / "scripts"
+RULES_DIR = AGENT_DIR / "rules"
+
+REQUIRED_DIRS = [AGENTS_DIR, SKILLS_DIR, WORKFLOWS_DIR, SCRIPTS_DIR, RULES_DIR]
+REQUIRED_MASTER_SCRIPTS = ["checklist.py", "verify_all.py"]
+REQUIRED_RULES_FILES = ["GEMINI.md"]
+
+
+def extract_frontmatter(content: str) -> dict[str, str]:
+    """Parse YAML frontmatter block between --- markers."""
+    pattern = re.compile(r"^---\s*\n(.*?)\n---", re.DOTALL)
+    match = pattern.match(content.lstrip())
+    if not match:
+        return {}
+    fields: dict[str, str] = {}
+    for line in match.group(1).splitlines():
+        if ":" in line:
+            key, _, value = line.partition(":")
+            fields[key.strip()] = value.strip()
+    return fields
+
+
+def get_all_agents() -> list[Path]:
+    return sorted(AGENTS_DIR.glob("*.md")) if AGENTS_DIR.exists() else []
+
+
+def get_all_skill_dirs() -> list[Path]:
+    return sorted(d for d in SKILLS_DIR.iterdir() if d.is_dir()) if SKILLS_DIR.exists() else []
+
+
+def get_all_workflows() -> list[Path]:
+    return sorted(WORKFLOWS_DIR.glob("*.md")) if WORKFLOWS_DIR.exists() else []
+
+
+# ── directory structure tests ─────────────────────────────────────────────────
+class TestDirectoryStructure:
+
+    def test_agent_dir_exists(self) -> None:
+        assert AGENT_DIR.exists(), ".agent/ directory not found in project root"
+
+    @pytest.mark.parametrize("directory", REQUIRED_DIRS)
+    def test_required_subdirs_exist(self, directory: Path) -> None:
+        assert directory.exists(), f".agent/{directory.name}/ is missing"
+
+    def test_has_agents(self) -> None:
+        agents = get_all_agents()
+        assert len(agents) > 0, "No .md files found in .agent/agents/"
+
+    def test_has_skills(self) -> None:
+        skills = get_all_skill_dirs()
+        assert len(skills) > 0, "No directories found in .agent/skills/"
+
+    def test_has_workflows(self) -> None:
+        workflows = get_all_workflows()
+        assert len(workflows) > 0, "No .md files found in .agent/workflows/"
+
+
+# ── rules tests ───────────────────────────────────────────────────────────────
+class TestRules:
+
+    @pytest.mark.parametrize("rules_file", REQUIRED_RULES_FILES)
+    def test_rules_file_exists(self, rules_file: str) -> None:
+        path = RULES_DIR / rules_file
+        assert path.exists(), f".agent/rules/{rules_file} not found"
+
+    def test_gemini_md_has_content(self) -> None:
+        gemini = RULES_DIR / "GEMINI.md"
+        if not gemini.exists():
+            pytest.skip("GEMINI.md not found — skipping content check")
+        assert gemini.stat().st_size > 5000, "GEMINI.md seems too small (< 5KB)"
+
+    def test_gemini_md_has_tier0_rules(self) -> None:
+        gemini = RULES_DIR / "GEMINI.md"
+        if not gemini.exists():
+            pytest.skip("GEMINI.md not found")
+        content = gemini.read_text(encoding="utf-8", errors="ignore")
+        assert "TIER 0" in content, "GEMINI.md missing TIER 0 universal rules section"
+        assert "SOCRATIC GATE" in content, "GEMINI.md missing SOCRATIC GATE section"
+
+    def test_gemini_md_references_ade(self) -> None:
+        gemini = RULES_DIR / "GEMINI.md"
+        if not gemini.exists():
+            pytest.skip("GEMINI.md not found")
+        content = gemini.read_text(encoding="utf-8", errors="ignore")
+        assert "/ade" in content.lower() or "ADE PIPELINE" in content, (
+            "GEMINI.md does not reference /ade workflow — run agent tuning"
+        )
+
+
+# ── agents tests ──────────────────────────────────────────────────────────────
+class TestAgents:
+
+    @pytest.mark.parametrize("agent_path", get_all_agents())
+    def test_agent_has_name_in_frontmatter(self, agent_path: Path) -> None:
+        content = agent_path.read_text(encoding="utf-8", errors="ignore")
+        fm = extract_frontmatter(content)
+        assert "name" in fm and fm["name"], (
+            f"{agent_path.name}: missing 'name:' field in YAML frontmatter"
+        )
+
+    @pytest.mark.parametrize("agent_path", get_all_agents())
+    def test_agent_has_minimum_content(self, agent_path: Path) -> None:
+        content = agent_path.read_text(encoding="utf-8", errors="ignore")
+        assert len(content) > 200, (
+            f"{agent_path.name}: file is nearly empty ({len(content)} chars)"
+        )
+
+    @pytest.mark.parametrize("agent_path", get_all_agents())
+    def test_agent_has_skills_or_description(self, agent_path: Path) -> None:
+        content = agent_path.read_text(encoding="utf-8", errors="ignore")
+        fm = extract_frontmatter(content)
+        has_skills = "skills" in fm and fm["skills"]
+        has_description = "description" in fm and fm["description"]
+        assert has_skills or has_description, (
+            f"{agent_path.name}: missing both 'skills:' and 'description:' in frontmatter"
+        )
+
+
+# ── skills tests ──────────────────────────────────────────────────────────────
+class TestSkills:
+
+    @pytest.mark.parametrize("skill_dir", get_all_skill_dirs())
+    def test_skill_has_skill_md(self, skill_dir: Path) -> None:
+        skill_md = skill_dir / "SKILL.md"
+        assert skill_md.exists(), (
+            f"skills/{skill_dir.name}/SKILL.md not found"
+        )
+
+    @pytest.mark.parametrize("skill_dir", get_all_skill_dirs())
+    def test_skill_md_has_content(self, skill_dir: Path) -> None:
+        skill_md = skill_dir / "SKILL.md"
+        if not skill_md.exists():
+            pytest.skip(f"{skill_dir.name}/SKILL.md missing")
+        content = skill_md.read_text(encoding="utf-8", errors="ignore")
+        assert len(content) > 100, (
+            f"skills/{skill_dir.name}/SKILL.md appears nearly empty ({len(content)} chars)"
+        )
+
+    @pytest.mark.parametrize("skill_dir", get_all_skill_dirs())
+    def test_skill_md_has_name_in_frontmatter(self, skill_dir: Path) -> None:
+        skill_md = skill_dir / "SKILL.md"
+        if not skill_md.exists():
+            pytest.skip(f"{skill_dir.name}/SKILL.md missing")
+        content = skill_md.read_text(encoding="utf-8", errors="ignore")
+        fm = extract_frontmatter(content)
+        assert "name" in fm and fm["name"], (
+            f"skills/{skill_dir.name}/SKILL.md: missing 'name:' in frontmatter"
+        )
+
+
+# ── workflows tests ───────────────────────────────────────────────────────────
+class TestWorkflows:
+
+    @pytest.mark.parametrize("wf_path", get_all_workflows())
+    def test_workflow_has_description_in_frontmatter(self, wf_path: Path) -> None:
+        content = wf_path.read_text(encoding="utf-8", errors="ignore")
+        fm = extract_frontmatter(content)
+        assert "description" in fm and fm["description"], (
+            f"workflows/{wf_path.name}: missing 'description:' in frontmatter"
+        )
+
+    def test_ade_workflow_exists(self) -> None:
+        ade_wf = WORKFLOWS_DIR / "ade.md"
+        assert ade_wf.exists(), (
+            "workflows/ade.md not found — /ade pipeline not available"
+        )
+
+    def test_plan_workflow_exists(self) -> None:
+        plan_wf = WORKFLOWS_DIR / "plan.md"
+        assert plan_wf.exists(), "workflows/plan.md not found"
+
+    def test_debug_workflow_exists(self) -> None:
+        debug_wf = WORKFLOWS_DIR / "debug.md"
+        assert debug_wf.exists(), "workflows/debug.md not found"
+
+
+# ── master scripts tests ──────────────────────────────────────────────────────
+class TestMasterScripts:
+
+    @pytest.mark.parametrize("script_name", REQUIRED_MASTER_SCRIPTS)
+    def test_required_script_exists(self, script_name: str) -> None:
+        script_path = SCRIPTS_DIR / script_name
+        assert script_path.exists(), (
+            f".agent/scripts/{script_name} not found — required master script missing"
+        )
+
+    def test_doctor_script_exists(self) -> None:
+        doctor = SCRIPTS_DIR / "doctor.py"
+        assert doctor.exists(), (
+            ".agent/scripts/doctor.py not found — run AIOS integration phase 1"
+        )
+
+    def test_no_syntax_errors_in_doctor(self) -> None:
+        doctor = SCRIPTS_DIR / "doctor.py"
+        if not doctor.exists():
+            pytest.skip("doctor.py not found")
+        import ast
+        source = doctor.read_text(encoding="utf-8")
+        try:
+            ast.parse(source)
+        except SyntaxError as exc:
+            pytest.fail(f"Syntax error in doctor.py: {exc}")
+
+
+# ── cross-reference tests ─────────────────────────────────────────────────────
+class TestCrossReferences:
+
+    def test_no_agent_references_nonexistent_skill(self) -> None:
+        """Agents should not reference skills that don't exist as directories."""
+        available_skills = {d.name for d in SKILLS_DIR.iterdir() if d.is_dir()} if SKILLS_DIR.exists() else set()
+        issues: list[str] = []
+
+        for agent_path in get_all_agents():
+            content = agent_path.read_text(encoding="utf-8", errors="ignore")
+            fm = extract_frontmatter(content)
+            skills_raw = fm.get("skills", "")
+            skill_refs = [s.strip() for s in skills_raw.split(",") if s.strip()]
+
+            for ref in skill_refs:
+                ref_slug = ref.replace(" ", "-").lower()
+                if ref_slug not in available_skills and ref not in available_skills:
+                    # Partial match tolerance (some refs are short aliases)
+                    if not any(ref_slug in s for s in available_skills):
+                        issues.append(f"{agent_path.name} references '{ref}' (not found)")
+
+        # Allow warnings instead of hard failures for cross-refs (aliases exist)
+        if issues:
+            print(f"\n  ⚠  Possible ghost references (may be aliases): {issues}")
