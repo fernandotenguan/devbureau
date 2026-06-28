@@ -6,7 +6,7 @@
 > without needing to know how to code. Works across Claude Code, Cursor, Codex CLI, OpenCode,
 > GitHub Copilot, Antigravity, Windsurf, Cline, and Roo Code.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.15.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.16.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-22-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-63-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-20-red)](https://github.com/fernandotenguan/devbureau)
@@ -26,7 +26,7 @@
 | **Master Scripts** | 9     | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py` |
 | **Kit Tests**      | ✅    | Automated pytest suite — runs before every commit                            |
 | **Memory Layer**   | ✅    | Persistent lessons and gotchas across sessions                               |
-| **Hooks**          | 4     | Git pre-commit (all IDEs) + 3 Claude Code hooks: block edits to auto-generated files, block writes outside the current worktree, advisory prompt-injection scan on Read/WebFetch/WebSearch |
+| **Hooks**          | 6     | Git pre-commit (all IDEs) + 5 Claude Code hooks: block edits to auto-generated files, block writes outside the current worktree, block `git --no-verify`/hooksPath bypass, advisory prompt-injection scan on Read/WebFetch/WebSearch, advisory `console.log` warning on edited JS/TS files |
 | **MCP**            | 1     | Starter `.mcp.json` with the GitHub MCP server (OAuth, no token in the file) |
 
 ---
@@ -106,6 +106,38 @@ claude mcp add headroom --scope user -- headroom mcp serve
 ```
 
 `--scope user` registers it once for every project you open in Claude Code afterward — no per-project setup, no proxy, no admin rights needed. Once connected, every agent in this kit will call `headroom_compress` on large tool outputs/file reads automatically, without you asking. If it's not installed, agents proceed normally — it's an accelerator, not a dependency.
+
+#### Optional: AgentShield (third-party, not bundled)
+
+`security-auditor` and `vulnerability-scanner` give you prose-guided, knowledge-driven review — useful for reasoning about a specific finding, but not a substitute for a deterministic scanner with a fixed, numbered rule set. [AgentShield](https://github.com/affaan-m/agentshield) (MIT, separately maintained) fills that gap: 102 static rules across secrets detection, permission auditing, hook injection analysis, MCP server risk profiling, and agent config review, graded A–F. No install needed for a one-off scan:
+
+```bash
+npx ecc-agentshield scan
+```
+
+Add `--fix` to auto-fix safe issues, or `--opus` for a deeper three-agent adversarial pass (attacker finds exploit chains, defender evaluates protections, auditor synthesizes a prioritized risk assessment). Exit code 2 on critical findings makes it usable as a CI gate. Like Headroom, this is documented here because it's a useful companion — DevBureau doesn't bundle or maintain it.
+
+### 💰 Token Optimization
+
+`/ade`'s Execution phase already tiers models per subtask (cheap model for mechanical work, most-capable for architecture decisions). These `~/.claude/settings.json` values complement that at the session level:
+
+```json
+{
+  "model": "sonnet",
+  "env": {
+    "MAX_THINKING_TOKENS": "10000",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "haiku"
+  }
+}
+```
+
+| Setting | Effect |
+| --- | --- |
+| `"model": "sonnet"` | Default model for the main session — handles most coding tasks at a fraction of Opus's cost. Switch to Opus only for deep architectural reasoning. |
+| `MAX_THINKING_TOKENS=10000` | Caps hidden thinking-token spend per request (default is much higher). |
+| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50` | Compacts context earlier than the default 95% — better quality in long sessions instead of waiting until the window is nearly full. |
+| `CLAUDE_CODE_SUBAGENT_MODEL=haiku` | Cheap default for dispatched subagents that don't need Sonnet/Opus-level reasoning — explicit per-subtask tiering in `/ade` still overrides this where it matters. |
 
 ### 🔄 Multi-IDE Sync
 

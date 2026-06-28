@@ -18,6 +18,15 @@
             "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/guard_worktree_path.py\""
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/block_no_verify.py\""
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -27,6 +36,15 @@
           {
             "type": "command",
             "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/scan_injection.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/warn_debug_statements.py\""
           }
         ]
       }

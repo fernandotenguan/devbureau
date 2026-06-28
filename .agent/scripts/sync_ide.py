@@ -77,9 +77,11 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
     """Merge DevBureau's Claude Code hooks into .claude/settings.json without
     disturbing any other settings the user already has configured there:
     - PreToolUse: block edits to auto-generated files, block writes outside
-      the current git worktree (using-git-worktrees).
+      the current git worktree (using-git-worktrees), block git --no-verify /
+      -c core.hooksPath= bypass attempts (CLAUDE.md's Git Safety Protocol).
     - PostToolUse: advisory scan of Read/WebFetch/WebSearch output for known
-      prompt-injection patterns (DEVBUREAU.md's Untrusted Content Boundary)."""
+      prompt-injection patterns (DEVBUREAU.md's Untrusted Content Boundary),
+      advisory warning when an edited JS/TS file still has console.log()."""
     settings_path = REPO_ROOT / ".claude" / "settings.json"
     settings: dict = {}
     if settings_path.exists():
@@ -105,9 +107,21 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
     )
     _merge_claude_hook(
         settings,
+        "PreToolUse",
+        "Bash",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/block_no_verify.py"',
+    )
+    _merge_claude_hook(
+        settings,
         "PostToolUse",
         "Read|WebFetch|WebSearch",
         'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/scan_injection.py"',
+    )
+    _merge_claude_hook(
+        settings,
+        "PostToolUse",
+        "Edit|Write|MultiEdit",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/warn_debug_statements.py"',
     )
 
     write_output(settings_path, json.dumps(settings, indent=2) + "\n", dry_run)

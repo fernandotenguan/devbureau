@@ -17,6 +17,73 @@
 
 ---
 
+## 2026-06-28 — Benchmark Run #7
+
+**Sources checked:** `affaan-m/ECC` (new source — "the agent harness operating system," ~212K stars per its own README claim, MIT, last pushed 2026-06-25), plus its standalone companion `affaan-m/agentshield` (102-rule security scanner, separately maintained).
+
+**DevBureau state at time of run (per `doctor.py`):** 22 agents, 63 skills, 20 workflows, 9 master scripts.
+
+**Trigger:** User asked to explore ECC's mechanisms as deeply as possible and turn it into a concrete improvement plan, not just a verdict table.
+
+**Structural comparison:**
+
+| Dimension | DevBureau | ECC |
+|---|---|---|
+| Agents | 22 | 67 |
+| Skills | 63 | 271 |
+| Workflows/commands | 20 | 92 legacy shims, migrating to skills as primary surface |
+| IDE/harness targets | 8 via `sync_ide.py` (Claude, Cursor, Codex, OpenCode, Copilot, Antigravity, Windsurf, Cline, Roo Code) | 11+ via per-harness adapters (Claude native, Cursor DRY-adapter, Codex App+CLI, OpenCode plugin, Zed, Copilot, Antigravity, JoyCode/CodeBuddy, Qwen CLI, Gemini CLI experimental, manual Grok fallback) |
+| Hooks | 3 scripts (`protect_generated_files.py`, `guard_worktree_path.py`, `scan_injection.py`) + git pre-commit | 45+ scripts, 8 Claude Code event types; Cursor reuses the same scripts via a DRY stdin-JSON adapter instead of duplicating logic |
+| MCP configs | 1 bundled (`.mcp.json`, GitHub server) | 14 documented servers, add-only safe-merge sync script for Codex's `config.toml` |
+| Memory/learning | Free-text `lessons.md` + `gotchas.md`, hand-curated | Continuous Learning v2.1: hook-observed, confidence-scored (0.3–0.9), atomic, project-scoped via hashed git remote, evidence-backed, auto-evolves into skills/commands/agents, export/import, auto-promotes project→global after repeat sightings |
+| Security scanning | `security-auditor` agent + `vulnerability-scanner` skill (prose/knowledge-driven) | AgentShield: standalone CLI + GitHub Action + GitHub App, 102 static rules across 5 categories (secrets, permissions, hooks, MCP, agent config), graded A–F, plus an adversarial red/blue/auditor 3-agent `--opus` mode |
+| Skill generation from own codebase | None — skills are hand-authored at the kit level | `skill-creator`: analyzes a repo's git history locally, generates `SKILL.md` + instincts with no external service |
+| Install lifecycle | `init` / `update` (SHA-256 manifest, customization-preserving) — no `uninstall` | `install.sh`/`install.ps1` with `--profile minimal/core/full` + `--with`/`--without` component flags; `ecc.js doctor/repair/list-installed/uninstall --dry-run` |
+| Destructive-command gating | Prose only — `CLAUDE.md`'s Git Safety Protocol says "NEVER skip hooks (--no-verify...)" but nothing enforces it | `block-no-verify.js`: deterministic PreToolUse hook blocking `--no-verify`/`-c core.hooksPath=` on git commands. Separately, `gateguard-fact-force.js` wraps the third-party `zunoworks/gateguard` tool to demand concrete investigation facts (importers, API, rollback plan) before risky Edit/Bash, instead of a yes/no confirmation an LLM always agrees to |
+| Token/cost optimization | `token_footprint.py` (static rule-file size measurement) + Headroom MCP (optional, documented, not bundled) | Documented operator settings (`model=sonnet`, `MAX_THINKING_TOKENS=10000`, `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50`, `CLAUDE_CODE_SUBAGENT_MODEL=haiku`), a `strategic-compact` skill, `/cost` monitoring guidance |
+| Distribution | npm + GitHub + giget | npm (`ecc-universal`/`ecc-agentshield`) + Claude Code native plugin marketplace + GitHub App for hosted PR audits |
+| GUI | None (CLI/markdown only) | Tkinter desktop dashboard (`npm run dashboard`) to browse agents/skills/commands/rules visually |
+
+**Findings:**
+
+| Finding | Verdict | Reason |
+|---|---|---|
+| Deterministic hook blocking `git ... --no-verify` / `-c core.hooksPath=` | **Adopt** | Closes a real, already-claimed gap — `CLAUDE.md` states this rule in prose today but nothing enforces it. Same pattern/cost as the existing `guard_worktree_path.py` hook. |
+| Advisory PostToolUse hook warning about leftover `console.log`/debug statements on edited files | **Adopt** | Cheap, same advisory-only design as `scan_injection.py`, directly serves the existing Clean Code mandate. |
+| Document AgentShield as an optional companion security scanner | **Adopt** | Same "optional, documented, not bundled" precedent as Headroom MCP. Gives users a real CLI/CI scanner with numbered static rules instead of only prose-guided agent review — zero implementation cost beyond docs + a cross-reference from `vulnerability-scanner`/`security-auditor`. |
+| New "Token Optimization" README section with concrete `settings.json` values | **Adopt** | Pure documentation, zero risk, fills a real operator-facing gap DevBureau doesn't currently cover (model/thinking-token/autocompact/subagent-model tuning), complements `/ade`'s existing model-tiering (CHANGELOG v3.13.0). |
+| `npx devbureau uninstall [--dry-run]` | **Adopt** | Symmetric, low-marginal-cost inversion of the already-proven `update` manifest-diffing mechanism. Closes the only missing piece of the init→update→uninstall lifecycle. |
+| Lightweight structured memory (trigger/action/confidence/evidence fields in `lessons.md`/`gotchas.md`) without the full hook-observer + background-agent infrastructure | **Consider** | The full Continuous Learning v2 architecture (session-observation hooks, background Haiku analysis, per-project hash isolation, auto-evolution into skills) is a major new subsystem — likely over-engineered for DevBureau's lean/tiered philosophy. The much smaller idea (give existing hand-curated entries a light schema) is compatible and cheap, but is a real format-migration decision, not a drop-in. |
+| GateGuard-style "demand investigation facts before risky action" | **Consider** | Genuinely good idea, complements DevBureau's existing Zero-Break evidence-table philosophy, but the actual mechanism (`gateguard-fact-force.js`) is a wrapper around a third-party tool (`zunoworks/gateguard`, pip/npm). Decision needed: document it as an optional companion (Headroom/AgentShield pattern) vs. write a DevBureau-native lighter version as new TIER 0 prose + a smaller enforcement hook. |
+| Re-verify Cursor's current hook-event breadth | **Consider** | DevBureau's `3.5.0` research (still cited in CHANGELOG) found Cursor only exposed `afterFileEdit`/`beforeReadFile` and skipped Cursor hook parity on that basis. ECC's README claims 15–20 event types today, including `beforeShellExecution` and `beforeSubmitPrompt` — if true, this could finally unlock the Cursor hook-parity gap flagged as open since 2026-06-26. Needs direct verification against Cursor's own current docs before trusting ECC's table at face value. |
+| `skill-create`-style "generate a skill from this project's git history" | **Consider** | Valuable idea, but DevBureau's own skills are kit-level (apply to any downstream project), not project-specific artifacts — the use case is a mismatch at the kit layer. Could instead fit as a new workflow that downstream, DevBureau-bootstrapped projects run on *their own* repo. Needs a product-scope decision, not an engineering estimate. |
+| Component-level selective install (`--with`/`--without` flags, `--profile minimal/core/full`) | **Consider** | DevBureau's whole-folder `init`/`update` + SHA-256 preservation is arguably a cleaner mental model already for a non-programmer audience, but offers no way to install only a subset. More configurability cuts against the "non-programmer-friendly" positioning — worth a deliberate decision, not an automatic yes. |
+| Add Zed as a 9th `sync_ide.py` target | **Consider** | Zed is a credible, named editor with real adoption (unlike JoyCode/Qwen CLI, which are niche). Same shape as the OpenCode addition done this session — would need to confirm Zed's actual rules-file convention first, the same way OpenCode's `.opencode/` marker was confirmed before implementing. |
+| Tkinter desktop dashboard GUI | **Skip** | Conflicts with the lean, CLI/markdown-first philosophy aimed at this kit's audience — a desktop GUI is a different distribution surface than what the npm CLI + docs site already serve. Skip because of philosophy conflict, not because it's extra work. |
+| Package-manager auto-detection (npm/pnpm/yarn/bun priority chain) | **Skip** | No current DevBureau use case — `bin/devbureau.js` doesn't shell out to a package manager on the user's behalf today. |
+| JoyCode/CodeBuddy/Qwen CLI adapters | **Skip** | Niche/regional tools, no concrete user demand, would dilute the lean-roster philosophy the same way a 29-agent roster was Skipped in run #6. |
+| Hosted GitHub App for automated PR audits | **Skip** | Different product category (hosted SaaS service vs. a distributable static-markdown kit) — infrastructure DevBureau doesn't run and isn't positioned to maintain as a side project. |
+| Wholesale catalog growth toward ECC's raw numbers (67 agents / 271 skills) | **Skip** | Same precedent as BMAD-METHOD and GSD-core: bigger isn't better for a kit whose audience includes non-programmers who'd drown in that many menus. |
+
+**Adopt (ready for follow-up):**
+1. New Claude Code `PreToolUse` hook blocking `git ... --no-verify` and `-c core.hooksPath=` bypass attempts.
+2. New Claude Code `PostToolUse` advisory hook warning about leftover `console.log`/debug statements on edited JS/TS files.
+3. New README section documenting AgentShield as an optional, not-bundled companion security scanner (Headroom MCP pattern).
+4. New README "Token Optimization" section with concrete `settings.json` values and `/ade` model-tiering cross-reference.
+5. New `npx devbureau uninstall [--dry-run]` command, symmetric to `update`'s manifest-based diffing.
+
+**Consider (needs a decision):**
+1. Lightweight structured fields (trigger/confidence/evidence) for `lessons.md`/`gotchas.md` entries, without the full session-observer/background-agent machinery.
+2. GateGuard-style fact-forcing gate — document the third-party tool vs. build a DevBureau-native lighter version.
+3. Re-verify Cursor's current hook-event surface directly against Cursor's own docs (ECC claims far more events than DevBureau's last check found).
+4. A `skill-create`-equivalent workflow for downstream, DevBureau-bootstrapped projects (not for DevBureau's own kit catalog).
+5. Component-level selective install (`--profile`/`--with`/`--without`) vs. keeping the current whole-folder model.
+6. Add Zed as a 9th `sync_ide.py` target, after confirming its actual rules-file convention.
+
+**Skip:** Tkinter dashboard GUI (philosophy conflict), package-manager auto-detection (no use case), JoyCode/CodeBuddy/Qwen CLI adapters (niche, dilutes lean roster), hosted GitHub App for PR audits (different product category, infra DevBureau doesn't run), wholesale catalog growth toward ECC's raw agent/skill counts (same "bigger isn't better" precedent as BMAD-METHOD/GSD-core).
+
+---
+
 ## 2026-06-26 — Benchmark Run
 
 **Sources checked:** `bmad-code-org/BMAD-METHOD`, `hesreallyhim/awesome-claude-code`, `VoltAgent/awesome-claude-code-subagents`, `VoltAgent/awesome-agent-skills`, `sickn33/antigravity-awesome-skills`, `rohitg00/awesome-claude-code-toolkit`, plus general 2026 best-practice sources for Cursor rules and Claude Code hooks/MCP.

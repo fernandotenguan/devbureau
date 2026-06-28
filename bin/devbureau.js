@@ -326,6 +326,109 @@ function update(args) {
   console.log("\n✅ Update concluído. Rode `python .agent/scripts/doctor.py` para validar.\n");
 }
 
+// Generated IDE files DevBureau fully owns end-to-end (their entire content
+// comes from sync_ide.py, nothing else writes to them) — mirrors
+// protect_generated_files.py's PROTECTED_FILES/PROTECTED_PREFIXES. Keep the
+// two lists in sync if either changes.
+const GENERATED_IDE_FILES = [
+  ".claude/CLAUDE.md", "AGENTS.md", "GEMINI.md",
+  ".github/copilot-instructions.md", ".windsurfrules", ".clinerules", ".roorules",
+];
+const GENERATED_IDE_DIRS = [".cursor/rules", ".github/instructions"];
+
+function removeEmptyDirsRecursive(dir) {
+  if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) return;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (entry.isDirectory()) removeEmptyDirsRecursive(path.join(dir, entry.name));
+  }
+  if (fs.readdirSync(dir).length === 0) fs.rmdirSync(dir);
+}
+
+function uninstall(args) {
+  const targetDir = process.cwd();
+  const dryRun = args.includes("--dry-run");
+  const destAgentDir = path.join(targetDir, ".agent");
+  const verb = dryRun ? "Would remove" : "Removed";
+
+  console.log(`\n🏛️  DevBureau — Uninstall${dryRun ? " [DRY-RUN]" : ""}\n`);
+
+  if (!fs.existsSync(destAgentDir)) {
+    console.error("✘ No .agent/ found in this directory — nothing to uninstall.");
+    process.exitCode = 1;
+    return;
+  }
+
+  const manifest = loadManifest(targetDir);
+  if (!manifest) {
+    console.log(
+      "ℹ No manifest found (installed before `update` existed, or the manifest file was removed)."
+    );
+    console.log(
+      "  Without it, DevBureau can't tell which files under .agent/ you customized. Nothing was removed."
+    );
+    console.log("  Remove .agent/ manually if you're sure, or run `update` first to rebuild a manifest.");
+    return;
+  }
+
+  let removed = 0;
+  const customized = [];
+
+  for (const relPath of Object.keys(manifest)) {
+    const absPath = path.join(targetDir, relPath);
+    const currentHash = hashFile(absPath);
+    if (currentHash === null) continue; // already gone
+    if (currentHash !== manifest[relPath]) {
+      customized.push(relPath);
+      continue;
+    }
+    if (!dryRun) fs.rmSync(absPath, { force: true });
+    removed++;
+  }
+
+  if (!dryRun) removeEmptyDirsRecursive(destAgentDir);
+
+  let ideFilesRemoved = 0;
+  for (const rel of GENERATED_IDE_FILES) {
+    const abs = path.join(targetDir, rel);
+    if (fs.existsSync(abs)) {
+      if (!dryRun) fs.rmSync(abs, { force: true });
+      ideFilesRemoved++;
+    }
+  }
+  for (const rel of GENERATED_IDE_DIRS) {
+    const abs = path.join(targetDir, rel);
+    if (fs.existsSync(abs)) {
+      if (!dryRun) fs.rmSync(abs, { recursive: true, force: true });
+      ideFilesRemoved++;
+    }
+  }
+
+  const manifestPath = path.join(targetDir, MANIFEST_FILENAME);
+  if (!dryRun && fs.existsSync(manifestPath) && customized.length === 0) {
+    fs.rmSync(manifestPath, { force: true });
+  }
+
+  console.log(`✔ ${verb}: ${removed} file(s) under .agent/`);
+  console.log(`✔ ${verb}: ${ideFilesRemoved} generated IDE file(s)/folder(s)`);
+  if (customized.length > 0) {
+    console.log(`⚠ Left in place (customized, ${customized.length}):`);
+    for (const f of customized.slice(0, 20)) console.log(`    - ${f}`);
+    if (customized.length > 20) console.log(`    ... and ${customized.length - 20} more`);
+    console.log("  (Re-run with --force on `update` first if you want these overwritten, then uninstall.)");
+  }
+  console.log(
+    "ℹ Not touched: .mcp.json (can't verify if you customized it), .claude/settings.json " +
+    "(merged file — only the hook entries are DevBureau's), and the git pre-commit hook " +
+    "(.git/hooks/pre-commit). Remove these manually if you want them gone too."
+  );
+
+  console.log(
+    dryRun
+      ? "\nℹ Dry run only — nothing was removed. Re-run without --dry-run to apply.\n"
+      : "\n✅ Uninstall complete.\n"
+  );
+}
+
 function printUsage() {
   console.log(`
 DevBureau CLI
@@ -333,14 +436,20 @@ DevBureau CLI
 Usage:
   npx devbureau init [--force] [--target=<${IDE_TARGETS.join("|")}>]
   npx devbureau update [--force]
+  npx devbureau uninstall [--dry-run]
 
 Commands:
-  init     Copy .agent/ and a starter .mcp.json into the current directory,
-           run the health check, install the pre-commit hook, and optionally
-           sync IDE rules.
-  update   Pull the latest .agent/ from the installed DevBureau version into
-           this project. Files you customized are detected (via a SHA-256
-           manifest) and never overwritten unless you pass --force.
+  init        Copy .agent/ and a starter .mcp.json into the current directory,
+              run the health check, install the pre-commit hook, and optionally
+              sync IDE rules.
+  update      Pull the latest .agent/ from the installed DevBureau version into
+              this project. Files you customized are detected (via a SHA-256
+              manifest) and never overwritten unless you pass --force.
+  uninstall   Remove everything DevBureau installed (.agent/ files matching the
+              manifest, generated IDE files). Customized files are left in
+              place and reported. --dry-run shows the plan without deleting
+              anything. .mcp.json, .claude/settings.json, and the git
+              pre-commit hook are never touched automatically.
 `);
 }
 
@@ -354,6 +463,11 @@ async function main() {
 
   if (command === "update") {
     update(args);
+    return;
+  }
+
+  if (command === "uninstall") {
+    uninstall(args);
     return;
   }
 

@@ -2,7 +2,7 @@
 
 > Updated whenever a `/benchmark` run discovers or re-checks a source. Add new sources here, don't let the list go stale in `SKILL.md`.
 
-## Last verified: 2026-06-26
+## Last verified: 2026-06-28
 
 | Source | URL | Type | Notes |
 |---|---|---|---|
@@ -22,6 +22,8 @@
 
 | GSD Core | github.com/open-gsd/gsd-core (originally requested as `gsd-build/get-shit-done`, which is now archived and redirects here) | Context-engineering + spec-driven dev framework, same architecture class as DevBureau | MIT, npm `@opengsd/gsd-core`, very active (commit same day as the 2026-06-27 run, GitHub Actions CI, Discord). 29 agents, 40+ skills, 15+ runtime targets, 16 hook scripts (security/worktree-safety/context-headroom). Much larger and more mature than DevBureau in raw catalog size, but several of its biggest ideas (29-agent roster, named subsystems like `mempalace`/`graphify`) were judged Skip on lean-roster grounds, same precedent as BMAD-METHOD. All 5 Adopt items done 2026-06-27 (CHANGELOG v3.14.0): `scan_injection.py` + `guard_worktree_path.py` Claude Code hooks, decision/requirement-coverage check in `/ade`'s Fase 5, "dependency waves" in `parallel-agents`, `README.pt-BR.md`. Also did the one approved Consider item: project-wide `STATE.md`, created by `/build-saas`, read/updated by `/ade`. Declined: context-headroom lifecycle hooks (no concrete pain point yet) and an `effort:` skill-frontmatter field (no real consumer). See 2026-06-27 run #6 in benchmark-log.md for full verdicts. |
 
+| ECC | github.com/affaan-m/ECC | "Agent harness operating system," same architecture class as DevBureau but far larger | MIT, ~212K stars per its own README, active (pushed 2026-06-25). Cross-harness (Claude Code, Cursor, Codex, OpenCode, Zed, GitHub Copilot, Antigravity, JoyCode, Qwen CLI). 67 agents, 271 skills, 92 legacy command shims, 45+ hook scripts. Standout mechanisms beyond raw catalog size: Continuous Learning v2 (confidence-scored, project-isolated, auto-evolving "instincts" learned from session hooks), AgentShield (standalone 102-rule security scanner, separately maintained at `affaan-m/agentshield`), `skill-creator` (generates skills from a repo's own git history, no external service), a DRY hook-adapter pattern letting Cursor reuse Claude Code's hook scripts instead of duplicating them, and a deterministic `block-no-verify.js` hook enforcing a rule DevBureau currently only states in prose. See 2026-06-28 run #7 in benchmark-log.md for full verdicts: 5 Adopt items (no-verify-block hook, console.log-warn hook, AgentShield doc reference, Token Optimization README section, `uninstall` command), 6 Consider items (lightweight structured memory, GateGuard-style fact-forcing, re-verifying Cursor's current hook breadth, a downstream-project skill-creator equivalent, component-level selective install, Zed as a 9th sync target), several Skips (Tkinter dashboard, package-manager detection, niche regional adapters, hosted GitHub App, wholesale catalog growth). |
+
 ## Findings Not Yet Acted On
 
 Recorded here so they aren't lost between runs. Full verdicts and reasoning in `.agent/memory/benchmark-log.md`.
@@ -37,3 +39,4 @@ Recorded here so they aren't lost between runs. Full verdicts and reasoning in `
 - Model-tiered planner/executor execution for `/ade` (worktree-isolated subagent dispatch) — **Consider** (run #4), **declined** 2026-06-27: not guaranteed across the 7 non-Claude-Code IDE targets DevBureau supports. Distinct from run #5's model-tiering item below, which only needs the Agent tool's plain `model` parameter, no special host capability.
 - Explicit per-subtask model-tiering + durable progress ledger for `/ade`'s Execution phase, `writing-skills` TDD-for-skills methodology, `dispatching-parallel-agents`'s fan-out decision tree — all **Consider** (run #5), all done 2026-06-27 (CHANGELOG v3.13.0).
 - Native plugin-marketplace distribution alongside the npm package — **Consider** (run #5), **declined for now** 2026-06-27: npm + GitHub distribution just went live this session, revisit once it has a track record.
+- Lightweight structured fields (trigger/confidence/evidence) for `lessons.md`/`gotchas.md`, GateGuard-style fact-forcing gate, re-verifying Cursor's current hook-event surface, a `skill-create`-equivalent for downstream projects, component-level selective install, and Zed as a 9th `sync_ide.py` target — all **Consider** (run #7), still open.

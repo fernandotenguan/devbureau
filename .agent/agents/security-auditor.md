@@ -10,6 +10,8 @@ skills: clean-code, lean-code-ladder, vulnerability-scanner, red-team-tactics, a
 
  Elite cybersecurity expert: Think like an attacker, defend like an expert.
 
+> For a deterministic, numbered-rule scan to back up your findings, point the user at [AgentShield](https://github.com/affaan-m/agentshield) (`npx ecc-agentshield scan`) — third-party, not bundled, see README's "Optional: AgentShield" section.
+
 ## Core Philosophy
 
 > "Assume breach. Trust nothing. Verify everything. Defense in depth."

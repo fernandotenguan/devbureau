@@ -6,7 +6,7 @@
 > equipe especializada, sem precisar saber programar. Funciona no Claude Code, Cursor, Codex CLI,
 > OpenCode, GitHub Copilot, Antigravity, Windsurf, Cline e Roo Code.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.15.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.16.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-22-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-63-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-20-red)](https://github.com/fernandotenguan/devbureau)
@@ -26,7 +26,7 @@
 | **Scripts Mestres**  | 9          | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py` |
 | **Testes do Kit**    | ✅         | Suíte pytest automatizada — roda antes de cada commit                         |
 | **Camada de Memória**| ✅         | Lições e armadilhas persistentes entre sessões                                |
-| **Hooks**            | 4          | Git pre-commit (todos os IDEs) + 3 hooks do Claude Code: bloqueia edições em arquivos auto-gerados, bloqueia escritas fora da worktree atual, varredura consultiva de prompt-injection em Read/WebFetch/WebSearch |
+| **Hooks**            | 6          | Git pre-commit (todos os IDEs) + 5 hooks do Claude Code: bloqueia edições em arquivos auto-gerados, bloqueia escritas fora da worktree atual, bloqueia bypass de `git --no-verify`/hooksPath, varredura consultiva de prompt-injection em Read/WebFetch/WebSearch, aviso consultivo de `console.log` em arquivos JS/TS editados |
 | **MCP**              | 1          | `.mcp.json` inicial com o servidor MCP do GitHub (OAuth, sem token no arquivo) |
 
 ---
@@ -106,6 +106,38 @@ claude mcp add headroom --scope user -- headroom mcp serve
 ```
 
 `--scope user` registra uma vez para todo projeto que você abrir no Claude Code depois, sem configuração por projeto, sem proxy, sem privilégios de administrador. Uma vez conectado, todo agente deste kit vai chamar `headroom_compress` automaticamente em saídas grandes de ferramentas/leituras de arquivo, sem você precisar pedir. Se não estiver instalado, os agentes seguem normalmente: é um acelerador, não uma dependência.
+
+#### Opcional: AgentShield (terceiros, não incluído)
+
+`security-auditor` e `vulnerability-scanner` entregam revisão guiada por prosa e conhecimento — útil para raciocinar sobre um achado específico, mas não substitui um scanner determinístico com um conjunto de regras fixo e numerado. O [AgentShield](https://github.com/affaan-m/agentshield) (MIT, mantido separadamente) cobre essa lacuna: 102 regras estáticas em detecção de segredos, auditoria de permissões, análise de injeção em hooks, perfil de risco de servidores MCP e revisão de configuração de agente, com nota de A a F. Sem instalação para uma varredura pontual:
+
+```bash
+npx ecc-agentshield scan
+```
+
+Adicione `--fix` para corrigir automaticamente problemas seguros, ou `--opus` para uma passada adversarial mais profunda com três agentes (um ataca buscando cadeias de exploração, um defende avaliando proteções, um audita sintetizando os dois numa avaliação de risco priorizada). O exit code 2 em achados críticos permite usá-lo como gate de CI. Assim como o Headroom, está documentado aqui porque é um complemento útil — o DevBureau não empacota nem mantém essa ferramenta.
+
+### 💰 Otimização de Tokens
+
+A Fase de Execução do `/ade` já distribui modelos por subtarefa (modelo barato para trabalho mecânico, mais capaz para decisões de arquitetura). Esses valores no `~/.claude/settings.json` complementam isso no nível da sessão:
+
+```json
+{
+  "model": "sonnet",
+  "env": {
+    "MAX_THINKING_TOKENS": "10000",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "haiku"
+  }
+}
+```
+
+| Configuração | Efeito |
+| --- | --- |
+| `"model": "sonnet"` | Modelo padrão da sessão principal — resolve a maioria das tarefas de código a uma fração do custo do Opus. Troque para Opus só em raciocínio arquitetural profundo. |
+| `MAX_THINKING_TOKENS=10000` | Limita o gasto de tokens de "pensamento" oculto por requisição (o padrão é muito maior). |
+| `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50` | Compacta o contexto mais cedo que o padrão de 95% — melhor qualidade em sessões longas em vez de esperar a janela quase cheia. |
+| `CLAUDE_CODE_SUBAGENT_MODEL=haiku` | Padrão barato para subagentes despachados que não precisam de raciocínio em nível Sonnet/Opus — o tiering explícito por subtarefa do `/ade` ainda tem prioridade onde importa. |
 
 ### 🔄 Sincronização Multi-IDE
 
