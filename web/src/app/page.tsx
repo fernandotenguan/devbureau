@@ -476,7 +476,7 @@ export default function Home() {
             </span>
           </h1>
           <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            AI Agent templates with Skills, Agents, and Workflows for Claude Code, Cursor, Codex CLI, GitHub Copilot, and{" "}
+            AI Agent templates with Skills, Agents, and Workflows for Claude Code, Cursor, Codex CLI, OpenCode, GitHub Copilot, and{" "}
             <a
               href="https://antigravity.google/t"
               className="inline-flex items-center align-middle font-medium text-zinc-950 dark:text-zinc-50 mb-2"

@@ -24,7 +24,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "DevBureau - AI Agent Capability Expansion Toolkit",
-  description: "A comprehensive collection of skills, rules, and workflows to supercharge AI coding assistants across Claude Code, Cursor, Codex CLI, GitHub Copilot, and Antigravity. 58+ skills, 22 agents, production-ready workflows.",
+  description: "A comprehensive collection of skills, rules, and workflows to supercharge AI coding assistants across Claude Code, Cursor, Codex CLI, OpenCode, GitHub Copilot, and Antigravity. 58+ skills, 22 agents, production-ready workflows.",
   metadataBase: new URL("https://github.com/fernandotenguan/devbureau"),
   robots: {
     index: true,

@@ -278,7 +278,7 @@ Master validation scripts that orchestrate skill-level scripts.
 | `doctor.py`              | Kit health check — agents, skills, refs     | Always, before any work          |
 | `checklist.py`           | Priority-based validation (core checks)      | Development, pre-commit          |
 | `verify_all.py`          | Comprehensive verification (all checks)       | Pre-deployment, releases          |
-| `sync_ide.py`            | Multi-IDE sync (Claude, Cursor, Codex, Copilot, Antigravity, Windsurf, Cline, Roo Code) | When updating the kit or its rules |
+| `sync_ide.py`            | Multi-IDE sync (Claude, Cursor, Codex, OpenCode, Copilot, Antigravity, Windsurf, Cline, Roo Code) | When updating the kit or its rules |
 | `auto_fixer.py`          | Auto-fix & format code (selective paths)      | Before finalizing any task         |
 | `auto_preview.py`        | Start/stop/monitor local dev server           | During development                |
 | `session_manager.py`     | Project state, tech stack detection           | Status checks                     |

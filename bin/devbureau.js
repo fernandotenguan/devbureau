@@ -12,7 +12,7 @@ const SOURCE_AGENT_DIR = path.join(PACKAGE_ROOT, ".agent");
 const SOURCE_MCP_CONFIG = path.join(PACKAGE_ROOT, ".mcp.json");
 const MANIFEST_FILENAME = ".devbureau-manifest.json";
 const IDE_TARGETS = [
-  "claude", "cursor", "codex", "copilot", "antigravity", "windsurf", "cline", "roocode", "all",
+  "claude", "cursor", "codex", "opencode", "copilot", "antigravity", "windsurf", "cline", "roocode", "all",
 ];
 
 // Detects which AI IDE/engine is already in use in this project, by checking
@@ -21,6 +21,10 @@ const ENGINE_DETECTORS = {
   claude: (dir) => fs.existsSync(path.join(dir, ".claude")),
   cursor: (dir) => fs.existsSync(path.join(dir, ".cursor")) || fs.existsSync(path.join(dir, ".cursorrules")),
   codex: (dir) => fs.existsSync(path.join(dir, "AGENTS.md")),
+  // OpenCode also reads root AGENTS.md (same convention as Codex CLI), but
+  // it additionally creates its own .opencode/ project folder — that's the
+  // only marker that distinguishes it, since AGENTS.md alone is ambiguous.
+  opencode: (dir) => fs.existsSync(path.join(dir, ".opencode")),
   antigravity: (dir) => fs.existsSync(path.join(dir, ".antigravity")),
   copilot: (dir) => fs.existsSync(path.join(dir, ".github", "copilot-instructions.md")),
   windsurf: (dir) => fs.existsSync(path.join(dir, ".windsurfrules")) || fs.existsSync(path.join(dir, ".windsurf")),

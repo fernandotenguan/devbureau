@@ -3,10 +3,10 @@
 **English** · [Português](README.pt-BR.md)
 
 > A production-grade multi-agent AI framework for building software with professional quality —
-> without needing to know how to code. Works across Claude Code, Cursor, Codex CLI, GitHub Copilot,
-> Antigravity, Windsurf, Cline, and Roo Code.
+> without needing to know how to code. Works across Claude Code, Cursor, Codex CLI, OpenCode,
+> GitHub Copilot, Antigravity, Windsurf, Cline, and Roo Code.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.14.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.15.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-22-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-63-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-20-red)](https://github.com/fernandotenguan/devbureau)
@@ -109,12 +109,14 @@ claude mcp add headroom --scope user -- headroom mcp serve
 
 ### 🔄 Multi-IDE Sync
 
-Export the kit configuration to Antigravity, Claude Code, Cursor, Codex CLI, GitHub Copilot, Windsurf, Cline, and Roo Code:
+Export the kit configuration to Antigravity, Claude Code, Cursor, Codex CLI, OpenCode, GitHub Copilot, Windsurf, Cline, and Roo Code:
 
 ```bash
 python .agent/scripts/sync_ide.py --target all
-# or a single target: claude | cursor | codex | copilot | antigravity | windsurf | cline | roocode
+# or a single target: claude | cursor | codex | opencode | copilot | antigravity | windsurf | cline | roocode
 ```
+
+> Codex CLI and OpenCode both read the same root `AGENTS.md` file directly — there's no separate file for OpenCode, so `--target codex` and `--target opencode` produce an identical result. Both names are accepted so either is discoverable.
 
 ## 🚀 Starting a New Project
 
@@ -146,7 +148,7 @@ If you're maintaining DevBureau itself (not just consuming it in a downstream pr
 npx devbureau init
 ```
 
-This copies the `.agent/` folder into your project, runs the health check (`doctor.py`), installs the pre-commit hook, and syncs the rules to your IDE. It auto-detects which IDE/engine is already in use in the project (Claude Code, Cursor, Codex, Antigravity, Copilot, Windsurf, Cline, Roo Code) and uses that as the default instead of asking blindly — you can still pick a different one or `--target=<ide>` explicitly.
+This copies the `.agent/` folder into your project, runs the health check (`doctor.py`), installs the pre-commit hook, and syncs the rules to your IDE. It auto-detects which IDE/engine is already in use in the project (Claude Code, Cursor, Codex, OpenCode, Antigravity, Copilot, Windsurf, Cline, Roo Code) and uses that as the default instead of asking blindly — you can still pick a different one or `--target=<ide>` explicitly.
 
 Later, when you've customized agents/skills for this project and want to pull in DevBureau's latest improvements without losing your edits:
 

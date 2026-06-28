@@ -35,7 +35,7 @@ WATCHED: dict[str, list[str]] = {
     "Source (read by every IDE target)": [".agent/rules/DEVBUREAU.md"],
     "Claude Code": [".claude/CLAUDE.md"],
     "Antigravity / Gemini CLI": ["GEMINI.md"],
-    "Codex CLI": ["AGENTS.md"],
+    "Codex CLI / OpenCode": ["AGENTS.md"],
     "GitHub Copilot": [
         ".github/copilot-instructions.md",
         ".github/instructions/code-quality.instructions.md",

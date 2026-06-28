@@ -4,9 +4,9 @@
 
 > Um framework de IA multiagente de nível profissional para construir software com qualidade de
 > equipe especializada, sem precisar saber programar. Funciona no Claude Code, Cursor, Codex CLI,
-> GitHub Copilot, Antigravity, Windsurf, Cline e Roo Code.
+> OpenCode, GitHub Copilot, Antigravity, Windsurf, Cline e Roo Code.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.14.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.15.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-22-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-63-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-20-red)](https://github.com/fernandotenguan/devbureau)
@@ -109,12 +109,14 @@ claude mcp add headroom --scope user -- headroom mcp serve
 
 ### 🔄 Sincronização Multi-IDE
 
-Exporte a configuração do kit para Antigravity, Claude Code, Cursor, Codex CLI, GitHub Copilot, Windsurf, Cline e Roo Code:
+Exporte a configuração do kit para Antigravity, Claude Code, Cursor, Codex CLI, OpenCode, GitHub Copilot, Windsurf, Cline e Roo Code:
 
 ```bash
 python .agent/scripts/sync_ide.py --target all
-# ou um único destino: claude | cursor | codex | copilot | antigravity | windsurf | cline | roocode
+# ou um único destino: claude | cursor | codex | opencode | copilot | antigravity | windsurf | cline | roocode
 ```
+
+> Codex CLI e OpenCode leem o mesmo `AGENTS.md` na raiz — não existe um arquivo separado para o OpenCode, então `--target codex` e `--target opencode` produzem o resultado idêntico. Os dois nomes funcionam para que ambos sejam descobríveis.
 
 ## 🚀 Iniciando um Novo Projeto
 
@@ -146,7 +148,7 @@ Se você está mantendo o próprio DevBureau (não só usando em um projeto deri
 npx devbureau init
 ```
 
-Isso copia a pasta `.agent/` para o seu projeto, roda o diagnóstico de saúde (`doctor.py`), instala o hook de pre-commit e sincroniza as regras para o seu IDE. Detecta automaticamente qual IDE/engine já está em uso no projeto (Claude Code, Cursor, Codex, Antigravity, Copilot, Windsurf, Cline, Roo Code) e usa isso como padrão em vez de perguntar no vazio — você ainda pode escolher outro ou usar `--target=<ide>` explicitamente.
+Isso copia a pasta `.agent/` para o seu projeto, roda o diagnóstico de saúde (`doctor.py`), instala o hook de pre-commit e sincroniza as regras para o seu IDE. Detecta automaticamente qual IDE/engine já está em uso no projeto (Claude Code, Cursor, Codex, OpenCode, Antigravity, Copilot, Windsurf, Cline, Roo Code) e usa isso como padrão em vez de perguntar no vazio — você ainda pode escolher outro ou usar `--target=<ide>` explicitamente.
 
 Mais tarde, quando você já tiver customizado agentes/skills para o seu projeto e quiser trazer as melhorias mais recentes do DevBureau sem perder suas edições:
 
