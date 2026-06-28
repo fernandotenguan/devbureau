@@ -2,6 +2,7 @@
 name: i18n-localization
 description: Internationalization and localization patterns. Detecting hardcoded strings, managing translations, locale files, RTL support. Use when adding multi-language support, translating the app, or supporting users in multiple countries. Also triggers on "traduzir o app", "suporte a outros idiomas", "quero em inglês e português", "multi-idioma", or "internacionalizar".
 allowed-tools: Read, Glob, Grep
+permissions: [file_read]
 ---
 
 # i18n & Localization

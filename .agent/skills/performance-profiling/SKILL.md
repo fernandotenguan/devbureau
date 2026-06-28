@@ -2,6 +2,7 @@
 name: performance-profiling
 description: Performance profiling principles. Measurement, analysis, and optimization techniques. Use when the site is slow, pages take too long to load, the app feels heavy, or you notice lag. Also triggers on "o site tá lento", "demora pra carregar", "melhorar velocidade", "otimizar performance", or poor Core Web Vitals.
 allowed-tools: Read, Glob, Grep, Bash
+permissions: [file_read, shell]
 ---
 
 # Performance Profiling
