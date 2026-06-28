@@ -191,4 +191,32 @@ For RAG indexing:
 
 ---
 
+## 8. Invariant Documentation (Cite the Bug It Prevents)
+
+For cross-cutting rules (in `lessons.md`, `gotchas.md`, or an agent's frontmatter), state the concrete failure the rule prevents, not just the rule:
+
+```markdown
+**Invariant:** Single-writer actor for the DB — all writes go through one channel to one thread.
+**Prevents:** Write-contention race observed in [prior-art bug/incident].
+```
+
+This turns "why does this rule exist" into a reviewable, durable contract instead of an opinion that erodes the first time someone is tempted to simplify it.
+
+---
+
+## 9. Docs-Sync Checklist
+
+For changes that should be reflected in more than one place, keep an explicit list of "what else must move together" instead of relying on memory:
+
+| Change type | Must also update |
+|---|---|
+| New/changed feature | README "Features" section |
+| New/changed user-facing behavior | User-facing docs/methodology page (all supported languages) |
+| New/changed API contract | API reference / JSON schema |
+| New/changed config field | `.env.example` or config docs |
+
+Documentation that should travel with a feature falls out of date when "update the docs" was never an explicit step of the change's checklist.
+
+---
+
 > **Remember:** Templates are starting points. Adapt to your project's needs.

@@ -108,6 +108,42 @@ When a single review surfaces more than one finding, severity alone doesn't tell
 
 ---
 
+## Defense-in-Depth Checklist
+
+Treat security as independent, individually-testable layers — never a single control. Before approving a design, confirm each layer that applies exists and is documented (not all apply to every system; mark N/A explicitly rather than silently skipping):
+
+1. Input size bounds (IDs, text fields, prompt/request payload all capped)
+2. All SQL parameterized — no string-built queries
+3. SSRF protection on every outbound HTTP call (block private/loopback/link-local/CGNAT ranges)
+4. Filenames sanitized (basename-only, strip control/traversal chars, reserved names)
+5. File content-type re-derived from bytes, never trusted from the client-declared header
+6. External/untrusted content wrapped and labeled before reaching an LLM prompt
+7. Credential-leak detection on any LLM/tool output before it's logged or returned
+8. Secrets never logged, never read with broad commands (`cat`, loose `env | grep`)
+9. File permissions restricted (0600 sensitive files, 0700 directories) where the OS supports it — default to 0600 for any user-local config file a script writes, not just secrets
+10. Auth verified BEFORE rate-limit counters are incremented (a spoofed sender can't burn the real one's quota)
+11. Hard refusal to bind/start on a non-loopback interface without auth configured — fail closed, not degraded
+
+Document which layers don't apply and why, rather than leaving the checklist silently incomplete.
+
+## Degradation Must Fail Toward Caution
+
+When a dependency degrades (API key missing, model unavailable, partial data), the system's confidence must go DOWN, never stay the same or go up. For security primitives specifically, a failure must resolve to the MORE restrictive state (deny, not allow). Never let a degraded mode "manufacture" a confident verdict through repetition or averaging — prefer an explicit `needs_more_evidence`/low-confidence state over a false positive of certainty.
+
+## Tool Risk Tiers
+
+When reviewing or designing what an agent/tool is allowed to do unattended, classify every action into one of three tiers instead of deciding case-by-case:
+
+| Tier | Confirmation | Examples |
+|------|--------------|----------|
+| **ReadOnly** | Never required | Reading files, searching, listing, diffing |
+| **Mutating** | Required by default, explicit override allowed | Editing a file, creating a branch, writing to a non-prod DB |
+| **Destructive** | Always required, no silent override | `rm -rf`, force-push, dropping a table, revoking access |
+
+This mirrors the project's own "Executing actions with care" guidance as an explicit, consistent classification rather than a judgment call repeated (and potentially answered differently) every time.
+
+---
+
 ## What You Look For
 
 ### Code Patterns (Red Flags)
@@ -120,6 +156,8 @@ When a single review surfaces more than one finding, severity alone doesn't tell
 | Hardcoded secrets | Credential exposure |
 | `verify=False`, SSL disabled | MITM |
 | Unsafe deserialization | RCE |
+| Trusting client-declared MIME type/filename for uploads | Malicious file execution / path traversal |
+| Loose `cat`/`env \| grep` on credential files | Secret leak into logs/agent transcripts |
 
 ### Supply Chain (A03)
 

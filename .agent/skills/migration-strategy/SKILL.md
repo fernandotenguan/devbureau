@@ -83,3 +83,4 @@ Record the decision in the plan file, same section style as `stack-sizing`'s tie
 - Recommending Big Bang by default because it's conceptually simpler — it's usually simpler to plan and far riskier to execute.
 - Treating "improve the code while migrating" as free — every behavioral change during migration makes equivalence harder to prove. Migrate first, improve after, as two separate steps.
 - Skipping the equivalence proof because "the new code is obviously correct" — that confidence is exactly what gets contradicted by a business rule nobody documented.
+- Breaking backward compatibility of user-generated config/state during a migration — never remove/rename/retype a field without a default/alias for the old shape, and write a regression test that parses the OLD format before changing the parser.

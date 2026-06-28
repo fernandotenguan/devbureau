@@ -46,6 +46,14 @@ These rules are **activated per-project**, not global. They complement the unive
 
 ---
 
+## ⚙️ Configuration
+
+- ALL config/secrets MUST go through ONE typed resolver with explicit precedence (file > ENV > default) — no scattered `process.env`/`os.environ` reads anywhere else in the codebase
+- New config values are added to the schema first, then read through the resolver — never inline-read
+- Document the resolver's precedence order once, in the config module itself
+
+---
+
 ## ⚡ Async Code
 
 - ALL FastAPI routes and services MUST be `async`

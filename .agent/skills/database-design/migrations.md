@@ -27,6 +27,13 @@ For zero-downtime changes:
 - Have rollback plan
 - Run in transaction when possible
 
+## Append-Only Migrations
+
+- Never edit or reorder a migration that has already shipped — a migration file is a historical record, not a draft.
+- Schema fixes are always a NEW migration (`ADD COLUMN ... DEFAULT ...`), never a rewrite of an old one.
+- Test every new migration against both a fresh database AND one carrying the old migration history — they must converge to the same schema.
+- No silent drop/delete of data without explicit user consent.
+
 ## Serverless Databases
 
 ### Neon (Serverless PostgreSQL)

@@ -43,6 +43,12 @@ Before designing schema:
 
 ---
 
+## Concurrency & Race Conditions
+
+When enforcing a limit or claiming a slot under concurrent access, never read-then-decide-then-write in application code — that's a check-then-act race (TOCTOU). Use a single conditional UPDATE instead: `UPDATE ... SET count = count + 1 WHERE count < max AND NOT expired`, then check the affected-row count (1 = success, 0 = limit hit/lost the race). This needs no explicit lock and stays correct under any concurrency level.
+
+---
+
 ## Anti-Patterns
 
 ❌ Default to PostgreSQL for simple apps (SQLite may suffice)
@@ -50,3 +56,4 @@ Before designing schema:
 ❌ Use SELECT * in production
 ❌ Store JSON when structured data is better
 ❌ Ignore N+1 queries
+❌ Read a counter, check it in code, then write it back (check-then-act race)

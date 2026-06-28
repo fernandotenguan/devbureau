@@ -172,6 +172,19 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 | Complex test setup | Simplify or split |
 | Ignore flaky tests | Fix root cause |
 | Skip cleanup | Reset state |
+| Mock a hallucinated API contract | Verify the mock against real, observed API behavior first |
+
+---
+
+## 11. Testing at the Boundary (Hermetic Tests)
+
+| Principle | Why |
+|-----------|-----|
+| Stub the boundary, not the OS | Mock `Errno::EACCES`/permission errors instead of running real `chmod` — faster, portable, no leftover state |
+| Inject the dependency, never read global env/home directly | A function that takes `Cache.at(path)` is testable; one that reads `$HOME` internally isn't |
+| Never touch the real `$HOME`/env in a test | Some build pipelines (e.g. package managers) run your test suite on the END USER's machine — a test reading real env can leak their data |
+| Mirror a REAL observed response when stubbing an external API | A stub built from imagination can mock a hallucinated contract and let a broken integration pass green |
+| Test the fallback path by disabling the real dependency (e.g. unset the API key), not by forcing the stub to error | Validates the actual degradation code path, not an artificial one |
 
 ---
 

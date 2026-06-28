@@ -59,6 +59,10 @@ my-mcp-server/
 | Validated input | Schema with types and descriptions |
 | Structured output | Predictable response format |
 
+### Every Tool Must Earn Its Slot
+
+Before adding a new tool to an MCP server, name the concrete gap it fills that no existing tool covers. A growing tool surface with overlapping or rarely-used tools makes the AI's tool-selection harder, not more capable — treat each addition as a deliberate cost, not a free capability.
+
 ### Input Schema Design
 
 | Field | Required? |

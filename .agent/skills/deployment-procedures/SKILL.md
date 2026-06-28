@@ -75,6 +75,11 @@ What are you deploying?
 - [ ] Rollback plan documented
 - [ ] Team notified
 - [ ] Monitoring ready
+- [ ] Preflight validated host/environment (permissions, required paths, tooling present) BEFORE provisioning starts — fail fast and clearly, don't let a mid-process failure leave partial state
+
+### Backup Is Part of the Script, Not a Manual Step
+
+Any operation that overwrites an existing config/state file should back up the current state automatically, as part of the script itself — not as a manual step someone can forget to run. A regeneration gone wrong (or a corrupted source value) is unrecoverable without that backup.
 
 ---
 
@@ -235,6 +240,12 @@ Before deploying:
 4. **Document** every deployment
 5. **Review** what went wrong after issues
 6. **Test rollback** before you need it
+
+---
+
+## 11. Release Notes Cite CVE Class on Dependency Bumps
+
+When a release note includes a dependency version bump, state the CVE class it fixes when applicable — not just "updated dependencies." A generic dependency bump hides whether the change was cosmetic or fixed a real vulnerability, and whoever decides urgency needs that distinction.
 
 ---
 

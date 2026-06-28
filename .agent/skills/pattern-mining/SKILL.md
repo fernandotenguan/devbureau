@@ -104,3 +104,4 @@ Present the **Adopt** list to the user and ask if they want any turned into a re
 - Presenting a single observation as 🟢 CONFIRMED for "this project's general philosophy" — one file is evidence of one decision, not a confirmed project-wide convention.
 - Applying a finding directly to a skill/agent file instead of logging it for review.
 - Treating a proprietary, restrictively-licensed repo the same as the user's own code or a permissively-licensed OSS project.
+- If a later run discovers an earlier verdict in this log was wrong (a pattern scored Adopt that turned out unsound, or Skip'd as redundant when it wasn't), correct the entry AND note the correction in the new run's report — don't just apply the fixed judgment going forward and leave the old verdict standing uncorrected.

@@ -43,6 +43,16 @@ allowed-tools: Read, Glob, Grep
 
 ---
 
+## Source of Truth
+
+Prefer plain files (markdown, JSON, YAML) as the system of record for anything that needs to survive across sessions or tools — they're git-diffable, grep-able, and human-readable without a viewer. Any derived index (database, cache, search) must be rebuildable FROM the files at any time; never let the index become the only copy of the data ("compile, don't retrieve"). This is the same principle behind DevBureau's own `.agent/memory/` layer.
+
+## Multi-Phase Pipelines as a DAG, Not Implicit Order
+
+When a workflow has multiple phases (e.g. requirements → spec → implementation → QA → memory registration), declare each phase's dependency explicitly — "phase X only runs once phase Y has completed" — instead of relying on code order to imply it. Independent phases can fan out in parallel. Implicit ordering breaks silently the first time someone reorders steps without realizing a real dependency existed between them.
+
+---
+
 ## Validation Checklist
 
 Before finalizing architecture:
