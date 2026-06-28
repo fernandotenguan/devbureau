@@ -4,12 +4,12 @@
 
 > Um framework de IA multiagente de nível profissional para construir software com qualidade de
 > equipe especializada, sem precisar saber programar. Funciona no Claude Code, Cursor, Codex CLI,
-> OpenCode, GitHub Copilot, Antigravity, Windsurf, Cline e Roo Code.
+> OpenCode, GitHub Copilot, Antigravity, Windsurf, Cline, Roo Code e Zed.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.16.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.18.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-22-green)](https://github.com/fernandotenguan/devbureau)
-[![Skills](https://img.shields.io/badge/Skills-63-orange)](https://github.com/fernandotenguan/devbureau)
-[![Workflows](https://img.shields.io/badge/Workflows-20-red)](https://github.com/fernandotenguan/devbureau)
+[![Skills](https://img.shields.io/badge/Skills-64-orange)](https://github.com/fernandotenguan/devbureau)
+[![Workflows](https://img.shields.io/badge/Workflows-21-red)](https://github.com/fernandotenguan/devbureau)
 [![Tests](https://img.shields.io/badge/Tests-Automated-brightgreen)](https://github.com/fernandotenguan/devbureau)
 
 > Os links dos badges assumem que o repositório está publicado como `fernandotenguan/devbureau`. Atualize-os se o caminho final publicado for diferente.
@@ -21,8 +21,8 @@
 | Componente          | Quantidade | Descrição                                                                    |
 | -------------------- | ---------- | ----------------------------------------------------------------------------- |
 | **Agentes**          | 22         | Personas de IA especialistas (frontend, backend, segurança, SRE, a11y, jogos, etc.) |
-| **Skills**           | 63         | Módulos de conhecimento de domínio com scripts automatizados                  |
-| **Workflows**        | 20         | Procedimentos de comando de barra, incluindo o pipeline autônomo `/ade`       |
+| **Skills**           | 64         | Módulos de conhecimento de domínio com scripts automatizados                  |
+| **Workflows**        | 21         | Procedimentos de comando de barra, incluindo o pipeline autônomo `/ade`       |
 | **Scripts Mestres**  | 9          | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py` |
 | **Testes do Kit**    | ✅         | Suíte pytest automatizada — roda antes de cada commit                         |
 | **Camada de Memória**| ✅         | Lições e armadilhas persistentes entre sessões                                |
@@ -96,6 +96,17 @@ Uma análise de consultor sênior, não um construtor. Audita o código em nove 
 
 Diferente do `/plan` (plano curto, mesma sessão) e do `/ade` (planeja e executa após aprovação): o `/audit` é para "analisar agora, entregar o trabalho depois."
 
+### 🧬 Mineração de Padrões (`/mine-patterns`)
+
+Parte do melhor conhecimento de engenharia não está em outro kit de agentes de IA: está num projeto profissional já bem construído. Aponte para um repositório de referência (seu ou de qualquer pessoa, caminho local ou URL git) e ele extrai padrões de engenharia generalizáveis (arquitetura, tratamento de erro, estratégia de testes, manuseio de config/segredos, escolhas de ferramentas), nunca a lógica de negócio do projeto. Cada padrão recebe uma marca de confiança e um destino proposto (uma nova entrada em `lessons.md` ou uma skill/agente nomeado), registrado em `.agent/memory/pattern-mining-log.md` para sua revisão. Nada é aplicado automaticamente.
+
+```bash
+/mine-patterns ../meu-outro-projeto
+/mine-patterns https://github.com/algum-org/servico-bem-construido
+```
+
+Diferente do `/benchmark`, que compara o DevBureau com outros kits de agentes de IA: o `/mine-patterns` estuda projetos de software comuns em busca de sabedoria de engenharia.
+
 #### Opcional: Headroom MCP (terceiros, não incluído)
 
 As regras do DevBureau já dizem "use as ferramentas `mcp__headroom__*` se estiverem presentes", mas deixá-las presentes é uma configuração única, por máquina, que você mesmo faz, não algo que o `npx devbureau init` instala:
@@ -116,6 +127,17 @@ npx ecc-agentshield scan
 ```
 
 Adicione `--fix` para corrigir automaticamente problemas seguros, ou `--opus` para uma passada adversarial mais profunda com três agentes (um ataca buscando cadeias de exploração, um defende avaliando proteções, um audita sintetizando os dois numa avaliação de risco priorizada). O exit code 2 em achados críticos permite usá-lo como gate de CI. Assim como o Headroom, está documentado aqui porque é um complemento útil — o DevBureau não empacota nem mantém essa ferramenta.
+
+#### Opcional: GateGuard (terceiros, não incluído)
+
+A tabela de evidências do Zero-Break Deployment Protocol (acima) é disciplina de prompt: pede ao agente que verifique antes de declarar sucesso, mas nada impede um modelo sob pressão de pular essa etapa. O [GateGuard](https://github.com/zunoworks/gateguard) fecha essa lacuna na camada de ferramentas: um hook `PreToolUse` que bloqueia a primeira tentativa de Edit/Write/Bash numa mudança arriscada e força o modelo a apresentar fatos concretos de investigação (quem importa esse arquivo, qual é o schema, qual é o plano de rollback) antes de liberar a nova tentativa.
+
+```bash
+pip install gateguard-ai
+gateguard init
+```
+
+`gateguard init` registra seus hooks em `~/.claude/settings.json` (escopo do usuário) e escreve um `.gateguard.yml` de configuração — não toca nos hooks de nível de projeto do DevBureau em `.claude/settings.json`, então os dois funcionam lado a lado sem conflito.
 
 ### 💰 Otimização de Tokens
 
@@ -141,7 +163,7 @@ A Fase de Execução do `/ade` já distribui modelos por subtarefa (modelo barat
 
 ### 🔄 Sincronização Multi-IDE
 
-Exporte a configuração do kit para Antigravity, Claude Code, Cursor, Codex CLI, OpenCode, GitHub Copilot, Windsurf, Cline e Roo Code:
+Exporte a configuração do kit para Antigravity, Claude Code, Cursor, Codex CLI, OpenCode, GitHub Copilot, Windsurf, Cline, Roo Code e Zed:
 
 ```bash
 python .agent/scripts/sync_ide.py --target all
@@ -180,7 +202,7 @@ Se você está mantendo o próprio DevBureau (não só usando em um projeto deri
 npx devbureau init
 ```
 
-Isso copia a pasta `.agent/` para o seu projeto, roda o diagnóstico de saúde (`doctor.py`), instala o hook de pre-commit e sincroniza as regras para o seu IDE. Detecta automaticamente qual IDE/engine já está em uso no projeto (Claude Code, Cursor, Codex, OpenCode, Antigravity, Copilot, Windsurf, Cline, Roo Code) e usa isso como padrão em vez de perguntar no vazio — você ainda pode escolher outro ou usar `--target=<ide>` explicitamente.
+Isso copia a pasta `.agent/` para o seu projeto, roda o diagnóstico de saúde (`doctor.py`), instala o hook de pre-commit e sincroniza as regras para o seu IDE. Detecta automaticamente qual IDE/engine já está em uso no projeto (Claude Code, Cursor, Codex, OpenCode, Antigravity, Copilot, Windsurf, Cline, Roo Code, Zed) e usa isso como padrão em vez de perguntar no vazio — você ainda pode escolher outro ou usar `--target=<ide>` explicitamente.
 
 Mais tarde, quando você já tiver customizado agentes/skills para o seu projeto e quiser trazer as melhorias mais recentes do DevBureau sem perder suas edições:
 
@@ -284,12 +306,13 @@ python .agent/scripts/sync_ide.py --target claude
 
 Isso cria o `.claude/CLAUDE.md`.
 
-**Para Windsurf, Cline ou Roo Code:**
+**Para Windsurf, Cline, Roo Code ou Zed:**
 
 ```bash
 python .agent/scripts/sync_ide.py --target windsurf   # → .windsurfrules
 python .agent/scripts/sync_ide.py --target cline       # → .clinerules
 python .agent/scripts/sync_ide.py --target roocode     # → .roorules
+python .agent/scripts/sync_ide.py --target zed         # → .rules
 ```
 
 Esses três leem um único arquivo de regras plano (sem divisão por glob), então o arquivo gerado reúne tudo: o time de agentes, qualidade de código, regras de frontend, backend e segurança.
@@ -341,6 +364,7 @@ No painel de chat do Copilot, digite qualquer comando de barra:
 | `/finish-branch`    | Fechamento estruturado (merge/PR/manter/descartar) ao terminar o trabalho |
 | `/lean-audit`       | Encontre excesso de engenharia para remover (diff ou repositório inteiro) |
 | `/lean-debt`        | Colete os marcadores `lean:` em um relatório de dívida          |
+| `/mine-patterns`    | Minere padrões de engenharia de um projeto de referência, registre recomendações Adopt/Consider/Skip (sem aplicação automática) |
 | `/debug`            | Investigação sistemática de bugs                                |
 | `/test`             | Gere e rode testes                                               |
 | `/deploy`           | Checagens prévias + deploy guiado                                |
@@ -367,7 +391,7 @@ python .agent/scripts/checklist.py .
 # Verificação completa antes do deploy
 python .agent/scripts/verify_all.py . --url http://localhost:3000
 
-# Sincroniza o kit para outros IDEs (Antigravity, Claude, Cursor, Codex, Copilot, Windsurf, Cline, Roo Code)
+# Sincroniza o kit para outros IDEs (Antigravity, Claude, Cursor, Codex, Copilot, Windsurf, Cline, Roo Code, Zed)
 python .agent/scripts/sync_ide.py --target all
 
 # Mede a própria pegada de contexto do kit (tokens aproximados nos arquivos de regras gerados)

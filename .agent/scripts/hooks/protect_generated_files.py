@@ -24,6 +24,7 @@ PROTECTED_FILES: dict[str, str] = {
     ".windsurfrules": ".agent/rules/DEVBUREAU.md",
     ".clinerules": ".agent/rules/DEVBUREAU.md",
     ".roorules": ".agent/rules/DEVBUREAU.md",
+    ".rules": ".agent/rules/DEVBUREAU.md",
 }
 
 # Directory prefixes that are entirely auto-generated.

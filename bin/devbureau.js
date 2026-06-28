@@ -12,7 +12,7 @@ const SOURCE_AGENT_DIR = path.join(PACKAGE_ROOT, ".agent");
 const SOURCE_MCP_CONFIG = path.join(PACKAGE_ROOT, ".mcp.json");
 const MANIFEST_FILENAME = ".devbureau-manifest.json";
 const IDE_TARGETS = [
-  "claude", "cursor", "codex", "opencode", "copilot", "antigravity", "windsurf", "cline", "roocode", "all",
+  "claude", "cursor", "codex", "opencode", "copilot", "antigravity", "windsurf", "cline", "roocode", "zed", "all",
 ];
 
 // Detects which AI IDE/engine is already in use in this project, by checking
@@ -30,6 +30,9 @@ const ENGINE_DETECTORS = {
   windsurf: (dir) => fs.existsSync(path.join(dir, ".windsurfrules")) || fs.existsSync(path.join(dir, ".windsurf")),
   cline: (dir) => fs.existsSync(path.join(dir, ".clinerules")) || fs.existsSync(path.join(dir, ".cline")),
   roocode: (dir) => fs.existsSync(path.join(dir, ".roorules")) || fs.existsSync(path.join(dir, ".roo")),
+  // Zed's own project-local settings folder — distinct from the .rules file
+  // DevBureau generates, which Zed reads but doesn't create on its own.
+  zed: (dir) => fs.existsSync(path.join(dir, ".zed")),
 };
 
 function detectInstalledEngines(targetDir) {
@@ -332,7 +335,7 @@ function update(args) {
 // two lists in sync if either changes.
 const GENERATED_IDE_FILES = [
   ".claude/CLAUDE.md", "AGENTS.md", "GEMINI.md",
-  ".github/copilot-instructions.md", ".windsurfrules", ".clinerules", ".roorules",
+  ".github/copilot-instructions.md", ".windsurfrules", ".clinerules", ".roorules", ".rules",
 ];
 const GENERATED_IDE_DIRS = [".cursor/rules", ".github/instructions"];
 

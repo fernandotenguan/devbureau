@@ -37,12 +37,12 @@ Implement the 5 **Adopt** items from the ECC benchmark run — each closes a con
 
 ## Notes
 
-**Not in this plan — flagged as Consider, needs your decision before any task is written for them** (full reasoning in `.agent/memory/benchmark-log.md`'s 2026-06-28 entry):
-1. Lightweight structured fields (trigger/confidence/evidence) for `lessons.md`/`gotchas.md` — cheap version of ECC's Continuous Learning v2, without the session-observer/background-agent machinery.
-2. GateGuard-style fact-forcing gate — document the third-party tool (`zunoworks/gateguard`) vs. build a DevBureau-native lighter version.
-3. Re-verify Cursor's current hook-event surface against Cursor's own docs — ECC claims far more events than DevBureau's last (3.5.0-era) check found; could unlock Cursor hook parity if true.
-4. A `skill-create`-equivalent workflow for *downstream* DevBureau-bootstrapped projects (not for DevBureau's own kit catalog) — product-scope question, not an engineering one.
-5. Component-level selective install (`--profile`/`--with`/`--without`) vs. keeping the current whole-folder `init`/`update` model.
-6. Zed as a 9th `sync_ide.py` target, after confirming its actual rules-file convention (same diligence as the OpenCode addition this session).
+**Consider items, resolved 2026-06-28** (full reasoning in `.agent/memory/benchmark-log.md`'s 2026-06-28 entry, implementation in CHANGELOG v3.17.0):
+1. ~~Lightweight structured fields (trigger/confidence/evidence) for `lessons.md`/`gotchas.md`.~~ **Done** — new Gatilho/Confiança/Evidência fields, reusing `confidence-scale`'s 🟢/🟡/🔴.
+2. ~~GateGuard-style fact-forcing gate.~~ **Done** — documented as an external tool (Headroom/AgentShield pattern), not built native.
+3. Re-verify Cursor's current hook-event surface. **Declined for now** — revisit when Cursor becomes an active priority.
+4. ~~A `skill-create`-equivalent workflow.~~ **Reframed and done** — user wanted something broader: mining engineering patterns from senior-built professional projects (not other AI kits) into DevBureau's own knowledge base. New `pattern-mining` skill + `/mine-patterns` workflow, logging to `.agent/memory/pattern-mining-log.md`, never auto-applying.
+5. Component-level selective install. **Declined** — keeping the current whole-folder `init`/`update` model.
+6. ~~Zed as a 9th `sync_ide.py` target.~~ **Done** — turned out to be the 10th target, not the 9th (the original count had undercounted the already-shipped OpenCode target).
 
 **Explicitly Skipped, not revisited unless something changes:** Tkinter dashboard GUI, package-manager auto-detection, JoyCode/CodeBuddy/Qwen CLI adapters, hosted GitHub App for PR audits, wholesale catalog growth toward ECC's raw agent/skill counts.

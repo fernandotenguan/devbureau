@@ -55,6 +55,8 @@ alwaysApply: true
 
 Catch yourself using "should," "probably," or expressing satisfaction ("Done!", "Perfect!") before that evidence exists — that's the signal to stop and run the command first.
 
+> **Want this enforced at the tooling layer instead of relying on prompt discipline alone?** [GateGuard](https://github.com/zunoworks/gateguard) (`pip install gateguard-ai && gateguard init`, third-party, not bundled) is a `PreToolUse` hook that blocks the first Edit/Write/Bash attempt on a risky change and forces the model to present concrete investigation facts (importers, schema, rollback plan) before retrying — the same "investigation creates awareness self-assessment doesn't" idea behind this table, enforced rather than asked for. It registers in `~/.claude/settings.json` (user scope), so it doesn't collide with DevBureau's own project-level hooks in `.claude/settings.json`.
+
 ### 🧠 ANTI-HALLUCINATION & LOOP PROTECTION (MANDATORY)
 
 **Trigger: Activate on ANY repeated failure, circular reasoning, or unresolvable task.**

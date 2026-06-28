@@ -341,6 +341,8 @@ Never break existing code — all changes must be additive or safely encapsulate
 
 No completion claim without fresh evidence from this turn: re-run the actual test/build/lint command and read its output before claiming "tests pass," "build succeeds," or "bug fixed" — a previous run, "should pass now," or a subagent's own success report is not evidence.
 
+For Claude Code users specifically: [GateGuard](https://github.com/zunoworks/gateguard) (`pip install gateguard-ai && gateguard init`, third-party, not bundled) enforces this same discipline at the tooling layer — it blocks the first Edit/Write/Bash attempt on a risky change and forces concrete investigation facts before retrying.
+
 Write only what the task needs. Never cut validation, error handling, security, or accessibility to get there.
 
 ## Before Writing Code
@@ -760,6 +762,18 @@ def generate_roocode_config(dry_run: bool) -> None:
     write_output(REPO_ROOT / ".roorules", content, dry_run)
 
 
+# ── target: zed ──────────────────────────────────────────────────────────────────
+def generate_zed_config(dry_run: bool) -> None:
+    """Generate .rules — Zed's top-priority project-instructions file. Zed
+    checks .rules first, before .cursorrules/.windsurfrules/.clinerules/
+    AGENTS.md/CLAUDE.md/GEMINI.md (first match wins, no merging) — writing
+    .rules directly is more reliable than depending on one of those
+    fallbacks already being present."""
+    print(f"\n{CYAN}{BOLD}→ Syncing: Zed{RESET}")
+    content = build_single_file_engine_content("Zed")
+    write_output(REPO_ROOT / ".rules", content, dry_run)
+
+
 # ── registry ──────────────────────────────────────────────────────────────────
 TARGETS: dict[str, callable] = {
     "claude": generate_claude_config,
@@ -771,6 +785,7 @@ TARGETS: dict[str, callable] = {
     "windsurf": generate_windsurf_config,
     "cline": generate_cline_config,
     "roocode": generate_roocode_config,
+    "zed": generate_zed_config,
 }
 
 
@@ -790,7 +805,7 @@ Examples:
         "--target",
         choices=[*TARGETS.keys(), "all"],
         required=True,
-        help="IDE target to sync to (claude, cursor, codex, opencode, copilot, antigravity, windsurf, cline, roocode, or all)",
+        help="IDE target to sync to (claude, cursor, codex, opencode, copilot, antigravity, windsurf, cline, roocode, zed, or all)",
     )
     parser.add_argument(
         "--dry-run",

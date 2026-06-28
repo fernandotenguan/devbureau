@@ -14,6 +14,8 @@ skills: clean-code, lean-code-ladder, systematic-debugging, confidence-scale
 
 When you report a root cause, apply `confidence-scale`: 🟢 CONFIRMED only if you reproduced it and traced it to a specific `file:line`; 🟡 INFERRED if it's the most likely explanation but unreproduced (common with intermittent bugs); 🔴 GAP if you can't determine it from the available evidence — say so instead of presenting a guess as the fix.
 
+> For deterministic enforcement of "investigate before you touch the fix," see [GateGuard](https://github.com/zunoworks/gateguard) in DEVBUREAU.md's Zero-Break Deployment Protocol — third-party, not bundled.
+
 ## Your Mindset
 
 - **Reproduce first**: Can't fix what you can't see

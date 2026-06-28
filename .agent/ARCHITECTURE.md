@@ -61,7 +61,7 @@ Specialist AI personas for different domains.
 
 ---
 
-## 🧩 Skills (63)
+## 🧩 Skills (64)
 
 Modular knowledge domains that agents load on-demand, based on task context. Grouped here by theme; the authoritative source of truth for what exists is always `.agent/skills/` itself — run `python .agent/scripts/doctor.py` to verify this list against reality.
 
@@ -85,6 +85,7 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 | `using-git-worktrees` | Isolates work in its own workspace — detects existing isolation, prefers a native tool, falls back to plain `git worktree`, never fights the harness |
 | `finishing-a-branch` | Structured close-out once work is done — merge/PR/keep/discard (`/finish-branch`), provenance-aware worktree cleanup |
 | `writing-skills` | Authoring discipline for NEW skills going forward — description states when to use (not what it contains), RED-GREEN-REFACTOR validation against a real pressure scenario before adding to the catalog |
+| `pattern-mining` | Extracts generalizable engineering patterns from a reference project the user points at (`/mine-patterns`), proposes a `lessons.md`/skill/agent destination per pattern, never auto-applies |
 
 ### Frontend & UI
 
@@ -207,7 +208,7 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 
 ---
 
-## 🔄 Workflows (20)
+## 🔄 Workflows (21)
 
 Slash command procedures. Invoke with `/command`.
 
@@ -226,6 +227,7 @@ Slash command procedures. Invoke with `/command`.
 | `/finish-branch`   | Structured close-out (merge/PR/keep/discard) once work is done |
 | `/lean-audit`      | Finds over-engineering to delete in the current diff (default) or the whole repo |
 | `/lean-debt`       | Harvests `lean:` shortcut markers into a one-shot debt ledger |
+| `/mine-patterns`   | Mines a reference project for generalizable engineering patterns, logs Adopt/Consider/Skip recommendations (no auto-apply) |
 | `/new-project`     | Bootstrap a new project from this base                 |
 | `/orchestrate`     | Multi-agent coordination                                |
 | `/plan`            | Task breakdown without writing code                     |
@@ -278,7 +280,7 @@ Master validation scripts that orchestrate skill-level scripts.
 | `doctor.py`              | Kit health check — agents, skills, refs     | Always, before any work          |
 | `checklist.py`           | Priority-based validation (core checks)      | Development, pre-commit          |
 | `verify_all.py`          | Comprehensive verification (all checks)       | Pre-deployment, releases          |
-| `sync_ide.py`            | Multi-IDE sync (Claude, Cursor, Codex, OpenCode, Copilot, Antigravity, Windsurf, Cline, Roo Code) | When updating the kit or its rules |
+| `sync_ide.py`            | Multi-IDE sync (Claude, Cursor, Codex, OpenCode, Copilot, Antigravity, Windsurf, Cline, Roo Code, Zed) | When updating the kit or its rules |
 | `auto_fixer.py`          | Auto-fix & format code (selective paths)      | Before finalizing any task         |
 | `auto_preview.py`        | Start/stop/monitor local dev server           | During development                |
 | `session_manager.py`     | Project state, tech stack detection           | Status checks                     |
@@ -290,7 +292,7 @@ Master validation scripts that orchestrate skill-level scripts.
 | Hook | Platform | Trigger | What it does |
 | --- | --- | --- | --- |
 | `install_hooks.py`'s git pre-commit | Git (any IDE) | `git commit` | Runs `doctor.py` + the kit integrity tests; blocks the commit on failure |
-| `.agent/scripts/hooks/protect_generated_files.py` | Claude Code only (`.claude/settings.json`, `PreToolUse`) | Edit/Write/MultiEdit on an auto-generated file (`.claude/CLAUDE.md`, root `AGENTS.md`/`GEMINI.md`, `.cursor/rules/*.mdc`, `.github/copilot-instructions.md`, `.github/instructions/*`, `.windsurfrules`, `.clinerules`, `.roorules`) | Blocks the write, tells the agent which real source file to edit instead |
+| `.agent/scripts/hooks/protect_generated_files.py` | Claude Code only (`.claude/settings.json`, `PreToolUse`) | Edit/Write/MultiEdit on an auto-generated file (`.claude/CLAUDE.md`, root `AGENTS.md`/`GEMINI.md`, `.cursor/rules/*.mdc`, `.github/copilot-instructions.md`, `.github/instructions/*`, `.windsurfrules`, `.clinerules`, `.roorules`, `.rules`) | Blocks the write, tells the agent which real source file to edit instead |
 | `.agent/scripts/hooks/guard_worktree_path.py` | Claude Code only (`PreToolUse`) | Edit/Write/MultiEdit while `cwd` is inside a git worktree | Blocks the write if the target path is outside the current worktree's root — makes `using-git-worktrees`'s prose guard hard-blocking |
 | `.agent/scripts/hooks/scan_injection.py` | Claude Code only (`PostToolUse`) | Read/WebFetch/WebSearch returns content | Advisory-only: prints a warning if known prompt-injection patterns or invisible Unicode are found, reinforcing DEVBUREAU.md's Untrusted Content Boundary — never blocks |
 | `.agent/scripts/hooks/block_no_verify.py` | Claude Code only (`PreToolUse`) | Bash command containing `git ... --no-verify` or `-c core.hooksPath=` | Blocks the command — makes `CLAUDE.md`'s Git Safety Protocol ("NEVER skip hooks") hard-blocking instead of prose-only |
@@ -350,12 +352,12 @@ python .agent/scripts/sync_ide.py --target all
 | Metric              | Value                                                  |
 | -------------------- | --------------------------------------------------------- |
 | **Total Agents**     | 22                                                         |
-| **Total Skills**     | 63 (+ 10 nested under `game-development`)                  |
-| **Total Workflows**  | 20                                                         |
+| **Total Skills**     | 64 (+ 10 nested under `game-development`)                  |
+| **Total Workflows**  | 21                                                         |
 | **Master Scripts**   | 9 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`) |
 | **Skills With Scripts** | 13                                                       |
 | **Kit Tests**        | 1 file, parametrized (`test_kit_integrity.py`)              |
-| **Memory Layer**     | `.agent/memory/` (lessons.md + gotchas.md)                  |
+| **Memory Layer**     | `.agent/memory/` (lessons.md + gotchas.md + benchmark-log.md + pattern-mining-log.md) |
 
 ---
 
