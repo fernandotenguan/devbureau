@@ -1,0 +1,236 @@
+# Changelog
+
+All notable changes to DevBureau (formerly "Antigravity Kit — Personalized by FernandoTenguan") will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### [3.19.0] - 2026-06-28
+- **ADD**: Merged the akitaonrails pattern-mining session's 32 Adopt + Consider clusters from `.agent/memory/pattern-mining-log.md` into the live knowledge base — LLM-output grounding/hallucination stripping (`ai-engineer`), defense-in-depth security checklist + tool risk tiers (`security-auditor`), self-improvement loop with audit trail + operational gates for unattended runs + job state machine with self-repair + two-phase eval (`agent-evaluation`), DAG-based multi-phase pipelines (`architecture`), docs-sync checklist + invariant-cites-the-bug format (`documentation-templates`), atomic-update race safety (`database-design`), hermetic/boundary testing (`testing-patterns`), bounded outbound fan-out (`api-patterns`), append-only migrations (`database-design/migrations.md`), backward-compat config contracts (`migration-strategy`), centralized config resolver (`saas-stack-rules`), backup-as-script-default/preflight-fail-fast/CVE-in-release-notes (`deployment-procedures`), "every MCP tool earns its slot" (`mcp-builder`), self-correcting re-score discipline (`pattern-mining`), plus matching `lessons.md`/`gotchas.md` entries. A merge-status table was added to the top of `pattern-mining-log.md` so future `/mine-patterns` runs don't re-report already-covered themes. The AGENTS.md-vs-per-IDE-sync question was deliberately logged as an open decision in `lessons.md` rather than acted on, since it touches the kit's own sync architecture. A batch of stack-specific items (Rust concurrency primitives, WebView strategy patterns, etc.) was evaluated and left unmerged as not generalizable to DevBureau itself.
+- **FIX**: `doctor.py`'s cross-reference checker (`check_cross_references`) only compared against top-level skill directory names, producing 10 false-positive "ghost skill" warnings for `game-developer.md`'s nested skill refs (`game-development/pc-games`, etc. — these directories genuinely exist) and missing a skill's declared internal `name:` alias (`react-best-practices` is `nextjs-react-expert`'s documented alias per `ARCHITECTURE.md`, not a ghost). The checker now walks all `SKILL.md` files recursively and also indexes each skill's declared frontmatter `name:`.
+- **FIX**: `code-archaeologist.md` referenced a `refactoring-patterns` skill that was never created (a genuine dangling reference, unlike the two false positives above) — removed from its `skills:` frontmatter; its existing `clean-code` + `migration-strategy` + `code-review-checklist` already cover the same ground.
+- **NOTE**: Full structural alignment audit run after the above: all 10 `sync_ide.py` targets regenerate byte-identical to what's committed (zero drift), `ARCHITECTURE.md`'s agent/skill counts (22 agents, 64 skills, 21 workflows, 9 master scripts) and its agent table match the actual frontmatter exactly, and both READMEs already covered every shipped feature including `/mine-patterns` and the 10-IDE list. No README changes were needed since this round's work enriches existing skill/agent content rather than adding a new user-facing feature.
+
+### [3.18.0] - 2026-06-28
+- **ADD**: New `pattern-mining` skill + `/mine-patterns <path-or-url>` workflow — mines a finished, professional-grade reference project (pointed at by the user, never auto-discovered) for generalizable engineering patterns (architecture, error handling, testing strategy, config/secrets handling, tooling choices), explicitly excluding the analyzed project's business logic. Every pattern gets a `confidence-scale` mark and a proposed destination (a `lessons.md` entry in the new Gatilho/Confiança/Evidência format, or a named skill/agent update). Logged to new `.agent/memory/pattern-mining-log.md`, mirroring `/benchmark`'s "log, don't implement" precedent — nothing is ever auto-applied. Distinct from `framework-benchmarking`/`/benchmark`, which compares DevBureau against other AI-agent kits, not regular software projects. Reframes benchmark run #7's Consider item #4 (originally ECC's `skill-creator`) per the user's explicit direction: capture engineering intelligence from senior-built projects, not generate per-project skills. Confirmed `sandeco/reversa` (suggested as a possible mechanism) does not fit — it reconstructs functional/technical specs from legacy code, not prompt-engineering or pattern knowledge.
+- **DOC**: Skill/workflow counts updated everywhere (64 skills, 21 workflows): both READMEs, `ARCHITECTURE.md`.
+
+### [3.17.0] - 2026-06-28
+- **ADD**: Zed as a 10th `sync_ide.py` target — writes `.rules` at the repo root, the file Zed checks first (before `.cursorrules`/`.windsurfrules`/`.clinerules`/`AGENTS.md`/`CLAUDE.md`/`GEMINI.md`; first match wins, no merging). New `zed` engine detector in `bin/devbureau.js` (`.zed/` folder), `.rules` added to `protect_generated_files.py` and the `uninstall` generated-files list. Resolves benchmark run #7's Consider item #6 — turned out to be the 10th target, not the 9th, since the structural comparison table had undercounted the already-shipped OpenCode target.
+- **ADD**: Lightweight structured memory fields for `.agent/memory/lessons.md` and `gotchas.md` — new **Gatilho** (trigger), **Confiança** (🟢/🟡/🔴, reusing the existing `confidence-scale` skill), and **Evidência** (evidence) fields added to the entry format. All 4 pre-existing entries retrofitted. Resolves benchmark run #7's Consider item #1, scoped down from ECC's full Continuous Learning v2 (no session-observer/background-agent machinery).
+- **DOC**: New "Optional: GateGuard" README section (Headroom/AgentShield pattern) documenting `pip install gateguard-ai && gateguard init` as a third-party `PreToolUse` hook that forces investigation facts before risky Edit/Write/Bash. Cross-referenced from `DEVBUREAU.md`'s Zero-Break Deployment Protocol and `debugger.md`. Resolves benchmark run #7's Consider item #2 — user chose to document rather than build a native version.
+- **FIX**: `package.json`'s `description` was missing Windsurf/Cline/Roo Code (pre-existing staleness, unrelated to this run) — now lists all 10 supported IDE/engine targets.
+- **DECLINED**: Benchmark run #7's Consider item #3 (re-verify Cursor's current hook-event surface) — deferred until Cursor becomes an active priority. Item #5 (component-level selective install) — declined, keeping the whole-folder `init`/`update` model. Item #4 (`skill-create`-equivalent) — reframed by the user as mining engineering patterns from senior-built professional projects into DevBureau's own knowledge base; gated behind clarifying questions, not yet a task.
+
+### [3.16.0] - 2026-06-28
+- **ADD**: New Claude Code `PreToolUse` hook `block_no_verify.py` — blocks `git ... --no-verify` and `git -c core.hooksPath=...` bypass attempts, making `CLAUDE.md`'s Git Safety Protocol ("NEVER skip hooks") hard-blocking instead of prose-only. Registered in `.claude/settings.json` via `sync_ide.py`.
+- **ADD**: New Claude Code `PostToolUse` hook `warn_debug_statements.py` — advisory-only warning when an edited/written `.ts`/`.tsx`/`.js`/`.jsx` file still contains `console.log(...)`. Never blocks, same design as `scan_injection.py`.
+- **DOC**: New "Optional: AgentShield" README section (Headroom MCP pattern — documented, third-party, not bundled) pointing at `npx ecc-agentshield scan` (102 static security rules, MIT, separately maintained) as a deterministic companion to `vulnerability-scanner`'s prose-guided review. Cross-referenced from `vulnerability-scanner/SKILL.md` and `security-auditor.md`.
+- **DOC**: New "Token Optimization" README section with concrete `~/.claude/settings.json` values (`model=sonnet`, `MAX_THINKING_TOKENS=10000`, `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50`, `CLAUDE_CODE_SUBAGENT_MODEL=haiku`), cross-referenced against `/ade`'s existing per-subtask model-tiering.
+- **ADD**: `npx devbureau uninstall [--dry-run]` — removes everything DevBureau installed (manifest-tracked `.agent/` files plus generated IDE files: `AGENTS.md`, root `GEMINI.md`, `.claude/CLAUDE.md`, `.cursor/rules/`, `.github/copilot-instructions.md`, `.github/instructions/`, `.windsurfrules`, `.clinerules`, `.roorules`), symmetric to `update`'s SHA-256 manifest diffing. Customized files are detected and left in place, reported by name. Never touches `.mcp.json`, `.claude/settings.json` (a merged file — only DevBureau's own hook entries belong to it), or the git pre-commit hook, since none of those can be safely auto-reversed without more context than the manifest carries.
+- **FIX**: Updated hook count (4→6) across README.md, README.pt-BR.md, `.agent/ARCHITECTURE.md`.
+- **NOTE**: All 5 items above are the **Adopt** findings from a benchmark run against `affaan-m/ECC` ("the agent harness operating system") and its companion `affaan-m/agentshield` — see `.agent/memory/benchmark-log.md` (2026-06-28, Run #7) and the implementation plan at `ecc-benchmark-improvements.md`. Six **Consider** items were deliberately left open pending a user decision: lightweight structured fields for `lessons.md`/`gotchas.md` (a cheap subset of ECC's Continuous Learning v2, without the session-observer/background-agent machinery), a GateGuard-style fact-forcing gate (document the third-party tool vs. build a DevBureau-native version), re-verifying Cursor's current hook-event surface (ECC claims far more events than DevBureau's last, 3.5.0-era check found), a `skill-create`-equivalent for downstream projects, component-level selective install, and Zed as a 9th `sync_ide.py` target. Several Skips on lean-roster/philosophy grounds: Tkinter dashboard GUI, package-manager auto-detection, niche regional IDE adapters, a hosted GitHub App, and wholesale catalog growth toward ECC's raw agent/skill counts.
+
+### [3.15.0] - 2026-06-28
+- **ADD**: New `opencode` target in `sync_ide.py` and `bin/devbureau.js` — OpenCode reads the same root `AGENTS.md` Codex CLI already uses (confirmed against OpenCode's own docs), so `--target opencode` shares `generate_codex_config()` rather than duplicating a second copy of the same file. `--target all` de-duplicates by generator function so `AGENTS.md` isn't written twice. Detection uses OpenCode's own `.opencode/` project folder (`agents/`, `skills/`, `commands/`, etc.) rather than `AGENTS.md`, since that file alone can't distinguish OpenCode from Codex CLI — confirmed the hard way via a real collision in a downstream project (a leftover OpenCode `AGENTS.md` got misdetected as Codex CLI, see `DEVBUREAU.md`'s git history this session).
+- **ADD**: `bin/devbureau.js init`'s IDE prompt and `--target=` flag now accept multiple IDE names separated by comma, comma+space, or plain whitespace (e.g. `claude, antigravity`) instead of only a single exact token — unrecognized names are reported and skipped rather than discarding the whole answer.
+- **FIX**: `package.json`'s `bin` field had a `"./"` prefix that npm's publish-time validation silently strips as invalid, which would have broken `npx devbureau` after publishing — caught via `npm pack --dry-run` during a publish attempt.
+- **REFACTOR**: Renamed the kit's own master rules file `.agent/rules/GEMINI.md` → `.agent/rules/DEVBUREAU.md` — a naming leftover from the project's original "Antigravity Kit" identity, unrelated to the root-level `GEMINI.md`/`AGENTS.md` that Google Antigravity and Codex CLI/OpenCode require by their own convention (those keep their required names). Propagated across `sync_ide.py`, `doctor.py`, `test_kit_integrity.py`, hooks, skills, memory, and all docs; regenerated all IDE targets.
+- **FIX**: Untracked two stray `.pyc` bytecode files under `.agent/.shared/ui-ux-pro-max/scripts/__pycache__/` that had been committed despite `__pycache__/` already being in `.gitignore` (gitignore doesn't retroactively untrack pre-existing tracked files).
+- **NOTE**: All of the above came out of a real first-use dogfooding session in a downstream project (`Lottomestre`, via `npm link`), which is also what surfaced the IDE-detection false-positive/false-negative pair (Codex vs. OpenCode vs. Antigravity) that motivated both the `opencode` target and the new comma-separated CLI input.
+
+### [3.14.0] - 2026-06-27
+- **ADD**: New Claude Code `PostToolUse` hook `scan_injection.py` — advisory scan of Read/WebFetch/WebSearch output for known prompt-injection patterns (instruction-override phrasing, fake system tags, invisible Unicode), reinforcing GEMINI.md's previously prose-only "Untrusted Content Boundary" rule. Never blocks, only warns. Excludes DevBureau's own `.agent/`/`.claude/`/`.git/`/`CHANGELOG.md` paths to avoid flagging the kit's own security docs.
+- **ADD**: New Claude Code `PreToolUse` hook `guard_worktree_path.py` — blocks Edit/Write/MultiEdit calls that target an absolute path outside the current git worktree's root, making `using-git-worktrees`'s prose guard hard-blocking instead of advisory. No-op outside a worktree and on relative paths. Both hooks registered in `.claude/settings.json` via `sync_ide.py`.
+- **ADD**: `/ade`'s Fase 5 (QA Review) gained a decision/requirement-coverage check — re-reads the Fase 2 spec and confirms each documented decision and success criterion was actually honored, not just that automated tests pass.
+- **ADD**: `parallel-agents` gained a "Dependency Waves" section — group independent tasks into a wave, dispatch the wave in parallel, start the next wave only after the current one's state is merged. Referenced from `/ade`'s Fase 4.
+- **ADD**: `README.pt-BR.md` — full Portuguese translation of the GitHub/npm-facing README, with a language-switcher link added to both files. Closes a gap between GEMINI.md's existing PT-BR/EN bilingual mandate and the README that never actually shipped in Portuguese.
+- **ADD**: Project-wide `STATE.md` convention — `/build-saas`'s Stage 7.3 now creates it (one row per `implementation-plan.md` batch); `/ade`'s Fase 1 reads it first if present, Fase 6 updates the matching batch's status. Optional infrastructure for multi-session, multi-batch projects; a single-feature `/ade` run with no `STATE.md` present is unaffected.
+- **NOTE**: All of the above came out of a benchmark run against `open-gsd/gsd-core` — see `.agent/memory/benchmark-log.md` (2026-06-27, Run #6). The originally requested URL (`gsd-build/get-shit-done`) turned out to be archived; its own README redirects to this active successor, which was cloned and read instead. Two items were declined for now: context-headroom lifecycle hooks (no concrete pain point reported yet) and an `effort:` skill-frontmatter field (no real consumer to act on it). Two were Skipped: growing the agent roster to match GSD's 29 (conflicts with the lean-roster philosophy), and `CONTRIBUTING.md`/`SECURITY.md`/`VERSIONING.md` (premature for a private, single-maintainer repo).
+- **FIX**: Updated hook count (2→4) across README.md, `.agent/ARCHITECTURE.md`.
+- **DOC**: Added two architecture diagrams under `docs/diagrams/` (`devbureau-architecture`, `ade-pipeline`), generated with the third-party `drawio-skill` (gitignored, not bundled). Embedded both in README.md and README.pt-BR.md's "How It Works" section. Also fixed a duplicated "What's Included" heading in README.md (the second instance was actually the Installation section) and corrected the Master Scripts count (5 → 9, the table only listed half of `.agent/scripts/*.py`).
+- **PUBLISH**: First npm release since `3.9.0` — bundles all unreleased work from `3.10.0` through this version.
+
+### [3.13.0] - 2026-06-27
+- **ADD**: `/ade`'s Fase 4 (Execution) now specifies a model tier per subtask — cheap model for mechanical 1-2 file work with a complete spec, standard for integration/judgment, most-capable for architecture decisions and final review — with an explicit warning that an omitted model inherits the session's (usually the most expensive). Degrades gracefully on hosts without per-subagent model selection.
+- **ADD**: `/ade`'s Fase 4 also gained a durable progress ledger — reuses the `{task-slug}.md` plan file already created in Fase 2 instead of inventing a new state file. Checkboxes under "Critério de sucesso" are marked done live as each subtask completes; on resume after an interruption, the file is read first and completed items aren't redone. If the file itself is lost, `git diff` against the approved SHA recovers what's already on disk.
+- **ADD**: New `writing-skills` skill — authoring discipline for skills created from now on (the existing 63 are not retrofitted): description states *when* to use a skill, never *what's inside* it (a summary-shaped description measurably causes an agent to skip the body); RED→GREEN→REFACTOR validation against a real pressure scenario before a skill goes in the catalog. Referenced from `KIT_MASTER_RULES.md`.
+- **ADD**: `parallel-agents` gained a "When NOT to Fan Out" section (related tasks, shared mutable state, need-full-system-context all argue against parallelizing) and a prompt-construction mistakes table (too broad/specific, no context/context, no constraints/constraints, vague/specific output) for writing prompts to dispatched agents.
+- **NOTE**: Resolves 3 of the 4 Consider items left open from `obra/superpowers` benchmark Run #5 — see `.agent/memory/benchmark-log.md`. The 4th (native plugin-marketplace distribution) was declined for now: npm + GitHub distribution just went live this same session, revisit once it has a track record.
+- **FIX**: Updated counts to 63 skills across README.md, `.agent/ARCHITECTURE.md`, and `GUIA_DO_USUARIO.md`.
+
+### [3.12.0] - 2026-06-27
+- **FIX**: `systematic-debugging` was a stale, weaker copy of its own cited upstream source (`obra/superpowers`) — refreshed in place with the Iron Law framing, a Phase 4.5 "3+ fixes failed → question the architecture, not Fix #4" escalation, a Common Rationalizations table, Red Flags (including watching for the human's own frustration signals), and three new companion technique files (`root-cause-tracing.md`, `defense-in-depth.md`, `condition-based-waiting.md`, DevBureau's own condensed versions, not verbatim copies).
+- **ADD**: New `receiving-code-review` skill — verify-before-implementing discipline for responding to review feedback, no performative agreement, source-specific handling (trusted human vs. external reviewer), YAGNI-check before implementing a reviewer's "do it properly" suggestion. Pairs with the existing `code-review-checklist` (the giving side).
+- **ADD**: GEMINI.md TIER 0's Zero-Break Protocol gained a concrete claim → required-evidence table (e.g. "tests pass" requires fresh 0-failure output, not "previous run" or "should pass now") plus a rationalization catch ("should," "probably," premature satisfaction). Propagated to all 8 IDE targets — and while propagating it, found and fixed a pre-existing gap where Windsurf/Cline/Roo Code never received the Zero-Break Protocol at all (only Copilot had a hand-curated copy; Claude/Codex/Antigravity/Cursor inherit it via full GEMINI.md text).
+- **ADD**: `plan-writing` gained a "No Placeholders" banned-phrase list (TBD, "add appropriate error handling", "similar to Task N") and an end-of-plan Self-Review pass (coverage, placeholder scan, consistency) — quality additions that don't conflict with the skill's deliberately short, no-fixed-template design.
+- **ADD**: New `using-git-worktrees` skill — isolates a task in its own workspace via detect-existing-isolation → prefer native host tool → fall back to plain `git worktree` → fall back further to working in place if sandboxed. Referenced as an optional step before `/ade`'s Execution phase, not made mandatory by default.
+- **ADD**: New `finishing-a-branch` skill + `/finish-branch` workflow — structured close-out (merge locally / push+PR / keep / discard) instead of an open-ended "what now?", with provenance-aware worktree cleanup (only removes a worktree under `.worktrees/`/`worktrees/`, never one the host's own native tool created). `/ade`'s Output Final now points here when relevant.
+- **NOTE**: All of the above came out of a benchmark run against `obra/superpowers` — see `.agent/memory/benchmark-log.md` (2026-06-27, Run #5). DevBureau had already imported `plan-writing` and `systematic-debugging` from this exact source pre-benchmarking, but the imports were never logged or refreshed; this run caught the drift. Four findings were logged as Consider, not implemented: explicit model-tiering + a durable progress ledger for `/ade`'s Execution phase, `writing-skills`'s TDD-for-skills behavioral-testing methodology (DevBureau has zero behavioral testing for its skills today, only structural), a parallelization decision-tree addition to `parallel-agents`, and native plugin-marketplace distribution alongside the npm package. One was Skipped on purpose: opt-out usage telemetry, which conflicts with DevBureau's own privacy posture.
+- **FIX**: Updated counts to 62 skills / 20 workflows across README.md, `.agent/ARCHITECTURE.md`, and `GUIA_DO_USUARIO.md`.
+
+### [3.11.0] - 2026-06-27
+- **ADD**: `codebase-audit`/`/audit` now ingests ADRs/PRDs/`CONTEXT.md`/`DESIGN.md`/`PRODUCT.md` during Recon when present — documented tradeoffs aren't re-flagged as findings, and a stale ADR (code drifted from the decision) is itself a finding. Strictly additive, no-op when absent.
+- **ADD**: `codebase-audit`/`/audit` gained two Closing-the-Loop invocation variants: `reconcile` (re-reads `plans/README.md` and each plan's drift check to verify DONE, investigate BLOCKED, refresh drifted TODO, retire findings fixed independently — no executor dispatch involved) and `--issues` (publish selected plans as GitHub issues, gated on an explicit flag and a public-repo visibility warning before publishing anything sensitive).
+- **ADD**: `/ade`'s spec template now stamps the commit SHA at user approval and lists explicit STOP conditions; Fase 4 (Execution) runs a drift check against that SHA before the first step. Only matters when execution resumes after a gap since approval — the common same-session flow sees an empty diff and the check is instant.
+- **ADD**: `security-auditor` now adds an effort estimate (S/M/L) when triaging more than one finding, using severity-weighted leverage as the tiebreaker among same-severity findings, so a cheap fix doesn't get buried under a slower one of equal severity.
+- **NOTE**: `lean-audit`'s existing "biggest cut first" repo-scope ranking already was a leverage proxy (effort is uniformly low by construction there) — documented that explicitly rather than bolting on a redundant formula.
+- **DECLINED**: Model-tiered execution for `/ade` (expensive planner / cheap executor in an isolated git worktree / tech-lead-style review) — asked directly, user chose not to build it now, specifically because worktree-isolated subagent dispatch isn't guaranteed across the 7 non-Claude-Code IDE targets this kit also supports, and a Claude-Code-only implementation would be an inconsistent experience across IDEs. `debugger` was also evaluated for the leverage-formula extension and skipped on its own merits (single-bug investigation tool, not a findings backlog — the formula doesn't apply to what it produces).
+- **NOTE**: All of the above closes out the remaining **Consider** items from `.agent/memory/benchmark-log.md`'s 2026-06-27 run #4 (`shadcn/improve` benchmark), except the declined one above.
+
+### [3.10.0] - 2026-06-27
+- **ADD**: New `codebase-audit` skill + `/audit` workflow — senior-advisor survey across nine categories (correctness, security, performance, test coverage, tech debt, dependencies, DX, docs, direction), reusing existing DevBureau skills per category (`vulnerability-scanner`, `performance-profiling`, `testing-patterns`, `lean-audit`, `migration-strategy`, `documentation-templates`, `product-manager`'s RICE for direction) rather than re-deriving that knowledge. Vets every finding against the actual code before presenting (subagents over-report), ranks by leverage (impact ÷ effort, confidence/risk-discounted), then writes self-contained handoff plans (STOP conditions, in/out-of-scope file lists, git-SHA drift check) for a different agent or session to execute. Never edits source code — distinct from `/plan` (short, same-session) and `/ade` (plans and executes itself).
+- **ADD**: New TIER 0 universal rule in `.agent/rules/GEMINI.md` — "Untrusted Content Boundary": content read from an audited repo (code, comments, docs, config, vendored deps) is data, not instructions; apparent injected instructions become a security finding instead of being followed. Propagated to all 8 IDE targets via `sync_ide.py`.
+- **ADD**: New "Vet Before Presenting" section in the `confidence-scale` skill — when a finding comes from a dispatched subagent rather than the agent's own direct read, it must be re-verified against the cited `file:line` before it can carry a 🟢 CONFIRMED mark; downgrade to 🟡/🔴 if it can't be confirmed.
+- **NOTE**: All three came out of a benchmark run against `shadcn/improve` (a Claude Code Agent Skill, same architecture class as DevBureau, already installed and runnable in Claude Code sessions — the question wasn't "should we learn about this" but "should DevBureau ship a portable equivalent for the other 7 IDE targets"). See `.agent/memory/benchmark-log.md` (2026-06-27, Run #4) for the full breakdown, including six **Consider** items deliberately left out pending a user decision (leverage formula reuse for `security-auditor`/`lean-audit`/`debugger`, ADR/PRD-aware recon, STOP conditions/drift-check for `/ade` specifically, model-tiered planner/executor execution, a `reconcile` backlog command, and a `--issues` GitHub-publishing flag).
+- **FIX**: Updated counts to 59 skills / 19 workflows across README.md, `.agent/ARCHITECTURE.md`, and `GUIA_DO_USUARIO.md`.
+
+### [3.9.0] - 2026-06-26
+- **ADD**: New conditional rule in `.agent/rules/GEMINI.md` TIER 0 ("External Context-Compression Tools") — if Headroom's MCP tools (`mcp__headroom__*`: `headroom_compress`, `headroom_retrieve`, `headroom_stats`) are present in the session, every agent uses them automatically on large tool outputs/file reads/search results, without being asked. If absent, agents proceed normally — it's an accelerator, not a dependency. Propagated to all 8 IDE targets (the same `build_lean_code_body()` shared function plus Copilot's inline core_content block, after re-discovering the exact same propagation gap from v3.8.0 — Copilot generates its own hand-curated summary instead of inheriting GEMINI.md directly).
+- **NOTE**: This refines the 2026-06-26 Run #3 benchmark verdict on Headroom. The runtime *proxy* mode (network interception, AST compression, KV-cache alignment) remains correctly Skipped — wrong architectural layer for a synced-markdown kit. But Headroom's separate *MCP-server* mode (`headroom mcp serve`, registered once at user scope, exposing three tools an agent calls explicitly) needs no proxy, no service, no admin rights, and is exactly the kind of "call this tool if it's there" instruction DevBureau's rules can express natively. Confirmed working end-to-end in this session (`claude mcp get headroom` → User config scope, connected; `headroom_stats` called successfully).
+- **DOC**: Added an "Optional: Headroom MCP" section to README.md with the exact two-command, one-time, per-machine setup (`pip install`, `claude mcp add --scope user`) — explicitly not bundled into `npx devbureau init`, since it's a third-party Python package with its own install surface, and the Windows persistent-proxy install path was found to hit a real upstream `sc.exe` quoting bug during this session's testing (reported, not something DevBureau can fix).
+
+### [3.8.0] - 2026-06-26
+- **ADD**: New `lean-code-ladder` skill — a 7-rung decision procedure (does this need to exist? → already in the codebase? → stdlib? → native platform feature? → already-installed dependency? → one line? → only then the minimum that works), run *after* understanding the problem, never instead of it. Never cuts validation, error handling, security, or accessibility. Wired into all 17 code-writing agents (every specialist except `orchestrator`, `project-planner`, `product-manager`, `documentation-writer`, `explorer-agent` — none of which write application code directly).
+- **ADD**: `lean:` shortcut-marker comment convention (names the ceiling and upgrade trigger for a deliberate simplification, e.g. `// lean: global lock, per-account locks if throughput matters`) — part of `lean-code-ladder`.
+- **ADD**: New universal Output Discipline rule in `.agent/rules/GEMINI.md` TIER 0 — lead with the result, explain in a few lines at most, full explanation only when explicitly asked. Language-agnostic (distinct from the existing personal PT-BR style section), since output tokens cost several times more than input tokens on most frontier models.
+- **ADD**: New `lean-audit` skill + `/lean-audit` workflow — finds over-engineering to delete in the current diff (default) or the whole repo, tagged `delete:`/`stdlib:`/`native:`/`yagni:`/`shrink:`. Reports only, explicitly out of scope for correctness/security/performance.
+- **ADD**: New `lean-debt` skill + `/lean-debt` workflow — greps the repo for `lean:` markers and reports them as a ledger, flagging any with no named upgrade trigger as a rot risk.
+- **ADD**: `stack-sizing` now states that leanness intensity is calibrated by the existing project tier rather than a separate lite/full/ultra dial — a Prototype climbs the ladder aggressively, Enterprise/Critical climbs it but with stricter marker/trigger discipline for auditability.
+- **ADD**: New `token_footprint.py` script — measures the approximate token cost (chars/4 heuristic) of every rule file DevBureau generates per IDE target, so growth in agents/skills doesn't silently bloat what's injected into every session. Diagnostic only, not a pass/fail gate.
+- **NOTE**: All of the above came out of a dedicated token-economy benchmark against `DietrichGebert/ponytail` (same architecture class as DevBureau — markdown skills/rules) and `headroomlabs-ai/headroom` (a runtime context-compression proxy, a different architectural layer DevBureau does not and cannot replicate as a synced-markdown kit). See `.agent/memory/benchmark-log.md` (2026-06-26, Run #3) for the full breakdown, including what was deliberately left out (Headroom's proxy/compression infrastructure).
+- **FIX**: Updated counts to 60 skills / 18 workflows / 9 master scripts across README.md and `.agent/ARCHITECTURE.md`.
+- **FIX**: The new Output Discipline/Lean Code section only reached Claude Code, Codex, Antigravity, and Cursor on the first pass — those four inherit `.agent/rules/GEMINI.md` directly (full text or its TIER 0 slice). Copilot, Windsurf, Cline, and Roo Code generate their own curated content in `sync_ide.py` and were missing it. Added a `build_lean_code_body()` shared function and wired it into all four. Caught because the user asked directly whether the rule actually applied everywhere — verified by grepping the generated files instead of assuming.
+
+### [3.7.0] - 2026-06-26
+- **ADD**: New `confidence-scale` skill — marks every claim a code-reading agent makes about existing code as 🟢 CONFIRMED (cite `file:line`), 🟡 INFERRED (named pattern, may be wrong), or 🔴 GAP (needs human validation). Wired into `code-archaeologist`, `debugger`, and `security-auditor`, so findings about unfamiliar/legacy code are never reported with false confidence.
+- **ADD**: Three new `sync_ide.py` targets — Windsurf (`.windsurfrules`), Cline (`.clinerules`), Roo Code (`.roorules`) — each a single flat file bundling the agent roster plus code-quality/frontend/backend/security rules (these tools don't support glob-scoped splitting). `protect_generated_files.py` now also protects these three files on Claude Code.
+- **ADD**: `bin/devbureau.js`'s `init` now auto-detects which IDE/engine is already present in the project (by checking for the folder each one creates on its own) and uses it as the smart default instead of a blind prompt — interactively as a suggested default, non-interactively as an automatic choice when exactly one engine is detected.
+- **ADD**: New `migration-strategy` skill — picks the rollout approach (Strangler Fig, Big Bang, Parallel Run, Branch by Abstraction) for rebuilding/modernizing an existing system, based on downtime tolerance, side-effect safety, team size, and system seams. Wired into `code-archaeologist`, `backend-specialist`, `devops-engineer`, `orchestrator`, and a new Step 1.6 in `project-planner` that detects migration vs. greenfield requests.
+- **ADD**: New `effort-estimation` skill — turns a task breakdown into a tier-aware time range (never a single number, never invented pricing) for non-technical stakeholders. Wired into `project-planner` (optional plan section) and `product-manager` (replaces vague "story points" guidance, feeds RICE's Effort term).
+- **ADD**: `npx devbureau update` — pulls the latest `.agent/` from the installed DevBureau version into an already-set-up project. Uses a SHA-256 manifest (`.devbureau-manifest.json`, written by `init`) to detect which files were customized locally; those are never overwritten (reported instead for manual review) unless `--force` is passed. New/upstream files are added; files no longer shipped upstream are left alone, never deleted.
+- **NOTE**: All five items above came out of a dedicated `/benchmark`-style deep dive into `sandeco/reversa` (legacy-to-spec framework), requested directly by the user. See `.agent/memory/benchmark-log.md` (2026-06-26, Run #2) for the full Adopt/Consider/Skip breakdown, including what was deliberately left out (a full HTML documentation mini-site, an N8N translator agent, and wholesale adoption of Reversa's pipeline architecture).
+- **FIX**: Updated skill count to 57 across README.md and `.agent/ARCHITECTURE.md`.
+
+### [3.6.0] - 2026-06-26
+- **ADD**: Starter `.mcp.json` at the project root with the GitHub MCP server, using the remote/hosted endpoint (`https://api.githubcopilot.com/mcp/`) with OAuth — deliberately not the local Docker+PAT-env-var variant, since an unset `${VAR}` would make Claude Code fail to parse the entire config. No token lives in the file; auth happens via browser on first use (`/mcp` or `claude mcp login github`).
+- **ADD**: `npx devbureau init` now also copies `.mcp.json` into new projects, skipping it if one already exists (same overwrite-safe pattern as `.agent/`).
+- **IMPROVE**: `package.json`'s `files` field includes `.mcp.json` so it ships in the published npm package.
+- **NOTE**: Playwright and Postgres/Database MCP servers were considered and intentionally left out — user chose GitHub only, to avoid bundling integrations that need credentials/setup most projects seeded from this kit won't use.
+- Closes the last "Consider" item from the 2026-06-26 `/benchmark` run (see `.agent/memory/benchmark-log.md`).
+
+### [3.5.0] - 2026-06-26
+- **ADD**: Real hook enforcement for Claude Code — `.agent/scripts/hooks/protect_generated_files.py` is a `PreToolUse` hook (on `Edit|Write|MultiEdit`) that blocks edits to files `sync_ide.py` auto-generates (`.claude/CLAUDE.md`, root `AGENTS.md`, root `GEMINI.md`, `.cursor/rules/*.mdc`, `.github/copilot-instructions.md`, `.github/instructions/*.instructions.md`) and tells the agent which real source file to edit instead. This is the first DevBureau rule that's actually enforced deterministically rather than left as prose the AI is asked to follow.
+- **ADD**: `generate_claude_config()` now merges this hook into `.claude/settings.json` (creating it if absent), preserving any other settings the user already has there — it does not overwrite the file.
+- **NOTE**: Equivalent enforcement was evaluated for Cursor and skipped for now — as of this research, Cursor's hook API only exposes `afterFileEdit` (informational, fires after the edit, cannot block it) and `beforeReadFile` (blocks reads, not writes). No pre-write blocking hook exists yet on that platform. Revisit when Cursor adds one.
+- **CONSIDER, still open**: a starter `.mcp.json` — intentionally not bundled yet; needs the user to choose which integrations matter before anything is added.
+
+### [3.4.0] - 2026-06-26
+- **BREAKING / IMPROVE**: `sync_ide.py`'s Cursor target now generates `.cursor/rules/*.mdc` (5 glob-scoped files: `00-core`, `code-quality`, `security`, `frontend`, `backend`) instead of one monolithic `.cursor/rules.md` — matching Cursor's current Project Rules format (conditional, file-scoped loading). The old `rules.md` is automatically removed on the next sync.
+- **IMPROVE**: Extracted the 4 shared rule bodies (code-quality, frontend, backend, security) into standalone functions (`build_code_quality_body()`, etc.), reused by both the Copilot and Cursor targets — removes ~300 lines of duplicated content and keeps the two targets from drifting apart.
+- **FIX**: Closed the first "Adopt" item from the 2026-06-26 `/benchmark` run (see `.agent/memory/benchmark-log.md`).
+
+### [3.3.0] - 2026-06-26
+- **ADD**: New `/benchmark` workflow + `framework-benchmarking` skill — periodically compares DevBureau's agents/skills/workflows against well-regarded external collections (BMAD-METHOD, awesome-claude-code-subagents, antigravity-awesome-skills, etc.), scores gaps as Adopt/Consider/Skip, and logs findings to `.agent/memory/benchmark-log.md`. Produces recommendations only — never auto-applies changes.
+- **ADD**: First real benchmark run logged (2026-06-26). Key findings: `stack-sizing`'s tiered approach and the `npx devbureau init` CLI direction were both independently validated against comparable mechanisms in BMAD-METHOD and `antigravity-awesome-skills`. One concrete gap flagged as **Adopt**: `sync_ide.py`'s Cursor target should move to the modern `.cursor/rules/` directory format (glob-scoped files) instead of one monolithic `rules.md`. Hooks and bundled MCP configs flagged as **Consider** — DevBureau's thinnest area relative to comparable toolkits, pending a dedicated task.
+- **IMPROVE**: Referenced `/benchmark` in `KIT_MASTER_RULES.md` as the formal mechanism for keeping the kit current — explicitly framed as gap-filling, not catalog-size-maximizing.
+- **FIX**: Updated skill/workflow counts to 54/16 across README.md, AGENT_FLOW.md, and `.agent/ARCHITECTURE.md`.
+
+### [3.2.0] - 2026-06-26
+- **BREAKING / CONSOLIDATE**: Merged `product-owner` into `product-manager` (99% overlapping scope — same skills, same user-story format). `product-manager` now also owns requirements elicitation, RICE prioritization, and roadmap framing. `product-owner.md` removed; all references updated.
+- **ADD**: New agent `sre-engineer` + new skill `observability-patterns` — monitoring, structured logging, alerting, SLOs/error budgets, and incident-response runbooks, tiered by `stack-sizing`. Closes the observability gap flagged in the audit.
+- **ADD**: New agent `api-designer`, reusing the existing `api-patterns` skill — owns API contract design (REST/GraphQL/tRPC, OpenAPI, versioning, backward compatibility) separately from `backend-specialist`'s implementation work. Also fixes a pre-existing "ghost agent" reference: `orchestrator.md` and `parallel-agents` already mentioned `api-designer` even though the agent file never existed.
+- **ADD**: New agent `accessibility-specialist` + new skill `accessibility-standards` — WCAG 2.1/2.2 audits, ARIA, keyboard navigation, color contrast, and screen reader testing.
+- **IMPROVE**: `orchestrator.md`'s Available Agents, Strict Boundaries, and File Type Ownership tables rebuilt to match the real current roster (they were stale — missing several real agents, listing `api-designer` as if it existed). `project-planner.md`'s Implementation Priority Order and Components-by-Project-Type tables extended with the 3 new agents.
+- **FIX**: Updated agent/skill counts to 22 agents / 53 skills across README.md, AGENT_FLOW.md, `.agent/ARCHITECTURE.md`, and GUIA_DO_USUARIO.md (the latter had three different stale numbers: 47, 38, and 20-only).
+
+### [3.1.0] - 2026-06-26
+- **ADD**: New `stack-sizing` skill — defines four project tiers (Prototype/Landing, MVP, Growth SaaS, Enterprise/Critical) with a stack ceiling/floor table per layer (frontend, backend, database, deploy, auth), sizing questions, coherence-check logic, and escalation triggers.
+- **ADD**: `orchestrator.md` Checkpoint 3 (Stack Tier & Coherence) and a Step 3.5 (Stack Coherence Validation) — flags specialist agents' stack picks that cross the declared tier's ceiling or floor before synthesis.
+- **ADD**: `project-planner.md` Step 1.5 (Project Tier Detection) and a new required "Project Tier" section in the plan file template.
+- **IMPROVE**: `backend-specialist`, `database-architect`, `devops-engineer`, and `frontend-specialist` now reference `stack-sizing` in frontmatter and point to it before applying their own use-case decision tables, closing the gap where four agents picked stacks independently with no porte/scale check.
+- **FIX**: Updated skill count to 51 across README.md, AGENT_FLOW.md, and `.agent/ARCHITECTURE.md` after adding `stack-sizing`.
+
+### [3.0.0] - 2026-06-26
+- **BREAKING / RENAME**: Project renamed from "Antigravity Kit — Personalized by FernandoTenguan" to **DevBureau** (npm package `devbureau`, GitHub repo `fernandotenguan/devbureau`). Rebranding applied to root docs, scripts, and generated IDE configs; `web/` docs site rebrand deferred to a follow-up release.
+- **ADD**: `antigravity` target in `sync_ide.py`, generating a root-level `GEMINI.md` (the highest-priority native rules file read by Google Antigravity and Gemini CLI).
+- **ADD**: `.github/workflows/kit-validation.yml` — CI now runs `doctor.py` and the kit integrity test suite on every push/PR.
+- **ADD**: Publishable CLI (`npx devbureau init`) that copies `.agent/`, runs the health check, installs the pre-commit hook, and syncs the chosen IDE target.
+- **IMPROVE**: Pre-commit hook now also runs `doctor.py`, not just the integrity tests.
+- **FIX**: Corrected divergent skill/workflow counts across README.md and AGENT_FLOW.md (real count, per `doctor.py`: 20 agents, 50 skills, 15 workflows). Fixed a broken local-machine file link in README.md.
+
+### [2.2.0] - 2026-03-04
+- **ADD**: Importação de 9 novas skills estratégicas do repositório `antigravity-awesome-skills`.
+- **ADD**: Pacote "Estratégia e Memória": `00-andruia-consultant`, `agent-memory-mcp`, `agent-evaluation`, `agent-orchestration-multi-agent-optimize`.
+- **ADD**: Pacote "IA Preditiva Pro": `ai-engineer`, `machine-learning-ops-ml-pipeline`.
+- **ADD**: Pacote "SaaS & Business": `micro-saas-launcher`, `startup-analyst`, `20-andruia-niche-intelligence`.
+- **IMPROVE**: Tradução bilingue (PT-BR/EN) para a série de agentes Andruia.
+- **DOC**: Atualização do `README.md` e `GUIA_DO_USUARIO.md` refletindo o novo total de 47 skills.
+
+### [2.1.0] - 2026-03-04
+- **ADD**: Novo documento de governança de IA: `KIT_MASTER_RULES.md`.
+- **ADD**: Novo workflow interativo `/new-project` para guiar a criação de novos sistemas.
+- **DOC**: Atualização completa do `README.md` e `GUIA_DO_USUARIO.md` com foco em usuários de negócio.
+- **CLEAN**: Remoção de subpasta redundante `antigravity-kit-personalizado` que causava confusão de nomes.
+- **IMPROVE**: Refinamento do script `doctor.py` e validação de saúde do kit.
+
+### [2.0.0] - 2026-03-01
+- **New Skills**:
+    - `rust-pro` - Master Rust 1.75+ 
+- **Agent Workflows**:
+    - Updated `orchestrate.md` fix output turkish
+
+
+## [2.0.1] - 2026-01-26
+
+### Added
+
+- **Agent Flow Documentation**: New comprehensive workflow documentation
+    - Added `.agent/AGENT_FLOW.md` - Complete agent flow architecture guide
+    - Documented Agent Routing Checklist (mandatory steps before code/design work)
+    - Documented Socratic Gate Protocol for requirement clarification
+    - Added Cross-Skill References pattern documentation
+- **New Skills**:
+    - `react-best-practices` - Consolidated Next.js and React expertise
+    - `web-design-guidelines` - Professional web design standards and patterns
+
+### Changed
+
+- **Skill Consolidation**: Merged `nextjs-best-practices` and `react-patterns` into unified `react-best-practices` skill
+- **Architecture Updates**:
+    - Enhanced `.agent/ARCHITECTURE.md` with improved flow diagrams
+    - Updated `.agent/rules/GEMINI.md` with Agent Routing Checklist
+- **Agent Updates**:
+    - Updated `frontend-specialist.md` with new skill references
+    - Updated `qa-automation-engineer.md` with enhanced testing workflows
+- **Frontend Design Skill**: Enhanced `frontend-design/SKILL.md` with cross-references to `web-design-guidelines`
+
+### Removed
+
+- Deprecated `nextjs-best-practices` skill (consolidated into `react-best-practices`)
+- Deprecated `react-patterns` skill (consolidated into `react-best-practices`)
+
+### Fixed
+
+- **Agent Flow Accuracy**: Corrected misleading terminology in AGENT_FLOW.md
+    - Changed "Parallel Execution" → "Sequential Multi-Domain Execution"
+    - Changed "Integration Layer" → "Code Coherence" with accurate description
+    - Added reality notes about AI's sequential processing vs. simulated multi-agent behavior
+    - Clarified that scripts require user approval (not auto-executed)
+
+## [2.0.0] - Unreleased
+
+### Initial Release
+
+- Initial release of Antigravity Kit
+- 20 specialized AI agents
+- 37 domain-specific skills
+- 11 workflow slash commands
+- CLI tool for easy installation and updates
+- Comprehensive documentation and architecture guide
+
+[Unreleased]: https://github.com/fernandotenguan/devbureau/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/fernandotenguan/devbureau/releases/tag/v3.0.0
+[2.0.0]: https://github.com/vudovn/antigravity-kit/releases/tag/v2.0.0

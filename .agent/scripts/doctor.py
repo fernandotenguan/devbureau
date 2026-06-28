@@ -163,11 +163,23 @@ def check_cross_references() -> int:
     errors = 0
     ghost_refs: list[str] = []
     agents = list(AGENTS_DIR.glob("*.md")) if AGENTS_DIR.exists() else []
-    available_skills = (
-        {d.name for d in SKILLS_DIR.iterdir() if d.is_dir()}
-        if SKILLS_DIR.exists()
-        else set()
-    )
+    available_skills: set[str] = set()
+    if SKILLS_DIR.exists():
+        for skill_md in SKILLS_DIR.glob("**/SKILL.md"):
+            skill_dir = skill_md.parent
+            available_skills.add(skill_dir.name)
+            # Nested skills (e.g. game-development/pc-games) are referenced by their
+            # path relative to SKILLS_DIR, not just the leaf directory name.
+            available_skills.add(
+                skill_dir.relative_to(SKILLS_DIR).as_posix()
+            )
+            # A skill's declared `name:` in its own frontmatter can differ from its
+            # directory name (a documented internal alias) — both are valid refs.
+            declared_name = extract_frontmatter_field(
+                skill_md.read_text(encoding="utf-8", errors="ignore"), "name"
+            )
+            if declared_name:
+                available_skills.add(declared_name)
 
     for agent_path in agents:
         content = agent_path.read_text(encoding="utf-8", errors="ignore")

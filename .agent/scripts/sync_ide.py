@@ -2,15 +2,17 @@
 """
 sync_ide.py — DevBureau Multi-IDE Synchronization
 Gera arquivos de configuração do kit para outros IDEs (Claude, Cursor, Codex,
-Antigravity, Copilot, Windsurf, Cline, Roo Code).
+OpenCode, Antigravity, Copilot, Windsurf, Cline, Roo Code, Zed).
 Usage:
   python .agent/scripts/sync_ide.py --target claude
   python .agent/scripts/sync_ide.py --target cursor
   python .agent/scripts/sync_ide.py --target codex
+  python .agent/scripts/sync_ide.py --target opencode
   python .agent/scripts/sync_ide.py --target antigravity
   python .agent/scripts/sync_ide.py --target windsurf
   python .agent/scripts/sync_ide.py --target cline
   python .agent/scripts/sync_ide.py --target roocode
+  python .agent/scripts/sync_ide.py --target zed
   python .agent/scripts/sync_ide.py --target all
   python .agent/scripts/sync_ide.py --dry-run --target all
 """

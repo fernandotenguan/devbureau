@@ -391,7 +391,7 @@ python .agent/scripts/checklist.py .
 # Verificação completa antes do deploy
 python .agent/scripts/verify_all.py . --url http://localhost:3000
 
-# Sincroniza o kit para outros IDEs (Antigravity, Claude, Cursor, Codex, Copilot, Windsurf, Cline, Roo Code, Zed)
+# Sincroniza o kit para outros IDEs (Antigravity, Claude, Cursor, Codex, OpenCode, Copilot, Windsurf, Cline, Roo Code, Zed)
 python .agent/scripts/sync_ide.py --target all
 
 # Mede a própria pegada de contexto do kit (tokens aproximados nos arquivos de regras gerados)
