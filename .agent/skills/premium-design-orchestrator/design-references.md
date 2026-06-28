@@ -87,6 +87,20 @@
 
 ---
 
+## Bibliotecas de Elementos e Componentes UI
+
+> Para elementos específicos (botões, cards, navbars, loaders) dentro de um site já definido — não para inspiração de site completo.
+
+| Site | URL | Foco |
+|------|-----|------|
+| **Uiverse** | https://uiverse.io | Maior biblioteca open-source de elementos copy-paste (HTML/CSS/Tailwind) |
+| **Flowbite** | https://flowbite.com | Blocos de UI prontos + Figma, principal concorrente do Uiverse |
+| **DaisyUI** | https://daisyui.com | Design system completo sobre Tailwind |
+| **Shadcn UI** | https://ui.shadcn.com | Componentes instalados via CLI direto no projeto |
+| **CSS Buttons / Loaders** | https://cssbuttons.io | Microelementos específicos (botões, loaders) |
+
+---
+
 ## Como Usar para Alimentar a Biblioteca
 
 ### Fluxo de Curadoria
@@ -111,3 +125,15 @@ Para encontrar referências por nicho, combine filtros:
 | Arquitetura | SiteInspire, Godly | architecture, real estate |
 | Finanças | CSSDA, Land-book | finance, fintech, corporate |
 | Educação | CSSDA, SiteInspire | education, e-learning |
+
+---
+
+## Fluxo de Apresentação ao Usuário (Decisão Híbrida)
+
+Use este fluxo quando o usuário quiser ver referências reais (sites ou elementos de UI) antes de decidir o estilo, em vez de partir direto para paletas abstratas:
+
+1. Identifique o nicho do projeto (tabela "Busca por Nicho Específico" acima)
+2. Levante 3 a 5 exemplos concretos: sites completos via "Hubs de Premiação" e categorias por segmento, ou elementos específicos via "Bibliotecas de Elementos e Componentes UI"
+3. Apresente cada opção com link, nome do site/elemento e a justificativa (paleta, padrão de layout, estilo) de por que se encaixa no projeto
+4. O usuário escolhe, combina referências de mais de uma opção, ou pede uma nova rodada com outro direcionamento
+5. A referência escolhida alimenta `palette-library.md` via `brand-identity-extractor` (ver "Fluxo de Curadoria" acima) e fica registrada para reuso em projetos futuros do mesmo nicho

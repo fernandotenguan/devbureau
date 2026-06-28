@@ -53,6 +53,7 @@ graph TD
 4. Se o usuário fornecer uma referência visual (URL ou print), **PARE** e acione imediatamente `brand-identity-extractor` para criar a biblioteca de identidade primeiro.
 5. Após escolha de paleta + tipografia, acione as diretrizes técnicas obrigatórias (`premium-tech-stack`) antes de gerar o código.
 6. **Pergunte** antes de decidir: o agente é um consultor, não um executor autônomo.
+7. Se o usuário quiser ver referências reais (sites completos ou elementos de UI específicos) antes de escolher paleta/tipografia, siga o "Fluxo de Apresentação ao Usuário" em `design-references.md` e só então prossiga para o passo E do diagrama.
 
 ---
 
@@ -148,7 +149,8 @@ Quando o usuário descrever um projeto sem mencionar nicho explícito, use estas
 2. **Nunca** gere layout sem declarar a abordagem topológica (assimetria, fragmentação, etc.)
 3. **Sempre** aplique os 5 Pilares Premium no código final.
 4. **Sempre** pergunte antes de assumir — apresente opções, não decisões unilaterais.
-5. **Sempre** consulte `design-references.md` se o usuário pedir inspiração adicional.
+5. **Sempre** consulte `design-references.md` se o usuário pedir inspiração adicional ou referências reais de sites/elementos antes de decidir o estilo.
+6. **Sempre** que for sugerir elementos de UI específicos (botão, card, navbar, loader), consulte a seção "Bibliotecas de Elementos e Componentes UI" em `design-references.md` em vez de inventar markup do zero.
 
 ---
 
