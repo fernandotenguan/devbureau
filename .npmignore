@@ -1,0 +1,7 @@
+# Belt-and-suspenders only — package.json's "files" allowlist means npm does NOT
+# actually consult this file for filtering. scripts/clean-pycache.js (run via the
+# "prepack" script) is what actually keeps these out of the published tarball.
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/

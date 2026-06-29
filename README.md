@@ -1,6 +1,6 @@
 # DevBureau
 
-**English** · [Português](README.pt-BR.md)
+**English** · [Português](README_pt-BR.md)
 
 > A production-grade multi-agent AI framework for building software with professional quality —
 > without needing to know how to code. Works across Claude Code, Cursor, Codex CLI, OpenCode,

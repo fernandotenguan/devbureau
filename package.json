@@ -1,6 +1,6 @@
 {
   "name": "devbureau",
-  "version": "3.20.0",
+  "version": "3.20.1",
   "description": "A multi-agent AI framework for building software with professional quality, across Antigravity, Claude Code, Cursor, Codex CLI, OpenCode, GitHub Copilot, Windsurf, Cline, Roo Code, and Zed.",
   "repository": {
     "type": "git",
@@ -13,12 +13,15 @@
   "bin": {
     "devbureau": "bin/devbureau.js"
   },
+  "scripts": {
+    "prepack": "node scripts/clean-pycache.js"
+  },
   "files": [
     "bin",
     ".agent",
     ".mcp.json",
     "README.md",
-    "README.pt-BR.md",
+    "README_pt-BR.md",
     "LICENSE"
   ],
   "engines": {
