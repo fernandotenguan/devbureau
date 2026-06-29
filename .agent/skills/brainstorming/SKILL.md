@@ -30,6 +30,16 @@ allowed-tools: Read, Glob, Grep
    - 📦 Scope: Must-have vs nice-to-have?
 3. **WAIT** - Get response before proceeding
 
+### 🔇 Before Asking: Check Suppressed Questions
+
+Before firing ANY question above, read `.agent/memory/question-preferences.md`:
+
+1. Match the question you're about to ask against its logged entries by topic (the `**Gatilho:**` field), not by exact wording — a suppression for "tech stack preference" applies even if this turn's phrasing differs slightly.
+2. If the topic is marked **Suprimida**, skip that specific question. Proceed using the most recent reasonable assumption for it, and state the assumption explicitly in your response (e.g. "Assumindo Next.js + Postgres como da última vez, já que você pediu para eu não perguntar isso de novo.").
+3. If the topic is marked **Sempre perguntar**, ask it anyway — that status is an explicit confirmation the user wants it asked every time, not an oversight.
+4. If the user says something like "para de perguntar isso", "já respondi isso antes", "stop asking that" — append a new dated entry to `question-preferences.md` immediately (same format as `lessons.md`/`gotchas.md`: date, Gatilho, Status, Razão do usuário, Evidência). Do this before continuing with the rest of the response, not as an afterthought.
+5. This check never suppresses the FIRST time a topic comes up in a brand-new project/context — suppression only applies once an entry actually exists for that topic.
+
 ---
 
 ## 🧠 Dynamic Question Generation

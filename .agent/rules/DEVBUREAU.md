@@ -231,6 +231,7 @@ If the user says any of the following, **immediately stop all in-progress action
 2. **Handle Spec-heavy Requests:** When user gives a list (Answers 1, 2, 3...), do NOT skip the gate. Instead, ask about **Trade-offs** or **Edge Cases** before starting.
 3. **Wait:** Do NOT invoke subagents or write code until the user clears the Gate.
 4. **Reference:** Full protocol in `@[skills/brainstorming]`.
+5. **Respect suppressed questions:** Before asking ANY Gate question, check `.agent/memory/question-preferences.md`. If the topic is marked **Suprimida**, skip the question and proceed with the most recent reasonable assumption, stating it explicitly. If the user says something like "stop asking that" / "I already answered this" / "pare de perguntar isso", log a new entry there immediately — do not wait for confirmation.
 
 ### 🧹 Clean Code (Global Mandatory)
 
@@ -286,7 +287,7 @@ If the user says any of the following, **immediately stop all in-progress action
 - Runtime Scripts: `.agent/skills/<skill>/scripts/`
 - Master Scripts: `.agent/scripts/` (doctor.py, checklist.py, verify_all.py, sync_ide.py)
 - Kit Tests: `.agent/tests/` (test_kit_integrity.py)
-- Memory Layer: `.agent/memory/` (lessons.md, gotchas.md)
+- Memory Layer: `.agent/memory/` (lessons.md, gotchas.md, question-preferences.md)
 
 ### 🧠 Read → Understand → Apply
 
@@ -518,6 +519,7 @@ If the user says any of the following, **immediately stop all in-progress action
 
 - **lessons.md** → Padrões que funcionaram bem no projeto
 - **gotchas.md** → Erros comuns e como evitá-los
+- **question-preferences.md** → Perguntas do Socratic Gate que o usuário pediu para suprimir ou sempre fazer
 - Consulte esses arquivos no início de tasks complexas para evitar repetir erros passados.
 
 ---

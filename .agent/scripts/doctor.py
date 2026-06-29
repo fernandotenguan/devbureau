@@ -277,6 +277,40 @@ def check_memory_layer() -> int:
     return 0
 
 
+def check_version_drift() -> int:
+    """Advisory only: notice when a newer DevBureau release is published.
+
+    Looks for the sidecar `.devbureau-version` file `npx devbureau init/update`
+    writes at the project root. Absent when running inside DevBureau's own
+    source repo (not an install target) — that's normal, skip silently.
+    Network/parsing failures are swallowed on purpose: this is a best-effort
+    convenience notice, not a correctness check, so a single broad
+    `except Exception` is the documented top-level-catch-all case clean-code
+    rules already carve out, not a violation of them.
+    """
+    version_path = REPO_ROOT / ".devbureau-version"
+    if not version_path.exists():
+        return 0
+
+    try:
+        local_version = version_path.read_text(encoding="utf-8").strip()
+        import json
+        import urllib.request
+
+        with urllib.request.urlopen("https://registry.npmjs.org/devbureau/latest", timeout=2) as response:
+            latest_version = json.loads(response.read().decode("utf-8"))["version"]
+
+        local_parts = tuple(int(p) for p in local_version.split("."))
+        latest_parts = tuple(int(p) for p in latest_version.split("."))
+        if latest_parts > local_parts:
+            warn(f"DevBureau v{latest_version} disponível (você está na v{local_version}) — rode `npx devbureau update`")
+        else:
+            ok(f"DevBureau v{local_version} — você está atualizado")
+    except Exception:
+        pass
+    return 0
+
+
 def check_devbureau_rules() -> int:
     """Verify DEVBUREAU.md rules file exists."""
     rules_path = RULES_DIR / "DEVBUREAU.md"
@@ -335,6 +369,9 @@ def main() -> None:
 
     section("Memory Layer")
     check_memory_layer()
+
+    section("Version")
+    check_version_drift()
 
     print("\n" + "─" * 50)
     if total_errors == 0:

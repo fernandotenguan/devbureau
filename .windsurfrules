@@ -261,3 +261,15 @@ Read `.agent/agents/database-architect.md` for schema and query patterns.
 - HSTS headers enabled. Secure and HttpOnly flags on cookies.
 - CORS configured with explicit allowed origins. Never use `*` in production.
 
+
+---
+
+# Question Preferences — DevBureau
+> Auto-generated via sync_ide.py. Do not edit manually.
+
+## Socratic Gate Suppression
+
+Before asking any clarifying question, check `.agent/memory/question-preferences.md`. If the topic is already logged as **Suprimida** there, skip the question and proceed with the most recent reasonable assumption, stating it explicitly. If the topic is logged as **Sempre perguntar**, ask it anyway.
+
+If the user says something like "stop asking that" / "I already answered this" / "pare de perguntar isso", log a new dated entry in `.agent/memory/question-preferences.md` immediately — don't wait for confirmation.
+

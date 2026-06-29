@@ -18,6 +18,20 @@ Closing out finished work needs the same discipline as starting it. An open-ende
 
 Run the project's test command before presenting any options. If it fails, stop here — report the failures and do not proceed to Step 2 until they're fixed. Merging or opening a PR on a failing branch just moves the failure somewhere harder to see.
 
+## Step 1.5: Detect Versioning Convention
+
+Only applies to the target project (the one being worked on), never to DevBureau's own meta-process.
+
+Detected when **both** are true:
+- A version file exists: `package.json` with a `version` field (Node), or `pyproject.toml` with a `version` field under `[project]` or `[tool.poetry]` (Python). No other ecosystem is supported yet (Cargo.toml, etc.) — add support if it comes up, don't guess at the convention.
+- `CHANGELOG.md` exists, follows Keep a Changelog (`## [Unreleased]` heading), and that section has actual bullet content under it — not just the empty heading.
+
+If either is missing, or `[Unreleased]` is empty, skip this step silently and go straight to Step 2 — no bump offered, nothing to ask.
+
+If detected, ask directly, no automatic inference from commit messages (that infrastructure doesn't exist and isn't worth building for this): **"Bump version before merging/pushing? (patch/minor/major/skip)"**
+
+If the user picks a size: increment the right semver segment, write it back to the version file. Move `[Unreleased]`'s existing bullets under a new `### [newVersion] - YYYY-MM-DD` heading (today's date), leaving `[Unreleased]` empty above for the next round. Preserve whatever bullet style the project's own `[Unreleased]` section already uses — don't impose DevBureau's own changelog house style onto a third-party project. Commit this as its own preceding commit (`chore: bump version to X.Y.Z`), separate from whatever Step 4 does next — keeps `git log`/`git revert` clean, and an unrelated version bump never gets dragged into a revert of the actual merge/PR.
+
 ## Step 2: Detect the Environment
 
 ```bash
@@ -92,7 +106,8 @@ Run `git worktree remove` from the main repo root, never from inside the worktre
 | Deleting the branch before removing the worktree | `git branch -d` fails — the worktree still references it |
 | No confirmation before Discard | Accidental permanent loss of work |
 | Removing a worktree the harness/native tool created | Provenance check exists for exactly this |
+| Forgetting to bump the version when the project clearly tracks one | Step 1.5 catches this — but only if `[Unreleased]` actually has content; an empty section means there's genuinely nothing to ship |
 
 ## Integration
 
-Pairs with `using-git-worktrees` for the setup side. `/ade`'s pipeline and `codebase-audit`'s `execute`-adjacent flows hand off here once work is done — neither prescribes what happens to the branch afterward, this skill does.
+Pairs with `using-git-worktrees` for the setup side. `/ade`'s pipeline and `codebase-audit`'s `execute`-adjacent flows hand off here once work is done — neither prescribes what happens to the branch afterward, this skill does. When the target project follows a detectable versioning convention, Step 1.5 also touches its version file and `CHANGELOG.md` before the chosen action executes.

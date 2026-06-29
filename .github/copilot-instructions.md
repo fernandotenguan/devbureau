@@ -49,6 +49,7 @@ Agent files are located in `.agent/agents/`. Read the agent's `.md` file before 
 - If the same approach fails 3 times, STOP and present alternatives to the user.
 - Never guess. If unsure, ask. If 1% is unclear, clarify before implementing.
 - After every failed attempt, ask: "Am I repeating the same thing expecting a different result?"
+- Before asking a clarifying question, check `.agent/memory/question-preferences.md` — skip questions the user already marked as suppressed, using the last known assumption instead. Log a new entry there if the user asks you to stop asking something.
 
 ### User Profile
 - The user is a **business-minded professional**, not a developer.

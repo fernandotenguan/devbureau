@@ -333,6 +333,18 @@ def build_security_body() -> str:
 """
 
 
+def build_question_preferences_body() -> str:
+    return """# Question Preferences — DevBureau
+> Auto-generated via sync_ide.py. Do not edit manually.
+
+## Socratic Gate Suppression
+
+Before asking any clarifying question, check `.agent/memory/question-preferences.md`. If the topic is already logged as **Suprimida** there, skip the question and proceed with the most recent reasonable assumption, stating it explicitly. If the topic is logged as **Sempre perguntar**, ask it anyway.
+
+If the user says something like "stop asking that" / "I already answered this" / "pare de perguntar isso", log a new dated entry in `.agent/memory/question-preferences.md` immediately — don't wait for confirmation.
+"""
+
+
 def build_lean_code_body() -> str:
     return """# Lean Code & Output Discipline — DevBureau
 > Auto-generated via sync_ide.py. Do not edit manually.
@@ -598,6 +610,7 @@ Agent files are located in `.agent/agents/`. Read the agent's `.md` file before 
 - If the same approach fails 3 times, STOP and present alternatives to the user.
 - Never guess. If unsure, ask. If 1% is unclear, clarify before implementing.
 - After every failed attempt, ask: "Am I repeating the same thing expecting a different result?"
+- Before asking a clarifying question, check `.agent/memory/question-preferences.md` — skip questions the user already marked as suppressed, using the last known assumption instead. Log a new entry there if the user asks you to stop asking something.
 
 ### User Profile
 - The user is a **business-minded professional**, not a developer.
@@ -705,8 +718,9 @@ applyTo: "**"
 # ── shared: single flat-file engines (Windsurf, Cline, Roo Code) ───────────────
 def build_single_file_engine_content(tool_label: str) -> str:
     """These engines read one flat rules file with no conditional/glob loading,
-    so all modular bodies (code-quality, frontend, backend, security) are
-    concatenated into a single document instead of split like Cursor/Copilot."""
+    so all modular bodies (code-quality, frontend, backend, security,
+    question-preferences) are concatenated into a single document instead of
+    split like Cursor/Copilot."""
     agent_summary = build_agent_summary()
     return f"""# DevBureau — Rules for {tool_label}
 > Auto-generated from .agent/rules/DEVBUREAU.md via sync_ide.py. Do not edit manually.
@@ -737,6 +751,10 @@ Agent files live in `.agent/agents/` — read the agent's `.md` file before impl
 ---
 
 {build_security_body()}
+
+---
+
+{build_question_preferences_body()}
 """
 
 

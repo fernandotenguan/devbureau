@@ -2,6 +2,7 @@
 "use strict";
 
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 const readline = require("readline");
 const { spawnSync } = require("child_process");
@@ -11,6 +12,27 @@ const PACKAGE_ROOT = path.resolve(__dirname, "..");
 const SOURCE_AGENT_DIR = path.join(PACKAGE_ROOT, ".agent");
 const SOURCE_MCP_CONFIG = path.join(PACKAGE_ROOT, ".mcp.json");
 const MANIFEST_FILENAME = ".devbureau-manifest.json";
+// Sidecar, not a manifest key — uninstall()/update() both assume every manifest
+// key is a real .agent/... path, so version metadata gets its own tiny file.
+const VERSION_FILENAME = ".devbureau-version";
+
+function currentPackageVersion() {
+  return JSON.parse(fs.readFileSync(path.join(PACKAGE_ROOT, "package.json"), "utf8")).version;
+}
+
+function saveVersionFile(targetDir, version) {
+  fs.writeFileSync(path.join(targetDir, VERSION_FILENAME), `${version}\n`, "utf8");
+}
+
+function loadVersionFile(targetDir) {
+  const versionPath = path.join(targetDir, VERSION_FILENAME);
+  if (!fs.existsSync(versionPath)) return null;
+  try {
+    return fs.readFileSync(versionPath, "utf8").trim() || null;
+  } catch {
+    return null;
+  }
+}
 const IDE_TARGETS = [
   "claude", "cursor", "codex", "opencode", "copilot", "antigravity", "windsurf", "cline", "roocode", "zed", "all",
 ];
@@ -110,6 +132,7 @@ function copyAgentFolder(targetDir, force) {
   }
   fs.cpSync(SOURCE_AGENT_DIR, destination, { recursive: true, force: true });
   saveManifest(targetDir, buildManifest(targetDir, agentRelFiles(targetDir)));
+  saveVersionFile(targetDir, currentPackageVersion());
   return destination;
 }
 
@@ -239,6 +262,44 @@ async function init(args) {
   console.log("\n✅ DevBureau is set up. Open this project in your AI assistant and start with /brainstorm or /ade.\n");
 }
 
+// Reads CHANGELOG.md from the freshly-installed package and prints the entries
+// between the previously-installed version and the new one (newest first,
+// capped at 5 full entries). Falls back to a one-liner if either version's
+// heading can't be located (manually-edited version file, missing entry).
+function printChangelogSince(previousVersion, newVersion) {
+  let changelog;
+  try {
+    changelog = fs.readFileSync(path.join(PACKAGE_ROOT, "CHANGELOG.md"), "utf8");
+  } catch {
+    return;
+  }
+
+  const headerPattern = /^### \[([^\]]+)\] - .+$/gm;
+  const matches = [...changelog.matchAll(headerPattern)];
+  const startIdx = matches.findIndex((m) => m[1] === newVersion);
+  const endIdx = matches.findIndex((m) => m[1] === previousVersion);
+
+  if (startIdx === -1 || endIdx === -1 || endIdx <= startIdx) {
+    console.log(`\nℹ Atualizado de v${previousVersion} para v${newVersion} — veja CHANGELOG.md para detalhes.`);
+    return;
+  }
+
+  const entries = matches.slice(startIdx, endIdx);
+  const shown = entries.slice(0, 5);
+
+  console.log(`\n📋 Novidades desde v${previousVersion}:\n`);
+  for (const m of shown) {
+    const entryStart = m.index;
+    const next = matches[matches.indexOf(m) + 1];
+    const entryEnd = next ? next.index : changelog.length;
+    console.log(changelog.slice(entryStart, entryEnd).trim());
+    console.log("");
+  }
+  if (entries.length > shown.length) {
+    console.log(`...e mais ${entries.length - shown.length} releases anteriores — veja CHANGELOG.md para o histórico completo.\n`);
+  }
+}
+
 function update(args) {
   const targetDir = process.cwd();
   const force = args.includes("--force");
@@ -266,6 +327,9 @@ function update(args) {
     return;
   }
 
+  const previousVersion = loadVersionFile(targetDir);
+  const newVersion = currentPackageVersion();
+
   const sourceRelFiles = agentRelFiles(PACKAGE_ROOT);
   const destRelFiles = agentRelFiles(targetDir);
   const newManifest = {};
@@ -274,41 +338,57 @@ function update(args) {
   let updated = 0;
   let unchanged = 0;
 
-  for (const relPath of sourceRelFiles) {
-    const sourceAbs = path.join(PACKAGE_ROOT, relPath);
-    const destAbs = path.join(targetDir, relPath);
-    const sourceHash = hashFile(sourceAbs);
-    const destHash = hashFile(destAbs);
+  // Snapshot .agent/ before touching anything, so a failure mid-update can be
+  // rolled back instead of leaving the project in a half-updated state.
+  const backupDir = fs.mkdtempSync(path.join(os.tmpdir(), "devbureau-backup-"));
+  fs.cpSync(destAgentDir, backupDir, { recursive: true });
 
-    if (destHash === null) {
-      fs.mkdirSync(path.dirname(destAbs), { recursive: true });
+  try {
+    for (const relPath of sourceRelFiles) {
+      const sourceAbs = path.join(PACKAGE_ROOT, relPath);
+      const destAbs = path.join(targetDir, relPath);
+      const sourceHash = hashFile(sourceAbs);
+      const destHash = hashFile(destAbs);
+
+      if (destHash === null) {
+        fs.mkdirSync(path.dirname(destAbs), { recursive: true });
+        fs.copyFileSync(sourceAbs, destAbs);
+        newManifest[relPath] = sourceHash;
+        added++;
+        continue;
+      }
+
+      if (destHash === sourceHash) {
+        newManifest[relPath] = sourceHash;
+        unchanged++;
+        continue;
+      }
+
+      const baselineHash = previousManifest ? previousManifest[relPath] : null;
+      const isCustomized = !force && baselineHash && baselineHash !== destHash;
+
+      if (isCustomized) {
+        newManifest[relPath] = baselineHash;
+        customizedFiles.push(relPath);
+        continue;
+      }
+
       fs.copyFileSync(sourceAbs, destAbs);
       newManifest[relPath] = sourceHash;
-      added++;
-      continue;
+      updated++;
     }
-
-    if (destHash === sourceHash) {
-      newManifest[relPath] = sourceHash;
-      unchanged++;
-      continue;
-    }
-
-    const baselineHash = previousManifest ? previousManifest[relPath] : null;
-    const isCustomized = !force && baselineHash && baselineHash !== destHash;
-
-    if (isCustomized) {
-      newManifest[relPath] = baselineHash;
-      customizedFiles.push(relPath);
-      continue;
-    }
-
-    fs.copyFileSync(sourceAbs, destAbs);
-    newManifest[relPath] = sourceHash;
-    updated++;
+  } catch (err) {
+    console.error(`\n✘ Update falhou (${err.message}) — restaurando .agent/ ao estado anterior...`);
+    fs.cpSync(backupDir, destAgentDir, { recursive: true, force: true });
+    fs.rmSync(backupDir, { recursive: true, force: true });
+    console.error("✔ Restaurado. Nenhuma mudança foi persistida.");
+    process.exitCode = 1;
+    return;
   }
 
+  fs.rmSync(backupDir, { recursive: true, force: true });
   saveManifest(targetDir, newManifest);
+  saveVersionFile(targetDir, newVersion);
 
   const orphaned = destRelFiles.filter((relPath) => !sourceRelFiles.includes(relPath));
 
@@ -324,6 +404,10 @@ function update(args) {
   }
   if (orphaned.length > 0) {
     console.log(`ℹ Presentes localmente mas não mais no kit publicado (mantidos, nada foi apagado): ${orphaned.length}`);
+  }
+
+  if (previousVersion && previousVersion !== newVersion) {
+    printChangelogSince(previousVersion, newVersion);
   }
 
   console.log("\n✅ Update concluído. Rode `python .agent/scripts/doctor.py` para validar.\n");
@@ -409,6 +493,10 @@ function uninstall(args) {
   const manifestPath = path.join(targetDir, MANIFEST_FILENAME);
   if (!dryRun && fs.existsSync(manifestPath) && customized.length === 0) {
     fs.rmSync(manifestPath, { force: true });
+  }
+  const versionPath = path.join(targetDir, VERSION_FILENAME);
+  if (!dryRun && fs.existsSync(versionPath) && customized.length === 0) {
+    fs.rmSync(versionPath, { force: true });
   }
 
   console.log(`✔ ${verb}: ${removed} file(s) under .agent/`);

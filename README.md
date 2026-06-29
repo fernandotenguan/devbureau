@@ -210,7 +210,7 @@ Later, when you've customized agents/skills for this project and want to pull in
 npx devbureau update
 ```
 
-This compares your `.agent/` against the installed package version using a SHA-256 manifest — files you haven't touched get updated, files you customized are left alone and listed for manual review.
+This compares your `.agent/` against the installed package version using a SHA-256 manifest — files you haven't touched get updated, files you customized are left alone and listed for manual review. It also shows the CHANGELOG entries for everything you skipped since your last update, and takes a backup before touching anything, restoring it automatically if the update fails partway through. `doctor.py` (run on its own with `python .agent/scripts/doctor.py`, or automatically as part of `init`) flags it for you whenever a newer release is published, so you don't have to remember to check.
 
 ### Option 2 — NPX giget (no npm package needed)
 
