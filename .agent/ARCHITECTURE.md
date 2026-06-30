@@ -61,7 +61,7 @@ Specialist AI personas for different domains.
 
 ---
 
-## 🧩 Skills (64)
+## 🧩 Skills (65)
 
 Modular knowledge domains that agents load on-demand, based on task context. Grouped here by theme; the authoritative source of truth for what exists is always `.agent/skills/` itself — run `python .agent/scripts/doctor.py` to verify this list against reality.
 
@@ -205,6 +205,7 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 | `lean-code-ladder` | 7-rung decision ladder (YAGNI → reuse → stdlib → native → existing dep → one-liner → minimum) for the smallest correct solution, calibrated by `stack-sizing` tier |
 | `lean-audit` | Finds over-engineering to delete (diff or whole-repo scope) — `delete:`/`stdlib:`/`native:`/`yagni:`/`shrink:` tags, reports only |
 | `lean-debt` | Harvests `lean:` shortcut-marker comments into a debt ledger so deferred simplifications don't rot into permanent |
+| `karpathy-guidelines` | Karpathy's 4 LLM coding disciplines: think before coding, simplicity first, surgical changes (touch only what's requested), goal-driven execution with verifiable criteria |
 
 ---
 
@@ -352,7 +353,7 @@ python .agent/scripts/sync_ide.py --target all
 | Metric              | Value                                                  |
 | -------------------- | --------------------------------------------------------- |
 | **Total Agents**     | 22                                                         |
-| **Total Skills**     | 64 (+ 10 nested under `game-development`)                  |
+| **Total Skills**     | 65 (+ 10 nested under `game-development`)                  |
 | **Total Workflows**  | 21                                                         |
 | **Master Scripts**   | 9 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`) |
 | **Skills With Scripts** | 13                                                       |

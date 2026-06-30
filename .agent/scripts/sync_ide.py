@@ -125,6 +125,12 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
         "Edit|Write|MultiEdit",
         'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/warn_debug_statements.py"',
     )
+    _merge_claude_hook(
+        settings,
+        "PostToolUse",
+        "Edit|Write|MultiEdit",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/auto_fix_on_edit.py"',
+    )
 
     write_output(settings_path, json.dumps(settings, indent=2) + "\n", dry_run)
 
@@ -333,6 +339,70 @@ def build_security_body() -> str:
 """
 
 
+def build_karpathy_body() -> str:
+    return """# Karpathy Guidelines — DevBureau
+> Auto-generated via sync_ide.py. Do not edit manually.
+> Derived from Andrej Karpathy's observations on recurring LLM coding pitfalls.
+
+## 1. Think Before Coding
+
+Don't assume. Don't hide confusion. Surface tradeoffs.
+
+Before implementing anything:
+- State assumptions explicitly. If uncertain about scope, ask rather than guess.
+- When multiple interpretations exist, present them — don't pick silently.
+- Push back if a simpler approach exists. Say so before implementing the complex one.
+- If something is unclear, stop. Name what's confusing. Ask.
+
+## 2. Simplicity First
+
+Minimum code that solves the problem. Nothing speculative.
+
+- No features beyond what was explicitly asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If 200 lines could be 50 with no loss of correctness, rewrite it.
+
+**The test:** Would a senior engineer say this is overcomplicated? If yes, simplify.
+
+## 3. Surgical Changes
+
+Touch only what the request explicitly requires. Never improve adjacent code.
+
+When editing existing code:
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match the existing style, even if you'd do it differently.
+- If you notice unrelated issues (dead code, typos, smells), mention them — never fix silently.
+
+When your changes create orphans:
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless explicitly asked.
+
+**The line test:** Every changed line must trace directly to the user's request. If it can't, undo it.
+
+**Scope creep signals:** "while I'm in here", "I also cleaned up", "I improved adjacent", "I refactored while fixing".
+
+## 4. Goal-Driven Execution
+
+Define success criteria. Loop until verified.
+
+Transform tasks into verifiable goals:
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan with explicit verification per step:
+```
+1. [Step] → verify: [specific check]
+2. [Step] → verify: [specific check]
+```
+
+Strong success criteria let the loop run independently. Weak criteria ("make it work") require constant clarification and produce unchecked assumptions.
+"""
+
+
 def build_question_preferences_body() -> str:
     return """# Question Preferences — DevBureau
 > Auto-generated via sync_ide.py. Do not edit manually.
@@ -476,6 +546,13 @@ alwaysApply: true
 """
     write_output(rules_dir / "00-core.mdc", core_content, dry_run)
 
+    karpathy_content = f"""---
+alwaysApply: true
+---
+
+{build_karpathy_body()}"""
+    write_output(rules_dir / "karpathy-guidelines.mdc", karpathy_content, dry_run)
+
     code_quality_content = f"""---
 alwaysApply: true
 ---
@@ -506,7 +583,7 @@ alwaysApply: false
 {build_backend_body()}"""
     write_output(rules_dir / "backend.mdc", backend_content, dry_run)
 
-    print(f"  {GREEN}✔{RESET} Generated 5 files in .cursor/rules/")
+    print(f"  {GREEN}✔{RESET} Generated 6 files in .cursor/rules/")
 
 
 # ── target: codex ─────────────────────────────────────────────────────────────
@@ -655,6 +732,7 @@ Agent files are located in `.agent/agents/`. Read the agent's `.md` file before 
 ## Modular Instructions
 
 Domain-specific rules are in `.github/instructions/`:
+- `karpathy-guidelines.instructions.md` — Karpathy's 4 coding disciplines (think first, simplicity, surgical changes, goal-driven)
 - `code-quality.instructions.md` — naming, functions, error handling, structure
 - `frontend.instructions.md` — UI/UX, React, CSS, accessibility
 - `backend.instructions.md` — API, database, server patterns
@@ -664,7 +742,19 @@ Domain-specific rules are in `.github/instructions/`:
         REPO_ROOT / ".github" / "copilot-instructions.md", core_content, dry_run
     )
 
-    # ── 2. Code Quality (modular) ─────────────────────────────────────────
+    # ── 2. Karpathy Guidelines (modular) ─────────────────────────────────
+    karpathy = f"""---
+applyTo: "**"
+---
+
+{build_karpathy_body()}"""
+    write_output(
+        REPO_ROOT / ".github" / "instructions" / "karpathy-guidelines.instructions.md",
+        karpathy,
+        dry_run,
+    )
+
+    # ── 3. Code Quality (modular) ─────────────────────────────────────────
     code_quality = f"""---
 applyTo: "**"
 ---
@@ -676,7 +766,7 @@ applyTo: "**"
         dry_run,
     )
 
-    # ── 3. Frontend (modular) ─────────────────────────────────────────────
+    # ── 4. Frontend (modular) ─────────────────────────────────────────────
     frontend = f"""---
 applyTo: "**/*.{{tsx,jsx,css,scss,html,vue,svelte}}"
 ---
@@ -688,7 +778,7 @@ applyTo: "**/*.{{tsx,jsx,css,scss,html,vue,svelte}}"
         dry_run,
     )
 
-    # ── 4. Backend (modular) ──────────────────────────────────────────────
+    # ── 5. Backend (modular) ──────────────────────────────────────────────
     backend = f"""---
 applyTo: "**/*.{{py,ts,js,go,rs}}"
 ---
@@ -700,7 +790,7 @@ applyTo: "**/*.{{py,ts,js,go,rs}}"
         dry_run,
     )
 
-    # ── 5. Security (modular) ─────────────────────────────────────────────
+    # ── 6. Security (modular) ─────────────────────────────────────────────
     security = f"""---
 applyTo: "**"
 ---
@@ -712,15 +802,15 @@ applyTo: "**"
         dry_run,
     )
 
-    print(f"  {GREEN}✔{RESET} Generated 5 files for GitHub Copilot")
+    print(f"  {GREEN}✔{RESET} Generated 6 files for GitHub Copilot")
 
 
 # ── shared: single flat-file engines (Windsurf, Cline, Roo Code) ───────────────
 def build_single_file_engine_content(tool_label: str) -> str:
     """These engines read one flat rules file with no conditional/glob loading,
-    so all modular bodies (code-quality, frontend, backend, security,
-    question-preferences) are concatenated into a single document instead of
-    split like Cursor/Copilot."""
+    so all modular bodies (karpathy, lean-code, code-quality, frontend, backend,
+    security, question-preferences) are concatenated into a single document instead
+    of split like Cursor/Copilot."""
     agent_summary = build_agent_summary()
     return f"""# DevBureau — Rules for {tool_label}
 > Auto-generated from .agent/rules/DEVBUREAU.md via sync_ide.py. Do not edit manually.
@@ -731,6 +821,10 @@ Mention a specialist by name to activate it: `@frontend-specialist`, `@backend-s
 Agent files live in `.agent/agents/` — read the agent's `.md` file before implementing.
 
 {agent_summary}
+
+---
+
+{build_karpathy_body()}
 
 ---
 

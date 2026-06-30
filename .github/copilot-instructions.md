@@ -94,6 +94,7 @@ Agent files are located in `.agent/agents/`. Read the agent's `.md` file before 
 ## Modular Instructions
 
 Domain-specific rules are in `.github/instructions/`:
+- `karpathy-guidelines.instructions.md` — Karpathy's 4 coding disciplines (think first, simplicity, surgical changes, goal-driven)
 - `code-quality.instructions.md` — naming, functions, error handling, structure
 - `frontend.instructions.md` — UI/UX, React, CSS, accessibility
 - `backend.instructions.md` — API, database, server patterns

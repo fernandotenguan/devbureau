@@ -45,6 +45,10 @@
           {
             "type": "command",
             "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/warn_debug_statements.py\""
+          },
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/auto_fix_on_edit.py\""
           }
         ]
       }

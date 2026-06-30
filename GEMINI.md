@@ -115,6 +115,23 @@ When auto-applying an agent, inform the user:
 2. **Respect Overrides**: If user mentions `@agent`, use it.
 3. **Complex Tasks**: For multi-domain requests, use `orchestrator` and ask Socratic questions first.
 
+### 🗺️ Domain Overlap Detection (MANDATORY)
+
+**If keywords from 2+ rows below appear in the same request, route to `orchestrator` first — never pick just one specialist.**
+
+| Domain signals (EN / PT) | Solo agent |
+|---|---|
+| UI, layout, design, CSS, React, component, page / tela, componente, visual | `frontend-specialist` |
+| API, server, endpoint, auth, middleware, backend / servidor, autenticação | `backend-specialist` |
+| iOS, Android, mobile, Flutter, React Native / aplicativo, app mobile | `mobile-developer` |
+| security, vulnerability, OWASP, XSS, injection, pentest / segurança, vulnerabilidade | `security-auditor` |
+| deploy, CI/CD, Docker, infra, pipeline / implantação, servidor, infraestrutura | `devops-engineer` |
+| slow, performance, bundle, Lighthouse, profiling / lento, otimização, velocidade | `performance-optimizer` |
+| test, coverage, E2E, Playwright, unit test / teste, cobertura | `test-engineer` |
+| schema, migration, query, database, SQL / banco de dados, migração, consulta | `database-architect` |
+
+**Example:** "analisa a segurança do meu banco de dados" maps to `security-auditor` row AND `database-architect` row → `orchestrator` coordinates both.
+
 ### ⚠️ AGENT ROUTING CHECKLIST (MANDATORY BEFORE EVERY CODE/DESIGN RESPONSE)
 
 **Before ANY code or design work, you MUST complete this mental checklist:**
@@ -275,6 +292,18 @@ If the user says any of the following, **immediately stop all in-progress action
 4. **Reference:** Full protocol in `@[skills/brainstorming]`.
 5. **Respect suppressed questions:** Before asking ANY Gate question, check `.agent/memory/question-preferences.md`. If the topic is marked **Suprimida**, skip the question and proceed with the most recent reasonable assumption, stating it explicitly. If the user says something like "stop asking that" / "I already answered this" / "pare de perguntar isso", log a new entry there immediately — do not wait for confirmation.
 
+### Gate Decision: Ask vs. Proceed with Declared Assumption
+
+Before deciding whether to ask, apply this table. "Ambiguidade acionável" blocks progress and requires a question. "Inferência razoável" does not — proceed, but state your assumption explicitly in one line.
+
+| Ask first (ambiguidade acionável) | Proceed with declared assumption (inferência razoável) |
+|---|---|
+| Target audience is unknown and shapes the entire design | File path or variable name is unclear but inferable from context |
+| Two technical paths exist with fundamentally different trade-offs | Minor stylistic choice with no architectural impact |
+| Scope is undefined and could mean 1 file or 50 files | Tool/library version unclear but project's package.json reveals it |
+| Requirement contradicts an existing project constraint | Language or framework unclear but directory structure reveals it |
+| Action is irreversible (delete, drop, publish, send) | User already answered this in the current or previous session turn |
+
 ### 🧹 Clean Code (Global Mandatory)
 
 **ALL code MUST follow `@[skills/clean-code]` rules. No exceptions.**
@@ -293,6 +322,24 @@ If the user says any of the following, **immediately stop all in-progress action
 - **Mark deliberate shortcuts** with a `lean:` comment naming the ceiling and the upgrade trigger (e.g. `// lean: global lock, per-account locks if throughput matters`) — never leave a shortcut silent. Run `/lean-debt` periodically so a marked shortcut doesn't quietly rot into permanent.
 - **Response output**: lead with the result (code, answer, fix). Explanation after is at most a few lines — what was skipped and when to revisit it, not an essay defending the simplification. Give the full explanation only when the user explicitly asked for one (a report, a walkthrough, a teaching moment).
 - **Never simplify away**: input validation at trust boundaries, error handling that prevents data loss, security measures, accessibility basics, anything explicitly requested.
+
+### 🔬 SURGICAL CHANGES PROTOCOL (MANDATORY)
+
+**Trigger: Always active on ANY code modification.**
+
+Touch only what the request explicitly requires. Never improve adjacent code as a side effect.
+
+| Rule | Meaning |
+|---|---|
+| **No adjacency edits** | Don't fix, refactor, or reformat code that isn't directly part of the task |
+| **Match existing style** | Follow the project's existing style even if you'd do it differently |
+| **Mention, don't touch** | If you notice unrelated issues (dead code, typos, smells), mention them — never fix them silently |
+| **Own your orphans** | Remove imports/variables/functions that YOUR change made unused — not pre-existing ones |
+| **The line test** | Every changed line must trace directly to the user's request. If it can't, undo it |
+
+**Scope creep signals:** "while I'm in here", "I also cleaned up", "I improved adjacent", "I refactored while fixing".
+
+---
 
 ### 🔌 External Context-Compression Tools (Conditional, Use When Present)
 
