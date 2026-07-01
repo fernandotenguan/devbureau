@@ -1,6 +1,7 @@
-# Behavioral Alignment — Wave 2 (Pending)
+# Behavioral Alignment — Wave 2 (Sources 1-3 Pending)
 
 > Registered: 2026-06-30. Execute in a future session via `/mine-patterns` or manually.
+> **2026-07-01: Source 4 executed and merged.** See `.agent/memory/pattern-mining-log.md` entry "2026-07-01 — Anthropic prompt engineering docs" for the full patterns table and Adopt/Consider/Skip breakdown (5 principles merged into `DEVBUREAU.md`, `orchestrator.md`, and `ai-engineer/SKILL.md`; `sync_ide.py --target all` + `doctor.py` run afterward). Sources 1-3 below remain pending — not started.
 
 ## Context
 
@@ -34,11 +35,13 @@ Surgical Changes, Zero-Break, etc.) should be noted but not duplicated.
   diff review patterns, and AI pair programming in long-lived codebases.
 - Expected yield: 3-4 new principles
 
-### Source 4: Anthropic prompt engineering guides
+### Source 4: Anthropic prompt engineering guides — ✅ DONE (2026-07-01)
 - URL: https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering
+  (redirects to https://platform.claude.com/docs/en/docs/build-with-claude/prompt-engineering/claude-prompting-best-practices)
 - Why: First-party guidance from the model manufacturer. May reveal sub-optimal
   patterns in current kit prompting or missing best practices.
-- Expected yield: 2-3 new principles
+- Yield: 6 net-new principles merged (5 unique destinations), 6 correctly skipped as
+  already covered, 2 logged as Consider. Full breakdown in `pattern-mining-log.md`.
 
 ## Execution Protocol (per source)
 

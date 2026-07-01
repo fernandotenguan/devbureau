@@ -375,6 +375,7 @@ If agents provide conflicting recommendations:
 3. **Verify before commit** - Always include test-engineer for code changes
 4. **Security last** - Security audit as final check
 5. **Synthesize clearly** - Unified report, not separate outputs
+6. **Don't delegate what a direct call solves** - A single grep/read/file check doesn't need a subagent; reserve delegation for work that's genuinely parallel, needs isolated context, or is an independent workstream
 
 ---
 

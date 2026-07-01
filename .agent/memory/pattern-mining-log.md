@@ -699,3 +699,45 @@ Todo Adopt/Consider não listado nesta tabela permanece **pendente** — ainda n
 ---
 
 > **Session note (16 repos mined: FrankMD, FrankMega, frank_type, frank_fbi, ai-memory, distrobox-gaming, akitaonrails.github.io, frank_investigator, ai-usagebar, ai-jail, llm-coding-benchmark, ghpending, tropicalruby-2026, FrankSherlock, FrankYomik, FrankClaw).** Recurring cross-repo themes worth consolidating if ever acted on: (1) **config-as-data with a single typed resolver, file > ENV > default, no scattered reads** (FrankMD, distrobox-gaming, ai-memory, ai-jail, ai-usagebar). (2) **Fail toward caution / graceful degradation** — degraded mode gets more conservative, never more confident, and for security primitives fails more-restrictive (frank_fbi, frank_investigator, ai-jail, ai-memory). (3) **Ground claims/output against verifiable facts; treat LLM output as untrusted text to repair, not truth** (frank_fbi, frank_investigator, llm-coding-benchmark, tropicalruby-2026 where even a *slide's* numbers are recomputed from git via `tokei`, FrankSherlock's 3-tier tolerant LLM-JSON parse → balanced-extract → regex-salvage, and FrankClaw's leak detection). (4) **Secret-read discipline** — no `cat`/loose `env|grep` on creds, gitignore artifacts that capture env, trim/empty-filter tokens, mark auth headers sensitive, reject credential-bearing proxy URIs (ai-usagebar, ai-jail, llm-coding-benchmark, ghpending); this also drove the read-tool change made earlier this session. (5) **Lean self-hosting on SQLite, zero external/cloud services** (FrankMega, ai-memory, frank_investigator, FrankSherlock with FTS5 + append-only `user_version` migrations + read-only-over-source). (6) **Test at the boundary / hermetic tests / stub fidelity** (FrankMD, ai-usagebar, frank_investigator). (7) **Markdown/files as source of truth, derived index rebuildable** (ai-memory, frank_type, akitaonrails.github.io). (8) **Defense-in-depth security as explicit design law, not afterthought** (ai-jail, FrankSherlock, FrankClaw with credential-leak detection, SSRF blocks, encryption at rest, three-tier approval, hard-fail-closed refusals).
+
+---
+
+## 2026-07-01 — Anthropic prompt engineering docs (https://platform.claude.com/docs/en/docs/build-with-claude/prompt-engineering/claude-prompting-best-practices)
+
+> **Wave 2, Source 4 of 4** (see `behavioral-alignment-wave2.md`). Sources 1-3 (awesome-cursorrules, aider, continue-dev) remain pending. First-party guidance from the model manufacturer, mined for gaps in DevBureau's own agent behavior rules and in the `ai-engineer` skill's prompting guidance. Unlike the third-party repos above, Wave 2's protocol authorizes merging Adopt items directly into the kit in the same pass (not log-only).
+
+**Source:** Official Anthropic documentation (consolidated "Prompting best practices" reference page, covering general principles, output/formatting, tool use, thinking, and agentic systems for current-generation Claude models).
+
+**Patterns found:**
+
+| Pattern | Confidence | Where observed | Destination | Verdict |
+|---|---|---|---|---|
+| Ground answers in actually-read code — never speculate about a file/function you haven't opened, even for explanatory (non-editing) questions | 🟢 | "Minimizing hallucinations in agentic coding" §, `investigate_before_answering` sample prompt | `DEVBUREAU.md` Anti-Hallucination section | Adopt |
+| A passing test suite must reflect a general solution — never hardcode values or special-case visible test inputs to make tests pass; say so if a test is wrong instead of working around it | 🟢 | "Avoid focusing on passing tests and hard-coding" § | `DEVBUREAU.md` Zero-Break Deployment Protocol | Adopt |
+| Clean up temp scripts/files created purely for iteration once the task is done | 🟢 | "Reduce file creation in agentic coding" § | `DEVBUREAU.md` Surgical Changes Protocol | Adopt |
+| Don't delegate to a subagent what a direct tool call (grep/read) already solves; reserve delegation for genuinely parallel or isolated-context work | 🟢 | "Subagent orchestration" §, "watch for overuse" | `orchestrator.md` Best Practices | Adopt |
+| Structure complex prompts with XML tags (`<instructions>`, `<context>`, `<example>`); tell the model what TO do instead of what NOT to do; for long-context tasks (20k+ tokens) put documents near the top and ask for a grounding quote before the answer | 🟢 | "Structure prompts with XML tags", "Control the format of responses", "Long context prompting" §§ | `ai-engineer/SKILL.md` Prompt Engineering & Optimization | Adopt |
+| Prefilling the assistant's final turn is deprecated/errors on current-generation Claude models — migrate to structured outputs/tool calling for format control, direct system-prompt instructions for preamble control | 🟢 | "Migrating away from prefilled responses" § | `ai-engineer/SKILL.md` Prompt Engineering & Optimization | Adopt |
+| Give Claude a role via system prompt to focus tone/behavior | 🟢 | "Give Claude a role" § | — | Skip (DevBureau's entire agent-persona architecture already is this, at a much deeper level) |
+| Balancing autonomy and safety — confirm before hard-to-reverse/destructive/visible-to-others actions | 🟢 | "Balancing autonomy and safety" § | — | Skip (near-verbatim already in DevBureau's "Executando ações com cuidado" + this session's own top-level system instructions) |
+| Overeagerness / avoid over-engineering, unrequested abstractions, defensive coding for unreachable cases | 🟢 | "Overeagerness" § | — | Skip (already covered, arguably more thoroughly, by Lean Code Ladder + Surgical Changes Protocol) |
+| Concise, fact-based, non-self-congratulatory communication style | 🟢 | "Communication style and verbosity" § | — | Skip (already covered by "Anti-Bajulação" + "Sem palavras-tell" + "Remove elogios sem evidências") |
+| Frontend "AI slop" aesthetics (generic fonts, purple gradients, predictable layouts) — be distinctive | 🟢 | "Frontend design" § | — | Skip (already covered by `frontend-specialist.md`'s Purple Ban + Template Ban + anti-cliché rules) |
+| Structured long-horizon state: `tests.json` (structured) + `progress.txt` (freeform) + git as the audit trail across context windows | 🟡 | "State management best practices" § | `agent-evaluation` / `.agent/memory/` | Consider (meaningful overlap with DevBureau's existing `{task-slug}.md` plan-file convention + `.agent/memory/lessons.md`/`gotchas.md`; a cleaner unification is a real but separate decision, not a clean net-new adopt) |
+| Context-window awareness / compaction instructions so the agent doesn't stop early near the token limit | 🟡 | "Context awareness and multi-window workflows" § | — | Consider (already handled at the Claude Code harness level per this session's own system reminder on auto-compaction; only relevant if DevBureau ever targets non-Claude-Code harnesses without that feature) |
+| Explicit action-taking instructions ("change this function" vs. "can you suggest changes") | 🟢 | "Tool usage" § | — | Skip (mirror-image of DevBureau's own SIMPLE CODE vs. QUESTION request classifier, already solved from the routing side) |
+| Model-specific effort/adaptive-thinking API migration guidance (`budget_tokens` → `effort`) | 🟡 | "Overthinking and excessive thoroughness", migration examples | `ai-engineer/SKILL.md` Knowledge Base | Skip this pass (real but out of scope — a Knowledge Base model/version refresh is a separate maintenance task, not a prompting principle) |
+
+**Adopt (merged this pass):**
+1. Ground-claims-in-actually-read-code → `.agent/rules/DEVBUREAU.md` Anti-Hallucination & Loop Protection (new "Ground Claims in Actually-Read Code" subsection).
+2. No-hardcoding-to-pass-tests → `.agent/rules/DEVBUREAU.md` Zero-Break Deployment Protocol (new paragraph after the evidence table).
+3. Clean-up-scratch-files → `.agent/rules/DEVBUREAU.md` Surgical Changes Protocol (new table row).
+4. Don't-delegate-what-a-direct-call-solves → `.agent/agents/orchestrator.md` Best Practices (new item 6).
+5. XML-tag structuring + positive framing + long-context document grounding → `.agent/skills/ai-engineer/SKILL.md` Prompt Engineering & Optimization (new bullets).
+6. Prefill-deprecation migration note → `.agent/skills/ai-engineer/SKILL.md` Prompt Engineering & Optimization (same edit as #5).
+
+**Consider (needs a decision):** unify `{task-slug}.md`/`.agent/memory/` conventions with the `tests.json`+`progress.txt`+git state-tracking pattern for very long `/ade` runs; context-window-awareness prompting (only relevant outside Claude Code harnesses).
+
+**Skip:** role-prompting, autonomy/safety confirmation, anti-over-engineering, concise/non-sycophantic communication, frontend anti-cliché rules, explicit-action-language — all already covered at least as thoroughly elsewhere in the kit; effort/adaptive-thinking API migration (out of scope, separate maintenance task).
+
+Ran `sync_ide.py --target all` and `doctor.py` after merging. Sources 1-3 of Wave 2 (awesome-cursorrules, aider, continue-dev) remain pending — see `behavioral-alignment-wave2.md`.

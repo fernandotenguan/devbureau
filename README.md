@@ -475,13 +475,7 @@ project-root/
 
 ## Support the Project
 
-If this kit saves you time, consider supporting:
-
-<p align="center">
-  <img src="pix-fernando.png" alt="PIX QR Code" width="180" />
-</p>
-
-**PIX key:** `fernando.tenguan@gmail.com`
+If this kit saves you time, consider supporting: [Pix, BTC, ETH/EVM, or SOL](./DONATE.md)
 
 ---
 

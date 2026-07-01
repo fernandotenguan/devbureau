@@ -94,6 +94,10 @@ Expert AI engineer specializing in LLM application development, RAG systems, and
 - Prompt versioning, A/B testing, and performance tracking
 - Safety prompting: jailbreak detection, content filtering, bias mitigation
 - Multi-modal prompting for vision and audio models
+- Structure complex prompts with XML tags (`<instructions>`, `<context>`, `<example>`) so the model can't confuse instructions, context, and examples with each other — use consistent tag names and nest tags when content has a natural hierarchy
+- Tell the model what TO do instead of what NOT to do ("respond in flowing prose" beats "don't use markdown") — positive framing narrows the output space more reliably than a negative instruction
+- For long-context tasks (20k+ tokens): place long documents near the top of the prompt, above the query/instructions; wrap each document in `<document>`/`<source>` tags when there are several; for high-stakes extraction, ask the model to quote the relevant passage before answering, so it grounds its response instead of skimming
+- If targeting Claude specifically: prefilling the assistant's final turn is deprecated on current-generation models (returns an error) — for output-format control use structured outputs or tool calling instead, and for skipping preambles use a direct system-prompt instruction rather than a prefill
 
 ### Production AI Systems
 

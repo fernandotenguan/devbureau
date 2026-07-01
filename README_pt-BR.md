@@ -475,13 +475,7 @@ raiz-do-projeto/
 
 ## Apoie o Projeto
 
-Se este kit economiza seu tempo, considere apoiar:
-
-<p align="center">
-  <img src="pix-fernando.png" alt="QR Code PIX" width="180" />
-</p>
-
-**Chave PIX:** `fernando.tenguan@gmail.com`
+Se este kit economiza seu tempo, considere apoiar: [Pix, BTC, ETH/EVM ou SOL](./DONATE.md)
 
 ---
 
