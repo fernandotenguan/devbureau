@@ -6,7 +6,7 @@
 > without needing to know how to code. Works across Claude Code, Cursor, Codex CLI, OpenCode,
 > GitHub Copilot, Antigravity, Windsurf, Cline, Roo Code, and Zed.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.20.2-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.24.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-22-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-64-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-21-red)](https://github.com/fernandotenguan/devbureau)
@@ -99,6 +99,8 @@ Distinct from `/plan` (short, same-session plan) and `/ade` (plans and executes 
 ### 🧬 Pattern Mining (`/mine-patterns`)
 
 Some of the best engineering knowledge isn't in another AI-agent kit — it's in a finished, professional-grade project someone already built well. Point this at a reference repo (yours or anyone's, local path or git URL) and it extracts generalizable engineering patterns — architecture, error handling, testing strategy, config/secrets handling, tooling choices — never the project's business logic. Every pattern gets a confidence mark and a proposed landing spot (a new `lessons.md` entry or a named skill/agent), logged to `.agent/memory/pattern-mining-log.md` for your review. Nothing gets applied automatically.
+
+Wave 2 of behavioral alignment completed (2026-07-01): mined 4 external frameworks (awesome-cursorrules, aider, continue-dev, Anthropic prompt engineering guides). 9 net-new principles merged into DEVBUREAU.md, agent personas, and skills. See `.agent/memory/pattern-mining-log.md` for the full mining log and decisions.
 
 ```bash
 /mine-patterns ../my-other-project

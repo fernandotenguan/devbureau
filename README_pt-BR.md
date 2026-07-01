@@ -6,7 +6,7 @@
 > equipe especializada, sem precisar saber programar. Funciona no Claude Code, Cursor, Codex CLI,
 > OpenCode, GitHub Copilot, Antigravity, Windsurf, Cline, Roo Code e Zed.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.20.2-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.24.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-22-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-64-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-21-red)](https://github.com/fernandotenguan/devbureau)
@@ -99,6 +99,8 @@ Diferente do `/plan` (plano curto, mesma sessão) e do `/ade` (planeja e executa
 ### 🧬 Mineração de Padrões (`/mine-patterns`)
 
 Parte do melhor conhecimento de engenharia não está em outro kit de agentes de IA: está num projeto profissional já bem construído. Aponte para um repositório de referência (seu ou de qualquer pessoa, caminho local ou URL git) e ele extrai padrões de engenharia generalizáveis (arquitetura, tratamento de erro, estratégia de testes, manuseio de config/segredos, escolhas de ferramentas), nunca a lógica de negócio do projeto. Cada padrão recebe uma marca de confiança e um destino proposto (uma nova entrada em `lessons.md` ou uma skill/agente nomeado), registrado em `.agent/memory/pattern-mining-log.md` para sua revisão. Nada é aplicado automaticamente.
+
+**Onda 2 de alinhamento comportamental concluída (2026-07-01):** minerou 4 frameworks externos (awesome-cursorrules, aider, continue-dev, guias de prompt engineering da Anthropic). 9 princípios novos mesclados em DEVBUREAU.md, personas de agentes e skills. Veja `.agent/memory/pattern-mining-log.md` para o log completo de mineração e decisões.
 
 ```bash
 /mine-patterns ../meu-outro-projeto
