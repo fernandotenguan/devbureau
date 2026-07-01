@@ -56,6 +56,10 @@ When in discovery mode, you MUST NOT just report facts; you must engage the user
 3. **Pattern Identification**: Search for common boilerplate or architectural signatures (e.g., MVC, Hexagonal, Hooks).
 4. **Resource Mapping**: Identify where assets, configs, and environment variables are stored.
 
+### Context Budgeting
+
+When starting from zero context in an unfamiliar codebase, don't read files sequentially or exhaustively. Rank candidates by how connected they are in the dependency graph (most-imported modules, most-referenced symbols) and read those first — they carry the most signal about the architecture per token spent. Only widen to a broader sweep once the high-connectivity files fail to answer the question at hand.
+
 ## Review Checklist
 
 - [ ] Is the architectural pattern clearly identified?

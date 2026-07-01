@@ -741,3 +741,95 @@ Todo Adopt/Consider não listado nesta tabela permanece **pendente** — ainda n
 **Skip:** role-prompting, autonomy/safety confirmation, anti-over-engineering, concise/non-sycophantic communication, frontend anti-cliché rules, explicit-action-language — all already covered at least as thoroughly elsewhere in the kit; effort/adaptive-thinking API migration (out of scope, separate maintenance task).
 
 Ran `sync_ide.py --target all` and `doctor.py` after merging. Sources 1-3 of Wave 2 (awesome-cursorrules, aider, continue-dev) remain pending — see `behavioral-alignment-wave2.md`.
+
+---
+
+## 2026-07-01 — PatrickJS/awesome-cursorrules (https://github.com/PatrickJS/awesome-cursorrules)
+
+> **Wave 2, Source 1 of 3 (remaining).** Community-curated aggregator of `.cursorrules`/`.mdc` files for the Cursor AI editor. Mined via a research subagent sampling 10 diverse rule files across stacks (anti-sycophancy, anti-overengineering, clean-code, FastAPI, Flutter, Go, Jest, Cypress, Next.js, C++). License: CC0 1.0 Universal (public domain, no attribution required, zero IP risk).
+
+**Patterns found:**
+
+| Pattern | Confidence | Where observed | Destination | Verdict |
+|---|---|---|---|---|
+| Distinguish "compiles" from "correct" — confirm a function does what its NAME promises, not just that it returns without error | 🟢 | `anti-sycophancy-code-discipline` | `DEVBUREAU.md` Zero-Break Deployment Protocol | Adopt (folded into the risk-tiering note below rather than a separate row) |
+| Match verification depth to change risk — trivial change → syntax/type check; logic change → manual trace; concurrency/state change → written-out failure scenario | 🟢 | `anti-sycophancy-code-discipline` | `DEVBUREAU.md` Zero-Break Deployment Protocol | Adopt |
+| `VERIFY: <library>.<symbol>` inline marker when uncertain a library/API call actually exists, instead of inventing a plausible signature | 🟡 | `anti-sycophancy-code-discipline` | `DEVBUREAU.md` Anti-Hallucination & Loop Protection | Adopt |
+| Idempotency key required on every side-effecting endpoint; single-writer principle for safety-critical state | 🟢 | `fastapi-production-architecture` | `.agent/agents/backend-specialist.md` | Adopt |
+| 3-5 focused tests per file cap; auto-detect TS/JS (tsconfig/package.json) before writing test syntax | 🟢 | `jest-unit-testing`, `cypress-e2e-testing` | `.agent/skills/testing-patterns/SKILL.md` | Adopt |
+| Strict layered architecture (Router → Service → Repository → ORM) with hard import boundaries + LOC governance thresholds (400 green / 600 blocks merge) | 🟢 | `fastapi-production-architecture` | `backend-specialist.md` | Consider — opinionated architecture prescription, not a universal behavior; risks conflicting with "match existing project style" on brownfield work |
+| Enumerate ≥3 concrete failure modes (empty input, boundary value, state assumption) before claiming code "works" | 🟢 | `anti-sycophancy-code-discipline` | — | Skip (overlaps with existing evidence table + risk-tiered verification just adopted above) |
+| Name a trade-off once when pressured, then comply without repeating it | 🟡 | `anti-sycophancy-code-discipline` | — | Skip (Anti-Bajulação already covers holding a position under pressure) |
+| `data-testid` selectors over CSS/XPath; ban hard-coded waits; mock before imports | 🟢 | `cypress-e2e-testing`, `jest-unit-testing` | — | Skip (standard QA practice already implicit in `test-engineer`/`qa-automation-engineer` domain expertise) |
+| Class/function size ceilings (200 instructions/class, 20/function, 10 public methods) | 🟢 | `cpp-programming-guidelines` | — | Skip (DevBureau's Clean Code standards already impose function-size/arg-count limits) |
+| "Defer to existing project structure over the rule file's own prescriptions" | 🟢 | `flutter-app-expert` | — | Skip (redundant with Surgical Changes Protocol's "match existing style") |
+
+**Adopt (merged this pass):**
+1. Risk-tiered verification depth → `.agent/rules/DEVBUREAU.md` Zero-Break Deployment Protocol (new paragraph after the evidence table).
+2. `VERIFY: <library>.<symbol>` marker → `.agent/rules/DEVBUREAU.md` Anti-Hallucination & Loop Protection (new line under "Ground Claims in Actually-Read Code").
+3. Idempotency key + single-writer principle → `.agent/agents/backend-specialist.md` (API Development ✅ list + Architecture ❌ list).
+4. Test-file scoping (3-5 tests/file, auto-detect stack) → `.agent/skills/testing-patterns/SKILL.md` (new "File Scoping" subsection).
+
+**Consider (needs a decision):** FastAPI layered architecture + LOC governance thresholds — valuable but prescriptive; needs a human call on whether `backend-specialist.md` should default to it for greenfield work only, to avoid conflicting with "match existing style" on brownfield projects.
+
+**Skip:** 3-failure-mode enumeration, pressure-response phrasing, data-testid/no-hard-waits QA basics, class/function size ceilings, defer-to-project-structure — all redundant with DevBureau content already covered elsewhere.
+
+---
+
+## 2026-07-01 — aider-chat/aider (https://github.com/aider-chat/aider, https://aider.chat/docs/)
+
+> **Wave 2, Source 2 of 3 (remaining).** Mature (2+ years, ~47k stars, weekly releases) autonomous AI-pair-programming CLI. Apache-2.0. Notable maturity signal: tracks a "Singularity" metric (% of its own new code written by itself, 88% at time of check) and a public polyglot benchmark scoring edit-format compliance and task correctness as separate axes.
+
+**Patterns found:**
+
+| Pattern | Confidence | Where observed | Destination | Verdict |
+|---|---|---|---|---|
+| Minimal-context-by-design: only pull in files there's good reason to believe are relevant, not whole directories "just in case" — excess context measurably degrades output quality, not just cost | 🟢 | `docs/faq.html`, `docs/usage/tips.html` | `DEVBUREAU.md` (new section near Surgical Changes Protocol) | Adopt |
+| Context-budget via graph-ranking: rank files/symbols by dependency-graph connectivity, read the most-referenced first, expand only when starting from zero context | 🟢 | `docs/repomap.html` | `.agent/agents/explorer-agent.md` | Adopt |
+| Isolate agent-authored commits from pre-existing dirty state — flush the user's pre-existing uncommitted changes into their own commit before the agent's own change lands | 🟡 | `docs/git.html` | `.agent/agents/devops-engineer.md` | Adopt |
+| Pre-create an empty target file before asking the AI to populate it — models default to appending into an existing file rather than creating a new one unless it already exists on disk | 🟡 | `docs/usage/tips.html` | `.agent/memory/lessons.md` | Adopt |
+| Edit-format selection matched to model capability (whole-file vs. search/replace vs. unified-diff per model's known quirks) | 🟢 | `docs/more/edit-formats.html` | — | Skip (specific to aider's own diff-applying engine; DevBureau is a prompt/rules kit, not an edit-applying engine) |
+| Separating "edit format compliance" from "task correctness" as two independent benchmark axes | 🟢 | `docs/leaderboards/` | — | Skip (belongs to a benchmarking tool, not an operating-rules kit) |
+| Auto-lint after every edit (default ON) / auto-test after edits (default OFF, opt-in) | 🟢 | `docs/config/options.html` | — | Skip (DevBureau's Zero-Break Protocol + Final Checklist already mandates fresh test evidence, stricter than aider's opt-in default) |
+| Auto-commit after every edit + `/undo` for one-command rollback | 🟢 | `docs/git.html` | — | Skip (auto-commit-by-default conflicts with DevBureau/harness's explicit "never commit unless asked" stance) |
+| Persistent `CONVENTIONS.md` loaded into every session | 🟢 | `docs/usage/conventions.html` | — | Skip (DevBureau's CLAUDE.md/DEVBUREAU.md + memory layer already serve this role) |
+| Incremental one-goal-at-a-time workflow with a "discuss a plan first" mode before implementing | 🟡 | `docs/usage/tips.html` | — | Skip (redundant with Socratic Gate + Alinhamento de Workspace) |
+
+**Adopt (merged this pass):**
+1. Minimal-context-by-design → `.agent/rules/DEVBUREAU.md` (new "Context Scoping Discipline" section after Surgical Changes Protocol — merged with Source 3's named-context-vocabulary finding below into one section).
+2. Context-budget graph-ranking heuristic → `.agent/agents/explorer-agent.md` (new "Context Budgeting" subsection under Discovery Flow).
+3. Isolate-agent-commits-from-dirty-state → `.agent/agents/devops-engineer.md` (new Anti-Patterns table row).
+4. Pre-create target files → `.agent/memory/lessons.md` (new dated entry, 2026-07-01).
+
+**Consider:** none carried forward — the two borderline items (edit-format-per-model, benchmark-axis split) were judged Skip as too tool-specific to aider's own architecture rather than needing a further decision.
+
+**Skip:** auto-lint/auto-test defaults, auto-commit + `/undo`, persistent CONVENTIONS.md, incremental-plan-first workflow — redundant with existing DevBureau protocols or in direct conflict with the "never commit unless asked" git-safety stance.
+
+---
+
+## 2026-07-01 — continuedev/continue (https://github.com/continuedev/continue, https://docs.continue.dev/)
+
+> **Wave 2, Source 3 of 3 (remaining) — now complete.** VS Code/JetBrains AI coding extension, Apache-2.0. Note: the project was acquired by Cursor (2026-06-18) and the repo archived/read-only as of 2026-06-19 — docs remain accessible and safe to mine, but this is frozen historical knowledge, not an actively evolving reference. This date is after this session's training cutoff; flagged per Chain-of-Verification as a claim sourced live from the docs site, not from training memory.
+
+**Patterns found:**
+
+| Pattern | Confidence | Where observed | Destination | Verdict |
+|---|---|---|---|---|
+| Named, scoped context providers (`@codebase`, `@diff`, `@terminal`, `@folder`, `@open`, ...) as an explicit menu to pull in only the context a request needs, rather than open-ended broad reads | 🟢 | `docs.continue.dev/customize/custom-providers` | `DEVBUREAU.md` (merged into the same Context Scoping Discipline section as Source 2's minimal-context finding) | Adopt |
+| Glob/regex-scoped rule files (frontmatter `globs`/`regex`/`alwaysApply` tri-state) so a rule auto-applies only to matching file types instead of always loading | 🟢 | `docs.continue.dev/customize/deep-dives/rules` | Skill frontmatter convention (`.agent/skills/*/SKILL.md`) | Consider — structural change touching every skill's frontmatter schema; overlaps with the existing Domain Overlap Detection table and needs an explicit decision before a multi-file rollout |
+| Retrieval pipeline tuning knobs (retrieve top-N → rerank → keep top-K) as an explicit, user-visible config | 🟢 | `docs.continue.dev/customize/model-roles/embeddings` | — | Skip (Continue-specific vector-index/LanceDB infrastructure; no equivalent surface in a prompt-based rules kit) |
+| Numbered filename prefixes to control deterministic rule-file load order | 🟢 | `docs.continue.dev/customize/deep-dives/rules` | — | Skip (superseded by DevBureau's existing P0 > P1 > P2 priority system, a stronger mechanism) |
+| Invokable prompt files (markdown + YAML frontmatter) as slash commands | 🟢 | `docs.continue.dev/customize/deep-dives/prompts` | — | Skip (DevBureau's slash-command system is already broader and more structured) |
+| Local-first single `config.yaml` checked into git | 🟡 | `docs.continue.dev/guides/understanding-configs` | — | Skip (DevBureau's IDE-sync mechanism already solves "one source of truth, multiple targets" more completely) |
+| CONTRIBUTING.md norms: align-before-code, one focused PR, mandatory test updates | 🟢 | `github.com/continuedev/continue/blob/main/CONTRIBUTING.md` | — | Skip (both sub-patterns already covered by Socratic Gate and Surgical Changes Protocol) |
+
+**Adopt (merged this pass):**
+1. Named context-scoping vocabulary → `.agent/rules/DEVBUREAU.md` "Context Scoping Discipline" section (item 3: "prefer named context handles over ad-hoc exploration").
+
+**Consider (needs a decision):** glob/regex-scoped skill frontmatter (`applies_to`/`globs` field) — a genuinely new capability (skills that self-scope to file types) but requires editing every skill's frontmatter schema and deciding how it interacts with the Domain Overlap Detection table; too large a structural change to fold into this pass without explicit sign-off.
+
+**Skip:** retrieval-tuning knobs, numbered load-order prefixes, invokable prompt files, local-first config.yaml, CONTRIBUTING.md process norms — all either Continue-specific infrastructure or already covered more completely by an existing DevBureau mechanism.
+
+---
+
+**Wave 2 close-out note:** All 4 sources now mined (see `behavioral-alignment-wave2.md`). Combined Adopt yield across Sources 1-3: 9 items merged (risk-tiered verification, `VERIFY:` marker, idempotency/single-writer, test-file scoping, context scoping discipline [3-part merge], context-budget graph-ranking, commit-isolation-from-dirty-state, pre-create-target-files). 2 items logged as Consider, requiring a human decision before any further action: FastAPI layered-architecture defaults (backend-specialist.md) and glob/regex-scoped skill frontmatter (kit-wide structural change). Lower-than-planned yield (9 net-new vs. the 11-17 originally estimated) reflects that DevBureau's existing coverage — Socratic Gate, Lean Code Ladder, Surgical Changes, Zero-Break, Anti-Hallucination, memory layer, slash-command system — already subsumed most of what these three sources had to offer; this is itself a signal of kit maturity, not a mining shortfall. Ran `sync_ide.py --target all` and `doctor.py` after merging.

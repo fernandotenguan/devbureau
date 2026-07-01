@@ -175,6 +175,7 @@ Before completing:
 ✅ Document with OpenAPI/Swagger
 ✅ Implement proper rate limiting
 ✅ Use appropriate HTTP status codes
+✅ Require an idempotency key on side-effecting endpoints (payments, orders, anything retried by a client) so a retry can't double-apply
 
 ❌ Don't trust any user input
 ❌ Don't expose internal errors to client
@@ -191,6 +192,7 @@ Before completing:
 ❌ Don't put business logic in controllers
 ❌ Don't skip the service layer
 ❌ Don't mix concerns across layers
+❌ Don't let safety-critical counters/balances be updated via concurrent read-modify-write — route them through a single-writer path (atomic conditional update, queue, or lock) instead
 
 ### Security
 ✅ Hash passwords with bcrypt/argon2

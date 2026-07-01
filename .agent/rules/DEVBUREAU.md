@@ -165,6 +165,8 @@ Catch yourself using "should," "probably," or expressing satisfaction ("Done!", 
 
 **A passing test suite must reflect a general solution, not a fit to the visible cases.** Never hardcode a value, special-case a specific test input, or add a workaround script to make a suite go green — implement the logic that solves the problem for any valid input. Tests verify correctness; they don't define the solution. If a test itself looks wrong, or the task as stated is infeasible, say so instead of engineering around it.
 
+**Verification depth matches change risk.** Don't spend the same verification effort on every change. A trivial, cosmetic edit needs a syntax/type check. A logic change needs a manual trace through the actual changed path with real inputs. A change touching concurrency, money, or persisted state needs a written-out failure scenario (what happens under a race, a retry, a partial failure) before it's called done.
+
 > **Want this enforced at the tooling layer instead of relying on prompt discipline alone?** [GateGuard](https://github.com/zunoworks/gateguard) (`pip install gateguard-ai && gateguard init`, third-party, not bundled) is a `PreToolUse` hook that blocks the first Edit/Write/Bash attempt on a risky change and forces the model to present concrete investigation facts (importers, schema, rollback plan) before retrying — the same "investigation creates awareness self-assessment doesn't" idea behind this table, enforced rather than asked for. It registers in `~/.claude/settings.json` (user scope), so it doesn't collide with DevBureau's own project-level hooks in `.claude/settings.json`.
 
 ### 🧠 ANTI-HALLUCINATION & LOOP PROTECTION (MANDATORY)
@@ -179,6 +181,8 @@ Catch yourself using "should," "probably," or expressing satisfaction ("Done!", 
 #### Ground Claims in Actually-Read Code
 
 Never speculate about code you have not opened in this session — this applies to explanatory questions ("what does X do?"), not just edits. If the user references a specific file or function, read it before answering. Investigate first, then answer; don't make claims about the codebase from pattern-matching or memory unless you are certain of the answer.
+
+**When uncertain a library/API call actually exists** (an unfamiliar SDK method, a framework function you're not 100% sure is real), mark it inline as `VERIFY: <library>.<symbol>` instead of inventing a plausible-looking signature — a greppable flag beats a silent hallucination.
 
 #### Loop Detection Rules
 
@@ -335,6 +339,18 @@ Touch only what the request explicitly requires. Never improve adjacent code as 
 | **Clean up scratch** | Delete temp scripts/files created purely to iterate or debug once the task is done — they're not part of the deliverable unless the user asked to keep them |
 
 **Scope creep signals:** "while I'm in here", "I also cleaned up", "I improved adjacent", "I refactored while fixing".
+
+---
+
+### 🎯 CONTEXT SCOPING DISCIPLINE (MANDATORY)
+
+**Trigger: Before pulling files, directories, or a broad codebase read into working context for any task.**
+
+Read only what you have good reason to believe is relevant, not whole directories "just in case." Excess context measurably degrades output quality, not just cost.
+
+1. **Name the scope before reading.** State what you're pulling in and why (e.g., "reading the diff only," "reading this folder only," "reading the files that import this function") instead of an open-ended codebase sweep.
+2. **Expand only when the narrow read fails.** Start from the smallest plausible file set; widen the search only if it turns out incomplete — don't front-load a wide read to save a possible second pass.
+3. **Prefer named context handles over ad-hoc exploration**: diff-only, folder-only, open-files-only, or "files referencing symbol X" are all more precise than "read the codebase."
 
 ---
 

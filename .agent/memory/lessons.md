@@ -38,6 +38,15 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Evidência:** Estrutura replicada em `framework-benchmarking`, `mobile-design`, `saas-stack-rules` e outras skills multi-arquivo.
 **Arquivos chave:** `.agent/skills/premium-design-orchestrator/`, `.agent/skills/brand-identity-extractor/`, `.agent/skills/premium-tech-stack/`
 
+## 2026-07-01 — Pre-criar arquivo alvo antes de pedir conteúdo
+
+**Gatilho:** Uma tarefa multi-arquivo pede a criação de um arquivo novo que ainda não existe no disco.
+**Confiança:** 🟡 Inferido (padrão documentado por uma ferramenta de terceiros madura, ainda não re-testado dentro do DevBureau)
+**Padrão identificado:** Um agente tende a, por padrão, anexar conteúdo a um arquivo já existente em vez de criar um novo, a menos que o arquivo alvo já exista no disco antes do pedido. Criar o arquivo vazio primeiro (Write com conteúdo mínimo) remove essa ambiguidade antes de pedir o conteúdo real.
+**Pitfall evitado:** Conteúdo destinado a um arquivo novo terminar anexado, por engano, a um arquivo existente com nome parecido.
+**Evidência:** Mineração de padrões, Wave 2 Source 2 (aider docs, `docs/usage/tips.html`) — ver `.agent/memory/pattern-mining-log.md` entrada 2026-07-01.
+**Arquivos chave:** n/a (comportamento de agente, não arquivo específico do kit)
+
 ## 2026-06-28 — Invariantes citam o bug que previnem
 
 **Gatilho:** Escrever uma nova regra cross-cutting em `lessons.md`, `gotchas.md` ou no frontmatter de um agente/skill.

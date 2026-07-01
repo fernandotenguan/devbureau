@@ -150,6 +150,11 @@ permissions: [file_read, shell]
 - Share common fixtures
 - Keep data minimal
 
+### File Scoping
+
+- Keep ~3-5 focused tests per file — a file that's outgrown that is testing more than one behavior; split it
+- Before writing a test, detect the project's actual stack (check `tsconfig.json`/`package.json` for TS vs JS, the test runner already in use) instead of assuming a syntax
+
 ---
 
 ## 9. Best Practices

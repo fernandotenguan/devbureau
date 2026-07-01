@@ -209,6 +209,7 @@ What are you deploying?
 | Deploy without backup | Always backup first |
 | Ignore monitoring | Watch metrics post-deploy |
 | Force push to main | Use proper merge process |
+| Mix pre-existing uncommitted changes into your own commit | Flush/isolate the user's pre-existing dirty state into its own commit first, so an agent-authored change is never conflated with unrelated prior work |
 
 ---
 

@@ -1,7 +1,10 @@
-# Behavioral Alignment — Wave 2 (Sources 1-3 Pending)
+# Behavioral Alignment — Wave 2 (✅ Complete)
 
 > Registered: 2026-06-30. Execute in a future session via `/mine-patterns` or manually.
-> **2026-07-01: Source 4 executed and merged.** See `.agent/memory/pattern-mining-log.md` entry "2026-07-01 — Anthropic prompt engineering docs" for the full patterns table and Adopt/Consider/Skip breakdown (5 principles merged into `DEVBUREAU.md`, `orchestrator.md`, and `ai-engineer/SKILL.md`; `sync_ide.py --target all` + `doctor.py` run afterward). Sources 1-3 below remain pending — not started.
+> **2026-07-01: Source 4 executed and merged.** See `.agent/memory/pattern-mining-log.md` entry "2026-07-01 — Anthropic prompt engineering docs" for the full patterns table and Adopt/Consider/Skip breakdown (5 principles merged into `DEVBUREAU.md`, `orchestrator.md`, and `ai-engineer/SKILL.md`; `sync_ide.py --target all` + `doctor.py` run afterward).
+> **2026-07-01: Sources 1-3 executed and merged in the same session.** See `.agent/memory/pattern-mining-log.md` entries "2026-07-01 — PatrickJS/awesome-cursorrules", "2026-07-01 — aider-chat/aider", and "2026-07-01 — continuedev/continue" (plus the "Wave 2 close-out note" at the end of the log). 9 net-new principles merged across `DEVBUREAU.md`, `backend-specialist.md`, `devops-engineer.md`, `explorer-agent.md`, `testing-patterns/SKILL.md`, and `lessons.md`. 2 items logged as Consider, deliberately not merged, pending a human decision: FastAPI layered-architecture defaults for `backend-specialist.md`, and a glob/regex-scoped skill-frontmatter convention (kit-wide structural change, overlaps the Domain Overlap Detection table). `sync_ide.py --target all` + `doctor.py` run afterward.
+>
+> **All 4 sources of Wave 2 are now done.** This file is kept for historical record; no further action pending except the two Consider items above if the user decides to act on them.
 
 ## Context
 
