@@ -108,6 +108,23 @@ This skill provides a framework for breaking down work into clear, actionable ta
 
 ---
 
+## Critérios de Aceite (Contrato de Aceite)
+
+> Todo plano precisa de um contrato de aceite em linguagem simples antes de o trabalho começar — a especificação, não o código, é a fonte da verdade sobre "o que é entregar certo".
+
+Escreva cada critério como uma frase "Quando [situação], o sistema deve [resultado esperado]". Isso é a versão em linguagem acessível do formato Given/When/Then (Gherkin/BDD) usado em Spec-Driven Development.
+
+| ❌ Vago (não é um critério de aceite) | ✅ Contrato de aceite |
+|----------|----------|
+| "Login deve funcionar" | "Quando o cliente digitar e-mail e senha corretos, o sistema deve abrir o painel em até 2 segundos" |
+| "Tratar erro de pagamento" | "Quando o pagamento for recusado, o sistema deve mostrar o motivo da recusa e não cobrar o cliente" |
+
+Um critério sem "quando/deve" testável conta como placeholder (ver seção "No Placeholders") e reprova o plano.
+
+## Nota Técnica: YAML para Dados Estruturados
+
+Quando o plano precisar descrever dados estruturados (schema de config, contrato de API, modelo de dados), use um bloco YAML em vez de JSON dentro do plano — o agente processa YAML com mais precisão e menor custo de tokens. Texto corrido continua em Markdown normalmente; isso vale só para blocos de dados estruturados.
+
 ## Plan Structure (Flexible, Not Fixed!)
 
 ```
@@ -115,6 +132,10 @@ This skill provides a framework for breaking down work into clear, actionable ta
 
 ## Goal
 One sentence: What are we building/fixing?
+
+## Critérios de Aceite
+- [ ] Quando [situação], o sistema deve [resultado esperado]
+- [ ] Quando [situação], o sistema deve [resultado esperado]
 
 ## Tasks
 - [ ] Task 1: [Specific action] → Verify: [How to check]

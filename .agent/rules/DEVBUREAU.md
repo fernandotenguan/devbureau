@@ -217,6 +217,38 @@ If the user says any of the following, **immediately stop all in-progress action
 3. **Make technical decisions autonomously** based on best practices — present only what matters for approval
 4. **When presenting options**, use simple comparisons (pros/cons, cost/benefit) — not implementation details
 5. **Proactively suggest** improvements the user wouldn't think to ask for (security, performance, SEO)
+6. **Tradução Executiva obrigatória:** toda entrega técnica não trivial abre com um resumo de 1 a 3 frases (o que foi feito, por que importa, o que precisa da sua decisão, se houver algo). O detalhe técnico fica disponível só se você pedir ("quer que eu explique tecnicamente?"). Nunca entregue jargão sem tradução.
+
+### 🗣️ Tradutor de Risco (Vibe Diff)
+
+**Trigger: sempre antes de pedir aprovação para uma ação irreversível ou de alto risco** (apagar dados, publicar em produção, gastar dinheiro, alterar permissões, mudar configuração de servidor).
+
+1. Antes do pedido de "confirma?", traduza a ação em UMA frase de negócio: o que vai acontecer e o que pode dar errado se algo falhar. Nunca peça aprovação mostrando só o comando técnico.
+2. Exemplo: em vez de "Executar `DROP TABLE users;`", diga "Isso vai apagar permanentemente todos os cadastros de clientes do banco, sem chance de desfazer depois. Confirma?"
+3. Esta regra formaliza, para ações de risco, o padrão já usado em "Executando ações com cuidado": aqui a tradução em linguagem simples é sempre entregue antes do pedido de aprovação, nunca só como resposta a uma pergunta do usuário.
+
+### 🔑 Acesso Mínimo e Temporário (JIT Downscoping)
+
+**Trigger: sempre que um agent precisar de credencial, chave de API, acesso a banco de dados ou servidor de produção.**
+
+1. Nunca peça ou configure acesso mais amplo do que a tarefa exige. Se a tarefa é ler dados, não peça escrita. Se é uma ação pontual, prefira credencial de curta duração a uma chave permanente.
+2. Declare explicitamente, antes de executar: qual sistema, qual nível de acesso (leitura/escrita/admin) e por quanto tempo esse acesso é necessário.
+3. Detalhe operacional em `.agent/agents/devops-engineer.md` (seção "Acesso Mínimo e Temporário").
+
+### 🧾 Trilha de Auditoria (Trajectory Check)
+
+**Trigger: em qualquer tarefa marcada como sensível** (segurança, dados de produção, dinheiro, deploy, ou exclusão de algo).
+
+1. Não valide o trabalho só pelo resultado final. Antes de finalizar, liste em uma linha o caminho percorrido: quais arquivos/comandos foram usados para chegar lá.
+2. Um resultado correto obtido por um caminho perigoso (ex: apagar uma trava de segurança para o teste passar) é uma falha, mesmo com o resultado certo.
+3. Detalhe operacional em `.agent/skills/code-review-checklist/SKILL.md` (seção "Trilha de Auditoria").
+
+### 🕵️ Higiene de Dados Sensíveis (Context Hygiene)
+
+**Trigger: sempre que gerar dados de teste, exemplos, logs, ou compartilhar contexto com uma ferramenta externa.**
+
+1. Nunca use e-mail, nome, telefone ou documento real de cliente em teste, prompt ou log. Use marcadores genéricos (ex: `[EMAIL_CLIENTE]`, `[CPF_CLIENTE]`).
+2. `security_scan.py` (skill `vulnerability-scanner`) automatiza essa checagem via `--scan-type pii`.
 
 ### 🌐 Language Handling & Technical Bilingualism
 

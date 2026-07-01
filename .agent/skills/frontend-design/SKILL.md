@@ -25,6 +25,8 @@ permissions: [file_read]
 | [animation-guide.md](animation-guide.md) | ⚪ Optional | Animation needed |
 | [motion-graphics.md](motion-graphics.md) | ⚪ Optional | Lottie, GSAP, 3D |
 | [decision-trees.md](decision-trees.md) | ⚪ Optional | Context templates |
+| [state-coverage.md](state-coverage.md) | ⚪ Optional | Loading/empty/error/edge states for data-driven UI |
+| [form-validation.md](form-validation.md) | ⚪ Optional | Form fields, validation timing, error messages |
 
 > 🔴 **ux-psychology.md = ALWAYS READ. Others = only if relevant.**
 
@@ -322,6 +324,18 @@ For animation patterns: [animation-guide.md](animation-guide.md), for advanced: 
 
 ## 9. Anti-Patterns (What NOT to Do)
 
+### 🚫 The Seven Cardinal Sins (P0 — checkable, not style opinions)
+
+> Adapted from open-design (nexu-io/open-design), craft/, and refero_skill (MIT), via analysis on 2026-06-30.
+
+1. **Default Tailwind indigo as accent** — exactly `#6366f1`, `#4f46e5`, `#4338ca`, `#3730a3`, `#8b5cf6`, `#7c3aed`, `#a855f7`. The exact hex list behind the Purple Ban above.
+2. **Two-stop "trust" gradient on the hero** — purple→blue, blue→cyan, indigo→pink. A flat surface + intentional type beats it every time.
+3. **Emoji as feature icons** — ✨🚀🎯⚡🔥💡 inside a heading, button, list item, or an "icon" class. Use a 1.6–1.8px-stroke monoline SVG with `currentColor` instead.
+4. **Rounded card with a colored left-border accent** — the canonical "AI dashboard tile." Drop either the radius or the border.
+5. **Invented metrics** — "10× faster," "99.9% uptime," "3× more productive" without a real source. Pull from data or use a labelled placeholder.
+6. **Filler copy** — lorem ipsum, "feature one/two/three," "sample content." An empty section is a composition problem to solve, not a reason to invent words.
+7. **More than ~12 raw hex values outside design tokens, or one accent color used 6+ times on a single screen** — tokens weren't honored; cap visible accent use at ~2 per screen.
+
 ### ❌ Lazy Design Indicators
 
 - Default system fonts without consideration
@@ -391,6 +405,8 @@ For deeper guidance on specific areas:
 - [motion-graphics.md](motion-graphics.md) - Advanced: Lottie, GSAP, SVG, 3D, Particles
 - [decision-trees.md](decision-trees.md) - Context-specific templates
 - [ux-psychology.md](ux-psychology.md) - User psychology deep dive
+- [state-coverage.md](state-coverage.md) - The 5 required states for any data-driven surface
+- [form-validation.md](form-validation.md) - Input state machine, validation timing, error wiring
 
 ---
 

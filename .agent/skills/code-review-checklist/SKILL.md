@@ -44,6 +44,14 @@ allowed-tools: Read, Glob, Grep
 - [ ] Public APIs documented
 - [ ] README updated if needed
 
+## Trilha de Auditoria (Trajectory Check)
+
+Para tarefas marcadas como sensíveis (segurança, dados de produção, dinheiro, deploy, exclusão de dados), não avalie só se o resultado final está certo — avalie também o caminho usado para chegar lá:
+
+- [ ] Quais arquivos/comandos/ferramentas foram usados para produzir esse resultado?
+- [ ] Algum passo pulou uma checagem de segurança, apagou evidência de erro, ou silenciou um aviso só para o resultado "parecer" certo?
+- [ ] Se sim → marque 🔴 BLOCKING mesmo que a saída final esteja correta. Um resultado certo por um caminho perigoso é uma falha de qualidade, não um sucesso.
+
 ## AI & LLM Review Patterns (2025)
 
 ### Logic & Hallucinations

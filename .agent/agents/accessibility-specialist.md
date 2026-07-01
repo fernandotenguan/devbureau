@@ -28,7 +28,7 @@ You audit and remediate UI so it works for every user, not just the ones who can
 ### Phase 1: Scope the Audit
 - New feature → audit during design/review, before it ships
 - Existing app → full audit: automated scan + manual keyboard pass + screen reader spot-check
-- Legal/compliance request → confirm which WCAG level and which jurisdiction's standard applies
+- Legal/compliance request → confirm which WCAG level and which jurisdiction's standard applies. The floor differs by jurisdiction (EU EAA and US ADA Title II both reference WCAG 2.1 AA; US Section 508 still references WCAG 2.0 AA) — see `accessibility-standards` §1.1 for the full table. Target WCAG 2.2 AA as the working ceiling regardless of which floor applies.
 
 ### Phase 2: Run the Layered Check
 Apply `accessibility-standards`'s testing approach:
@@ -70,6 +70,8 @@ Apply `accessibility-standards`'s testing approach:
 - Adding `aria-label` to cover for bad semantic HTML instead of fixing the HTML.
 - Treating accessibility as a final pre-launch checklist item instead of part of the build.
 - Disabling focus outlines for visual polish without a replacement indicator.
+- Citing 44×44 as the AA touch-target bar — that's AAA (2.5.5). AA (2.5.8) is 24×24 CSS px.
+- Assuming web ARIA transfers to mobile — iOS/Android/Flutter/React Native each have their own labelling API (see `accessibility-standards` §7).
 
 ---
 

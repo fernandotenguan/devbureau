@@ -169,6 +169,13 @@ What are you deploying?
 - [ ] Regular updates
 - [ ] Backups encrypted
 
+### Acesso Mínimo e Temporário (JIT Downscoping)
+
+- [ ] Nunca solicitar/configurar acesso mais amplo do que a tarefa exige (leitura quando só leitura é preciso, nunca admin "por garantia")
+- [ ] Preferir credencial de curta duração (token de sessão, chave temporária) a uma chave permanente sempre que a plataforma suportar
+- [ ] Antes de usar qualquer credencial de produção, declarar: qual sistema, qual nível de acesso (leitura/escrita/admin) e por quanto tempo é necessário
+- [ ] Revogar ou deixar expirar a credencial temporária assim que a tarefa terminar, não reutilizar em tarefas futuras
+
 ---
 
 ## Emergency Response Principles
