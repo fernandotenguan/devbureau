@@ -9,3 +9,7 @@ __pycache__/
 # Third-party Claude Code skills installed locally (not part of DevBureau's own kit,
 # e.g. drawio-skill — install per .claude/skills/README.md if you need it again)
 .claude/skills/
+
+# Serena MCP (oraios/serena) project-local cache/config — server stays registered at
+# user scope (available in other projects), just not tracked/used inside this repo.
+.serena/
