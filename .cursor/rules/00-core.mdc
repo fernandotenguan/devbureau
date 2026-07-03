@@ -129,6 +129,68 @@ If the user says any of the following, **immediately stop all in-progress action
 2. Exemplo: em vez de "Executar `DROP TABLE users;`", diga "Isso vai apagar permanentemente todos os cadastros de clientes do banco, sem chance de desfazer depois. Confirma?"
 3. Esta regra formaliza, para ações de risco, o padrão já usado em "Executando ações com cuidado": aqui a tradução em linguagem simples é sempre entregue antes do pedido de aprovação, nunca só como resposta a uma pergunta do usuário.
 
+### 📊 MATRIZ DE DECISÃO — Aprovação Automática vs. Confirmação
+
+**Trigger: Em toda ação que PODERIA requerer aprovação, aplicar esta matriz ANTES de pedir.**
+
+| Ação | Risco | Reversível | Afeta Outros | Decisão Humana? | Executor |
+|---|---|---|---|---|---|
+| **Edit código (lógica, função)** | Médio | ✅ Sim (revert) | ❌ Não | ❌ **AUTO** | Automático |
+| **Criar arquivo novo** | Baixo | ✅ Sim (delete) | ❌ Não | ❌ **AUTO** | Automático |
+| **Commit local** | Baixo | ✅ Sim (revert) | ❌ Não (local) | ❌ **AUTO** | Automático |
+| **Git push (remoto)** | Médio | ⚠️ Parcial | ✅ Sim | ✅ **PERGUNTE** | Com confirmação |
+| **Delete arquivo** | Alto | ❌ Não | ⚠️ Possível | ✅ **PERGUNTE** | Com confirmação |
+| **Drop table / Apagar dados** | **CRÍTICO** | ❌ Não | ✅ Sim | ✅ **EXIGIR + TRADUÇÃO** | Com confirmação + risco traduzido |
+| **Deploy produção** | **CRÍTICO** | ⚠️ Rollback ~15min | ✅ Sim | ✅ **EXIGIR + TRADUÇÃO** | Com confirmação + risco traduzido |
+| **Force-push main** | **CRÍTICO** | ❌ Reescreve histórico | ✅ Sim | ✅ **BLOQUEAR** | Recusar |
+| **Alterar secrets/env prod** | **CRÍTICO** | ⚠️ Parcial | ✅ Sim | ✅ **EXIGIR + TRADUÇÃO** | Com confirmação + risco traduzido |
+
+**Regra simplificada:**
+- ✅ **AUTO** (sem perguntar): Mudanças locais reversíveis que você pediu explicitamente (edit, create, commit)
+- 🤔 **PERGUNTE**: Ações que publicam ou deletam (push, delete files)
+- 🛑 **EXIGIR + TRADUÇÃO**: Qualquer ação irreversível ou que afeta produção (⚠️ SEMPRE traduzir em linguagem de negócio antes de perguntar)
+- ❌ **BLOQUEAR**: Ações destrutivas em código compartilhado (force-push main)
+
+### ⚡ Modo de Validação Seletiva (Checklist Inteligente)
+
+**Trigger: SEMPRE que rodar `checklist.py` durante desenvolvimento.**
+
+**Regra:** Não execute testes completos em TODA mudança. Execute APENAS os testes relevantes para o TIPO de mudança.
+
+**Modo rápido (dev):**
+```bash
+python .agent/scripts/checklist.py . --selective --change-type component
+# Roda: lint (arquivo), pytest (testes do componente), lighthouse (core web vitals)
+# Pula: security scan completo, playwright, outros
+# Tempo: ~30s vs 2m 30s (5x mais rápido)
+```
+
+**Modo pré-commit:**
+```bash
+python .agent/scripts/checklist.py . --pre-commit
+# Roda: lint (arquivos alterados), pytest (módulos afetados), security scan (diffs)
+# Tempo: ~45s
+```
+
+**Modo deploy (completo):**
+```bash
+python .agent/scripts/verify_all.py
+# Roda: TUDO (lint, pytest, lighthouse, playwright, security, etc)
+# Tempo: 3-5 min (necessário antes de publicar)
+```
+
+**Tipos de mudança suportados:**
+- `logic` → Lint + pytest (unidade)
+- `api` → Lint + pytest (integração)
+- `component` → Lint + pytest + lighthouse + playwright
+- `style` → Lint + lighthouse + playwright
+- `database` → Lint + pytest (completo) + security
+- `config` → Nenhum teste (manual apenas)
+- `docs` → Nenhum teste
+- `refactor` → Lint + pytest (se escopo grande)
+
+**Referência:** Ver `.agent/memory/test-strategy-by-change-type.md` para estratégia completa.
+
 ### 🔑 Acesso Mínimo e Temporário (JIT Downscoping)
 
 **Trigger: sempre que um agent precisar de credencial, chave de API, acesso a banco de dados ou servidor de produção.**

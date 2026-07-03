@@ -102,6 +102,15 @@ function analyzeRequest(userMessage) {
 - ✅ Transparent decision-making
 - ✅ Still automatic (no /commands needed)
 
+## Script-First Pre-Check (runs BEFORE agent selection)
+
+Routing has a step zero: **if the request (or a subtask of it) is deterministic — same input,
+same correct output, no judgment — consult `.agent/SCRIPTS_REGISTRY.md` before selecting any
+agent.** If a registered script covers it, the "route" is running that script, not spending
+agent reasoning. If no script exists, apply the Rule of Three from the registry (1st inline,
+2nd inline + flag, 3rd promote to script). Judgment tasks (naming, architecture, trade-offs,
+design taste, root-cause hypotheses) skip this pre-check and go straight to agent selection.
+
 ## Domain Detection Rules
 
 ### Single-Domain Tasks (Auto-invoke Single Agent)
@@ -124,6 +133,7 @@ function analyzeRequest(userMessage) {
 | **Memory**      | "lições aprendidas", lessons, gotchas, "o que aprendemos", "evitar erro passado" | *.agent/memory/*  |
 | **Premium Design** | gsap, three.js, swup, awwwards, scroll suave, "design premium", "site premiado", "interface imersiva", "animações premium", "5 pilares", "experiência imersiva", "landing page premium", "paleta premium" | `frontend-specialist` + premium skills |
 | **Brand Extraction** | "extrair identidade", "clonar design", "analisar referência", "extrair paleta", "copiar essência", "extract brand", "analyze design" | `brand-identity-extractor` |
+| **Agent Loop**  | "create a loop", "agent loop", "run until", "keep iterating until", "autonomous loop", "crie um loop", "loop autônomo", "rodar sozinho até", "automatizar tarefa repetitiva com verificação" | skill `loop-forge` (Triple Gate first — never activates a loop directly) |
 
 
 ### Multi-Domain Tasks (Auto-invoke Orchestrator)

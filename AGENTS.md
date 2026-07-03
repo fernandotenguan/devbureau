@@ -79,6 +79,7 @@ Agent activated → Check frontmatter "skills:" → Read SKILL.md (INDEX) → Re
 | **SLASH CMD**    | /create, /orchestrate, /debug, /build-saas, /ade                                          | Command-specific flow          | Variable                          |
 | **KIT HEALTH**   | "doctor", "diagnóstico", "kit integridade", "checar kit"                                  | TIER 0 + Scripts               | `python .agent/scripts/doctor.py` |
 | **ADE PIPELINE** | /ade, "pipeline autônomo", "autonomous"                                                   | TIER 0 + orchestrator + /ade   | ADE Workflow                      |
+| **LOOP REQUEST** | "create a loop", "agent loop", "run until", "keep iterating" / "crie um loop", "loop autônomo", "rodar sozinho até", "automatizar tarefa repetitiva" | TIER 0 + skill `loop-forge`    | Triple Gate → spec `<nome>-loop.md` (nunca aciona direto) |
 
 ---
 
@@ -175,6 +176,15 @@ When auto-applying an agent, inform the user:
     - Estrutura HTML/JSX (`.html`, `.tsx`, `.jsx`, `.vue`)
     - Configurações de layout ou bibliotecas de animação (GSAP, Framer Motion).
 - **Lógica:** Se a alteração for apenas em uma função de Utility ou API (Backend/Logic), **NÃO** abra o navegador.
+
+### 5. Protocolo Script-First (Determinístico → Script, IA → Julgamento)
+
+**Trigger: antes de gastar raciocínio de IA em QUALQUER subtarefa.**
+
+1. **Pergunte primeiro:** "isso é determinístico (mesma entrada, mesma saída correta, sem julgamento)?" Se sim, consulte `.agent/SCRIPTS_REGISTRY.md` ANTES de raciocinar. Se existe script, execute o script; não refaça o trabalho dele em tokens.
+2. **Se não existe script**, aplique a **Regra dos Três**: 1ª ocorrência resolve inline; 2ª ocorrência resolve inline E sinaliza ao usuário que virou candidato a script; 3ª ocorrência promove a script (via `skill-scaffolder`) e registra no `SCRIPTS_REGISTRY.md` com gatilhos EN + PT-BR. Nunca crie script por especulação: script sem demanda comprovada é manutenção morta.
+3. **Fronteira:** tarefas de julgamento (nomear, decidir arquitetura, avaliar trade-off, gosto de design, hipótese de causa raiz) ficam com agentes. A própria classificação do pedido é julgamento e acontece na cabeça do modelo, não num roteador em código.
+4. **Economia honesta:** ao afirmar que um script economizou tokens/tempo, meça (`benchmark_skill.py`, `token_footprint.py`) em vez de projetar percentuais.
 
 ---
 
@@ -274,6 +284,68 @@ If the user says any of the following, **immediately stop all in-progress action
 1. Antes do pedido de "confirma?", traduza a ação em UMA frase de negócio: o que vai acontecer e o que pode dar errado se algo falhar. Nunca peça aprovação mostrando só o comando técnico.
 2. Exemplo: em vez de "Executar `DROP TABLE users;`", diga "Isso vai apagar permanentemente todos os cadastros de clientes do banco, sem chance de desfazer depois. Confirma?"
 3. Esta regra formaliza, para ações de risco, o padrão já usado em "Executando ações com cuidado": aqui a tradução em linguagem simples é sempre entregue antes do pedido de aprovação, nunca só como resposta a uma pergunta do usuário.
+
+### 📊 MATRIZ DE DECISÃO — Aprovação Automática vs. Confirmação
+
+**Trigger: Em toda ação que PODERIA requerer aprovação, aplicar esta matriz ANTES de pedir.**
+
+| Ação | Risco | Reversível | Afeta Outros | Decisão Humana? | Executor |
+|---|---|---|---|---|---|
+| **Edit código (lógica, função)** | Médio | ✅ Sim (revert) | ❌ Não | ❌ **AUTO** | Automático |
+| **Criar arquivo novo** | Baixo | ✅ Sim (delete) | ❌ Não | ❌ **AUTO** | Automático |
+| **Commit local** | Baixo | ✅ Sim (revert) | ❌ Não (local) | ❌ **AUTO** | Automático |
+| **Git push (remoto)** | Médio | ⚠️ Parcial | ✅ Sim | ✅ **PERGUNTE** | Com confirmação |
+| **Delete arquivo** | Alto | ❌ Não | ⚠️ Possível | ✅ **PERGUNTE** | Com confirmação |
+| **Drop table / Apagar dados** | **CRÍTICO** | ❌ Não | ✅ Sim | ✅ **EXIGIR + TRADUÇÃO** | Com confirmação + risco traduzido |
+| **Deploy produção** | **CRÍTICO** | ⚠️ Rollback ~15min | ✅ Sim | ✅ **EXIGIR + TRADUÇÃO** | Com confirmação + risco traduzido |
+| **Force-push main** | **CRÍTICO** | ❌ Reescreve histórico | ✅ Sim | ✅ **BLOQUEAR** | Recusar |
+| **Alterar secrets/env prod** | **CRÍTICO** | ⚠️ Parcial | ✅ Sim | ✅ **EXIGIR + TRADUÇÃO** | Com confirmação + risco traduzido |
+
+**Regra simplificada:**
+- ✅ **AUTO** (sem perguntar): Mudanças locais reversíveis que você pediu explicitamente (edit, create, commit)
+- 🤔 **PERGUNTE**: Ações que publicam ou deletam (push, delete files)
+- 🛑 **EXIGIR + TRADUÇÃO**: Qualquer ação irreversível ou que afeta produção (⚠️ SEMPRE traduzir em linguagem de negócio antes de perguntar)
+- ❌ **BLOQUEAR**: Ações destrutivas em código compartilhado (force-push main)
+
+### ⚡ Modo de Validação Seletiva (Checklist Inteligente)
+
+**Trigger: SEMPRE que rodar `checklist.py` durante desenvolvimento.**
+
+**Regra:** Não execute testes completos em TODA mudança. Execute APENAS os testes relevantes para o TIPO de mudança.
+
+**Modo rápido (dev):**
+```bash
+python .agent/scripts/checklist.py . --selective --change-type component
+# Roda: lint (arquivo), pytest (testes do componente), lighthouse (core web vitals)
+# Pula: security scan completo, playwright, outros
+# Tempo: ~30s vs 2m 30s (5x mais rápido)
+```
+
+**Modo pré-commit:**
+```bash
+python .agent/scripts/checklist.py . --pre-commit
+# Roda: lint (arquivos alterados), pytest (módulos afetados), security scan (diffs)
+# Tempo: ~45s
+```
+
+**Modo deploy (completo):**
+```bash
+python .agent/scripts/verify_all.py
+# Roda: TUDO (lint, pytest, lighthouse, playwright, security, etc)
+# Tempo: 3-5 min (necessário antes de publicar)
+```
+
+**Tipos de mudança suportados:**
+- `logic` → Lint + pytest (unidade)
+- `api` → Lint + pytest (integração)
+- `component` → Lint + pytest + lighthouse + playwright
+- `style` → Lint + lighthouse + playwright
+- `database` → Lint + pytest (completo) + security
+- `config` → Nenhum teste (manual apenas)
+- `docs` → Nenhum teste
+- `refactor` → Lint + pytest (se escopo grande)
+
+**Referência:** Ver `.agent/memory/test-strategy-by-change-type.md` para estratégia completa.
 
 ### 🔑 Acesso Mínimo e Temporário (JIT Downscoping)
 
@@ -628,7 +700,7 @@ Read only what you have good reason to believe is relevant, not whole directorie
 ### Agents & Skills
 
 - **Masters**: `orchestrator`, `project-planner`, `security-auditor` (Cyber/Audit), `backend-specialist` (API/DB), `frontend-specialist` (UI/UX), `mobile-developer`, `debugger`, `game-developer`
-- **Key Skills**: `clean-code`, `brainstorming`, `app-builder`, `frontend-design`, `mobile-design`, `plan-writing`, `behavioral-modes`, `saas-stack-rules`
+- **Key Skills**: `clean-code`, `brainstorming`, `app-builder`, `frontend-design`, `mobile-design`, `plan-writing`, `behavioral-modes`, `saas-stack-rules`, `loop-forge` (especifica loops de agente com triple gate)
 
 ### Key Scripts
 
@@ -645,6 +717,7 @@ Read only what you have good reason to believe is relevant, not whole directorie
 - **Agents**: `.agent/agents/` | **Skills**: `.agent/skills/` | **Workflows**: `.agent/workflows/`
 - **Scripts**: `.agent/scripts/` | **Tests**: `.agent/tests/` | **Memory**: `.agent/memory/`
 - **Rules**: `.agent/rules/DEVBUREAU.md` (P0) | **Architecture**: `.agent/ARCHITECTURE.md`
+- **Script Inventory**: `.agent/SCRIPTS_REGISTRY.md` (consultar ANTES de raciocinar sobre subtarefa determinística)
 
 ### Workflows (/slash commands)
 

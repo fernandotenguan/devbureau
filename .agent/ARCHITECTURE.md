@@ -19,8 +19,9 @@ DevBureau is a modular system consisting of:
 ```plaintext
 .agent/
 ├── ARCHITECTURE.md          # This file
+├── SCRIPTS_REGISTRY.md      # Deterministic tool inventory (Script-First Protocol)
 ├── agents/                  # 22 Specialist Agents
-├── skills/                  # 63 Skills
+├── skills/                  # 67 Skills
 ├── workflows/                # 20 Slash Commands
 ├── rules/                   # Global Rules (DEVBUREAU.md P0)
 ├── scripts/                 # 9 Master Validation Scripts
@@ -61,7 +62,7 @@ Specialist AI personas for different domains.
 
 ---
 
-## 🧩 Skills (65)
+## 🧩 Skills (67)
 
 Modular knowledge domains that agents load on-demand, based on task context. Grouped here by theme; the authoritative source of truth for what exists is always `.agent/skills/` itself — run `python .agent/scripts/doctor.py` to verify this list against reality.
 
@@ -76,6 +77,7 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 | `behavioral-modes` | AI operational modes (brainstorm, implement, debug, review, teach, ship) |
 | `parallel-agents` | Multi-agent orchestration patterns for independent/parallel tasks |
 | `intelligent-routing` | Automatic agent selection based on request analysis |
+| `skill-scaffolder` | Automated skill creation, discovery, and improvement — verify no duplicates exist, generate complete boilerplate for new skills or improvements to existing ones, optional benchmarking for objective skill outputs |
 | `stack-sizing` | Project-tier sizing (Prototype/MVP/Growth SaaS/Enterprise) and stack ceiling/floor per layer |
 | `migration-strategy` | Picks the rollout approach (Strangler Fig, Big Bang, Parallel Run, Branch by Abstraction) for rebuilding/modernizing an existing legacy system |
 | `effort-estimation` | Translates a task breakdown into a tier-aware time/cost range for non-technical stakeholders |
@@ -86,6 +88,7 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 | `finishing-a-branch` | Structured close-out once work is done — merge/PR/keep/discard (`/finish-branch`), provenance-aware worktree cleanup |
 | `writing-skills` | Authoring discipline for NEW skills going forward — description states when to use (not what it contains), RED-GREEN-REFACTOR validation against a real pressure scenario before adding to the catalog |
 | `pattern-mining` | Extracts generalizable engineering patterns from a reference project the user points at (`/mine-patterns`), proposes a `lessons.md`/skill/agent destination per pattern, never auto-applies |
+| `loop-forge` | Interviews the user and writes hardened agent-loop specs (`<name>-loop.md`) — but only after a mandatory Triple Gate (iteration, script-first, economics) discussed with the user; most requests fail the gate and get a cheaper alternative. Never executes loops |
 
 ### Frontend & UI
 
@@ -274,6 +277,10 @@ skill-name/
 
 Master validation scripts that orchestrate skill-level scripts.
 
+> **Full inventory with bilingual triggers and the Rule of Three governance:**
+> `.agent/SCRIPTS_REGISTRY.md` — consult it before spending AI reasoning on a deterministic
+> subtask (Script-First Protocol, DEVBUREAU.md).
+
 ### Master Scripts
 
 | Script                  | Purpose                                   | When to Use                    |
@@ -353,7 +360,7 @@ python .agent/scripts/sync_ide.py --target all
 | Metric              | Value                                                  |
 | -------------------- | --------------------------------------------------------- |
 | **Total Agents**     | 22                                                         |
-| **Total Skills**     | 65 (+ 10 nested under `game-development`)                  |
+| **Total Skills**     | 67 (+ 10 nested under `game-development`)                  |
 | **Total Workflows**  | 21                                                         |
 | **Master Scripts**   | 9 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`) |
 | **Skills With Scripts** | 13                                                       |

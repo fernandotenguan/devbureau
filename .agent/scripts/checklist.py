@@ -26,12 +26,23 @@ import argparse
 from pathlib import Path
 from typing import List, Tuple, Optional
 
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
+
 # Configuração de encoding para evitar erros em terminais Windows (cp1252)
 if sys.platform == "win32":
     try:
         sys.stdout.reconfigure(encoding="utf-8")
     except AttributeError:
         pass
+
+# Import validation configuration
+try:
+    from validation_config import get_validation_plan, print_validation_plan
+except ImportError:
+    print("⚠️  Warning: validation_config.py not found. Using full validation mode.")
+    get_validation_plan = None
+    print_validation_plan = None
 
 # ANSI colors for terminal output
 class Colors:
@@ -186,45 +197,115 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python scripts/checklist.py .                      # Core checks only
+  python scripts/checklist.py .                              # Full validation
+  python scripts/checklist.py . --selective                  # Fast dev mode
+  python scripts/checklist.py . --selective --change-type component
+  python scripts/checklist.py . --pre-commit                 # Pre-commit mode
   python scripts/checklist.py . --url http://localhost:3000  # Include performance
         """
     )
     parser.add_argument("project", help="Project path to validate")
     parser.add_argument("--url", help="URL for performance checks (lighthouse, playwright)")
     parser.add_argument("--skip-performance", action="store_true", help="Skip performance checks even if URL provided")
-    
+
+    # New selective mode flags
+    parser.add_argument("--selective", action="store_true", help="Fast dev mode: only essential checks")
+    parser.add_argument("--change-type", choices=['logic', 'api', 'component', 'style', 'database', 'config', 'docs', 'refactor'],
+                        help="Type of change for selective validation")
+    parser.add_argument("--pre-commit", action="store_true", help="Pre-commit validation mode")
+    parser.add_argument("--files", help="Specific files to validate (comma-separated)")
+
     args = parser.parse_args()
     
     project_path = Path(args.project).resolve()
-    
+
     if not project_path.exists():
         print_error(f"Project path does not exist: {project_path}")
         sys.exit(1)
-    
-    print_header("🚀 ANTIGRAVITY KIT - MASTER CHECKLIST")
+
+    # Determine validation mode
+    mode_name = "FULL"
+    if args.selective:
+        mode_name = "SELECTIVE (DEV)"
+    elif args.pre_commit:
+        mode_name = "PRE-COMMIT"
+
+    print_header(f"🚀 DEVBUREAU CHECKLIST - {mode_name} MODE")
     print(f"Project: {project_path}")
-    print(f"URL: {args.url if args.url else 'Not provided (performance checks skipped)'}")
-    
+    if args.url:
+        print(f"URL: {args.url}")
+    if args.change_type:
+        print(f"Change Type: {args.change_type}")
+
+    # Get validation plan if in selective or pre-commit mode
+    validation_plan = None
+    if (args.selective or args.pre_commit) and get_validation_plan:
+        validation_plan = get_validation_plan(
+            change_type=args.change_type,
+            selective=args.selective,
+            pre_commit=args.pre_commit
+        )
+        if print_validation_plan:
+            print_validation_plan(validation_plan, args.change_type, mode_name)
+
     results = []
-    
-    # Run core checks
+
+    # Run core checks (respecting validation plan)
     print_header("📋 CORE CHECKS")
+
+    # Mapping check names to their enable flags in validation_plan
+    check_enable_map = {
+        "Security Scan": "security_scan",
+        "Lint Check": "lint",
+        "Schema Validation": "pytest",  # Schema is part of integration testing
+        "Test Runner": "pytest",
+        "UX Audit": "lighthouse",       # UX audit is visual, like lighthouse
+        "SEO Check": "playwright",      # SEO check is content-based, similar to playwright
+    }
+
     for name, script_path, required in CORE_CHECKS:
+        # Skip check if not in validation plan
+        if validation_plan:
+            enable_flag = check_enable_map.get(name)
+            if enable_flag and not getattr(validation_plan, enable_flag):
+                print_warning(f"{name}: Skipped (not in validation plan for {args.change_type or 'this change'})")
+                results.append({
+                    "name": name,
+                    "passed": True,
+                    "output": "",
+                    "skipped": True
+                })
+                continue
+
         script = project_path / script_path
         result = run_script(name, script, str(project_path))
         results.append(result)
-        
+
         # If required check fails, stop
         if required and not result["passed"] and not result.get("skipped"):
             print_error(f"CRITICAL: {name} failed. Stopping checklist.")
             print_summary(results)
             sys.exit(1)
-    
-    # Run performance checks if URL provided
-    if args.url and not args.skip_performance:
+
+    # Run performance checks if URL provided AND enabled in validation plan
+    should_run_performance = args.url and not args.skip_performance
+    if validation_plan and not validation_plan.lighthouse and not validation_plan.playwright:
+        should_run_performance = False
+
+    if should_run_performance:
         print_header("⚡ PERFORMANCE CHECKS")
         for name, script_path, required in PERFORMANCE_CHECKS:
+            # Skip if not enabled
+            if validation_plan:
+                if "lighthouse" in script_path.lower() and not validation_plan.lighthouse:
+                    print_warning(f"{name}: Skipped (not in validation plan)")
+                    results.append({"name": name, "passed": True, "output": "", "skipped": True})
+                    continue
+                if "playwright" in script_path.lower() and not validation_plan.playwright:
+                    print_warning(f"{name}: Skipped (not in validation plan)")
+                    results.append({"name": name, "passed": True, "output": "", "skipped": True})
+                    continue
+
             script = project_path / script_path
             result = run_script(name, script, str(project_path), args.url)
             results.append(result)
