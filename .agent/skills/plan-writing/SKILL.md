@@ -1,6 +1,6 @@
 ---
 name: plan-writing
-description: Structured task planning with clear breakdowns, dependencies, and verification criteria. Use when implementing features, refactoring, or any multi-step work.
+description: Use when implementing features, refactoring, or any multi-step work that needs a written plan ({task-slug}.md) — provides task breakdown rules, acceptance criteria format, and the no-placeholders standard.
 allowed-tools: Read, Glob, Grep
 ---
 
@@ -144,14 +144,13 @@ One sentence: What are we building/fixing?
 
 ## Done When
 - [ ] [Main success criteria]
+
+## Notes
+[Any important considerations — only if truly needed]
 ```
 
 > **That's it.** No phases, no sub-sections unless truly needed.
 > Keep it minimal. Add complexity only when required.
-
-## Notes
-[Any important considerations]
-```
 
 ---
 

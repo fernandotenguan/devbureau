@@ -1,6 +1,6 @@
 ---
 name: clean-code
-description: Pragmatic coding standards - concise, direct, no over-engineering, no unnecessary comments. Use when writing or reviewing any code to enforce quality standards.
+description: Use when writing or reviewing ANY code, in any language — enforces pragmatic standards (concise, direct, no over-engineering, no unnecessary comments) plus the mandatory pre-edit dependency check and post-task self-check.
 allowed-tools: Read, Write, Edit
 version: 2.0
 priority: CRITICAL
@@ -192,10 +192,9 @@ File to edit: UserService.ts
 **Should I fix the X errors?**
 ```
 
-4. **Wait for user confirmation** before fixing
+4. **Decide pela Matriz de Decisão** (DEVBUREAU.md TIER 0): erros nos arquivos que a própria task alterou = corrigir direto (AUTO, mudança local reversível) e reportar o que foi corrigido; erros em arquivos FORA do escopo da task ou pré-existentes = mencionar e perguntar antes (Surgical Changes: "mention, don't touch").
 5. **After fixing** → Re-run script to confirm
 
 > 🔴 **VIOLATION:** Running script and ignoring output = FAILED task.
-> 🔴 **VIOLATION:** Auto-fixing without asking = Not allowed.
-> 🔴 **Rule:** Always READ output → SUMMARIZE → ASK → then fix.
+> 🔴 **Rule:** READ output → SUMMARIZE → fix in-scope / ASK for out-of-scope → re-run.
 

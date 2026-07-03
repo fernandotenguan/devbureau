@@ -17,6 +17,24 @@
 
 ---
 
+## 2026-07-03 — Skill Re-Audit #1 (novo tipo de run: benchmark apontado para DENTRO, user-requested)
+
+**Trigger:** plano "nota 10" (`nota-10-kit.md`). Diferente dos runs #1–#8 (kit-vs-kit, acha capacidades que faltam), este tipo de run audita a QUALIDADE das skills existentes: description trigger-shaped (regra do `writing-skills`), staleness, contradições com regras mais novas do core, bloat. Piloto com 3 skills de alto tráfego; método reutilizável para as próximas.
+
+**Método por skill:** (1) description segue "quando usar, não o que faz"? (2) seções mortas/staleness? (3) contradiz regra mais nova do core? (4) diff conceitual vs. equivalentes públicos já minerados (superpowers/gstack/ECC).
+
+| Skill | Veredito | Achados e ação |
+|---|---|---|
+| `intelligent-routing` (15,2KB) | **Refresh — aplicado** | Description era what-shaped (risco documentado no `writing-skills`: agente pula o corpo). Seções mortas removidas: "Next Steps: integrate into TIER 0" (já integrada desde sempre), "Performance Considerations" com economia PROJETADA não medida (violava a regra "economia honesta" do próprio kit), "User Education", "Debugging Agent Selection", "Summary" cheerleading, pseudo-código JS redundante com a matriz. Test cases convertidos em "Routing Self-Test" compacto (cenários de pressão de referência). 15,2KB → 10,4KB. |
+| `plan-writing` (6,7KB) | **Keep, fixes menores — aplicados** | Estrutura sólida (já refrescada de superpowers, com Critérios de Aceite e No Placeholders). Bugs corrigidos: fence de código órfão no template "Plan Structure" (` ``` ` solto após "## Notes", quebrava o render do template) e description reordenada para trigger-first. |
+| `clean-code` (6,9KB) | **Keep, 1 contradição real — corrigida** | "Auto-fixing without asking = Not allowed" contradizia a Matriz de Decisão do core (edit local reversível = AUTO) e o mandato do `auto_fixer.py`. Reconciliado: erro em arquivo que a task alterou = corrigir direto e reportar; erro fora do escopo/pré-existente = mencionar e perguntar (alinhado ao Surgical Changes). Description reordenada para trigger-first. |
+
+**Padrão observado (vale para o restante do catálogo):** as 3 skills tinham descriptions what-shaped — provável dívida sistêmica das ~63 skills pré-`writing-skills` (a regra só passou a valer para skills novas em 2026-06-27). Um passe barato de description-only sobre o catálogo inteiro é o follow-up de melhor custo-benefício; o passe RED/GREEN comportamental (via `benchmark_skill.py`, nunca rodado em escala) continua sendo o degrau seguinte, mais caro.
+
+**Próximas candidatas (por tráfego):** `frontend-design`, `brainstorming`, `vulnerability-scanner`, `parallel-agents`, `testing-patterns`.
+
+---
+
 ## 2026-06-28 — Benchmark Run #8 (single-source deep dive, user-requested)
 
 **Source checked:** `garrytan/gstack` (github.com/garrytan/gstack.git). MIT licensed, owned by Garry Tan (YC President & CEO) — 118,000 stars, 17,500 forks, 297 open issues, last commit 2026-06-25 (3 days before this run), no tagged releases (rolling `VERSION` file, currently v1.58.5.0). By far the highest-credibility/highest-traction single source benchmarked to date (GitHub-verified stars, not a self-reported claim like ECC's). Same architecture class as DevBureau — markdown `SKILL.md` files synced to multiple coding-agent hosts — directly comparable. Pitched as "Garry Tan's exact Claude Code setup: opinionated tools that serve as CEO, Designer, Eng Manager, Release Manager, Doc Engineer, and QA."

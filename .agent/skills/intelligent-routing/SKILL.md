@@ -1,7 +1,7 @@
 ---
 name: intelligent-routing
-description: Automatic agent selection and intelligent task routing. Analyzes user requests and automatically selects the best specialist agent(s) without requiring explicit user mentions.
-version: 1.0.0
+description: Use at the start of EVERY user request, before responding, to decide which specialist agent(s) to apply — including when the user names no agent, mixes domains, or writes in PT-BR colloquialisms ("tá lento", "não funciona", "deixa mais bonito").
+version: 1.1.0
 ---
 
 # Intelligent Agent Routing
@@ -57,34 +57,9 @@ graph TD
 | **API Contract**    | "OpenAPI", "GraphQL schema", "API versioning" / "contrato de API", "versionar API" | `api-designer`                              | ✅ YES       |
 | **Accessibility**   | "accessibility", "a11y", "WCAG", "screen reader" / "acessibilidade", "leitor de tela", "contraste" | `accessibility-specialist`                  | ✅ YES       |
 
-### 3. Automatic Routing Protocol
+### 3. Automatic Routing Protocol (ALWAYS ACTIVE)
 
-## TIER 0 - Automatic Analysis (ALWAYS ACTIVE)
-
-Before responding to ANY request:
-
-```javascript
-// Pseudo-code for decision tree
-function analyzeRequest(userMessage) {
-    // 1. Classify request type
-    const requestType = classifyRequest(userMessage);
-
-    // 2. Detect domains
-    const domains = detectDomains(userMessage);
-
-    // 3. Determine complexity
-    const complexity = assessComplexity(domains);
-
-    // 4. Select agent(s)
-    if (complexity === "SIMPLE" && domains.length === 1) {
-        return selectSingleAgent(domains[0]);
-    } else if (complexity === "MODERATE" && domains.length <= 2) {
-        return selectMultipleAgents(domains);
-    } else {
-        return "orchestrator"; // Complex task
-    }
-}
-```
+Before responding to ANY request: classify the request type → detect domains → assess complexity → select. SIMPLE + 1 domain = single agent; MODERATE + ≤2 domains = multiple agents in sequence; anything beyond = `orchestrator`.
 
 ## 4. Response Format
 
@@ -261,97 +236,6 @@ User: "Add mobile support to the web app"
 - If DEVBUREAU.md specifies explicit routing, follow it
 - Intelligent routing is the DEFAULT when no explicit rule exists
 
-## Testing the System
+## Routing Self-Test (pressure scenarios)
 
-### Test Cases
-
-#### Test 1: Simple Frontend Task
-
-```text
-User: "Create a dark mode toggle button"
-Expected: Auto-invoke frontend-specialist
-Verify: Response shows "Using @frontend-specialist"
-```
-
-#### Test 2: Security Task
-
-```text
-User: "Review the authentication flow for vulnerabilities"
-Expected: Auto-invoke security-auditor
-Verify: Security-focused analysis
-```
-
-#### Test 3: Complex Multi-Domain
-
-```text
-User: "Build a chat application with real-time notifications"
-Expected: Auto-invoke orchestrator
-Verify: Multiple agents coordinated (backend, frontend, test)
-```
-
-#### Test 4: Bug Fix
-
-```text
-User: "Login is not working, getting 401 error"
-Expected: Auto-invoke debugger
-Verify: Systematic debugging approach
-```
-
-## Performance Considerations
-
-### Token Usage
-
-- Analysis adds ~50-100 tokens per request
-- Tradeoff: Better accuracy vs slight overhead
-- Overall SAVES tokens by reducing back-and-forth
-
-### Response Time
-
-- Analysis is instant (pattern matching)
-- No additional API calls required
-- Agent selection happens before first response
-
-## User Education
-
-### Optional: First-Time Explanation
-
-If this is the first interaction in a project:
-
-```markdown
-💡 **Tip**: I am configured with automatic specialist agent selection.
-I will always choose the most suitable specialist for your task. You can
-still mention agents explicitly with `@agent-name` if you prefer.
-```
-
-## Debugging Agent Selection
-
-### Enable Debug Mode (for development)
-
-Add to DEVBUREAU.md temporarily:
-
-```markdown
-## DEBUG: Intelligent Routing
-
-Show selection reasoning:
-
-- Detected domains: [list]
-- Selected agent: [name]
-- Reasoning: [why]
-```
-
-## Summary
-
-**intelligent-routing skill enables:**
-
-✅ Zero-command operation (no need for `/orchestrate`)  
-✅ Automatic specialist selection based on request analysis  
-✅ Transparent communication of which expertise is being applied  
-✅ Seamless integration with existing workflows  
-✅ Override capability for explicit agent mentions  
-✅ Fallback to orchestrator for complex tasks
-
-**Result**: User gets specialist-level responses without needing to know the system architecture.
-
----
-
-**Next Steps**: Integrate this skill into DEVBUREAU.md TIER 0 rules.
+Se estiver em dúvida sobre uma seleção, valide contra estes casos-referência: "Create a dark mode toggle button" → `frontend-specialist`; "Review the authentication flow for vulnerabilities" → `security-auditor`; "Build a chat application with real-time notifications" → `orchestrator` (multi-domínio); "Login is not working, getting 401 error" → `debugger`. Se a sua seleção divergiria desses, releia a matriz antes de responder.

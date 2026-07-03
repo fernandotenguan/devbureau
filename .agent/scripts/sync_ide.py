@@ -150,7 +150,9 @@ def build_agent_summary() -> str:
             if line.startswith("name:"):
                 name = line.split(":", 1)[1].strip()
             elif line.startswith("description:"):
-                description = line.split(":", 1)[1].strip()[:120]
+                raw_desc = line.split(":", 1)[1].strip()
+                # Truncate at a word boundary — a mid-word cut reads broken and wastes context
+                description = raw_desc if len(raw_desc) <= 80 else raw_desc[:80].rsplit(" ", 1)[0] + "…"
             if name and description:
                 break
         if name:
