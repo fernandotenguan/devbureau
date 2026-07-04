@@ -78,6 +78,7 @@ def _merge_claude_hook(settings: dict, event: str, matcher: str, command: str) -
 def ensure_claude_protect_hook(dry_run: bool) -> None:
     """Merge DevBureau's Claude Code hooks into .claude/settings.json without
     disturbing any other settings the user already has configured there:
+    - SessionStart: auto-run sync_ide.py at session start to keep CLAUDE.md fresh.
     - PreToolUse: block edits to auto-generated files, block writes outside
       the current git worktree (using-git-worktrees), block git --no-verify /
       -c core.hooksPath= bypass attempts (CLAUDE.md's Git Safety Protocol).
@@ -95,6 +96,12 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
             )
             return
 
+    _merge_claude_hook(
+        settings,
+        "SessionStart",
+        "",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py"',
+    )
     _merge_claude_hook(
         settings,
         "PreToolUse",

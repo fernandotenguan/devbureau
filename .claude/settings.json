@@ -52,6 +52,17 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py\""
+          }
+        ]
+      }
     ]
   }
 }
