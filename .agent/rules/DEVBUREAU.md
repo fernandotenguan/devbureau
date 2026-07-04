@@ -34,6 +34,7 @@ Agent activated → Check frontmatter "skills:" → Read SKILL.md (INDEX) → Re
 | **LOOP REQUEST** | "create a loop", "agent loop", "run until" / "crie um loop", "loop autônomo", "rodar sozinho até" | TIER 0 + skill `loop-forge`    | Triple Gate → spec `<nome>-loop.md` (nunca aciona direto) |
 | **SKILLIFY**     | "save this flow", "make reusable" / "salva esse fluxo", "vira script/skill"               | TIER 0 + skill `skillify`      | Oferta → confirmação → artefato reutilizável |
 | **SQUAD**        | /squad, "create a squad", "run the squad" / "monte uma equipe", "crie um squad", "rode o squad" | TIER 0 + skill `squad-forge`   | Squad pipeline (`squads/<nome>/`) com checkpoints |
+| **HUMANIZE**     | "humanize this", "sounds like AI" / "humaniza esse texto", "tá com cara de IA", "deixa mais natural" | TIER 0 + skill `humanizer`     | Texto reescrito sem marcas de IA         |
 
 ---
 
