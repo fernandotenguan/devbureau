@@ -9,8 +9,8 @@
 DevBureau is a modular system consisting of:
 
 - **22 Specialist Agents** - Role-based AI personas
-- **63 Skills** - Domain-specific knowledge modules
-- **20 Workflows** - Slash command procedures
+- **68 Skills** - Domain-specific knowledge modules
+- **22 Workflows** - Slash command procedures
 
 ---
 
@@ -21,8 +21,8 @@ DevBureau is a modular system consisting of:
 ├── ARCHITECTURE.md          # This file
 ├── SCRIPTS_REGISTRY.md      # Deterministic tool inventory (Script-First Protocol)
 ├── agents/                  # 22 Specialist Agents
-├── skills/                  # 67 Skills
-├── workflows/                # 20 Slash Commands
+├── skills/                  # 68 Skills
+├── workflows/                # 22 Slash Commands
 ├── rules/                   # Global Rules (DEVBUREAU.md P0)
 ├── scripts/                 # 9 Master Validation Scripts
 ├── tests/                   # Kit Integrity Tests
@@ -62,7 +62,7 @@ Specialist AI personas for different domains.
 
 ---
 
-## 🧩 Skills (67)
+## 🧩 Skills (68)
 
 Modular knowledge domains that agents load on-demand, based on task context. Grouped here by theme; the authoritative source of truth for what exists is always `.agent/skills/` itself — run `python .agent/scripts/doctor.py` to verify this list against reality.
 
@@ -89,6 +89,7 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 | `writing-skills` | Authoring discipline for NEW skills going forward — description states when to use (not what it contains), RED-GREEN-REFACTOR validation against a real pressure scenario before adding to the catalog |
 | `pattern-mining` | Extracts generalizable engineering patterns from a reference project the user points at (`/mine-patterns`), proposes a `lessons.md`/skill/agent destination per pattern, never auto-applies |
 | `loop-forge` | Interviews the user and writes hardened agent-loop specs (`<name>-loop.md`) — but only after a mandatory Triple Gate (iteration, script-first, economics) discussed with the user; most requests fail the gate and get a cheaper alternative. Never executes loops |
+| `squad-forge` | Designs and runs squads — reusable multi-agent teams for repeatable business processes (`squads/<name>/squad.md` pipelines mapping roles to the kit's 22 agents), with disk state (`state.json`) and human checkpoints (`/squad`) |
 
 ### Frontend & UI
 
@@ -212,7 +213,7 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 
 ---
 
-## 🔄 Workflows (21)
+## 🔄 Workflows (22)
 
 Slash command procedures. Invoke with `/command`.
 
@@ -236,6 +237,7 @@ Slash command procedures. Invoke with `/command`.
 | `/orchestrate`     | Multi-agent coordination                                |
 | `/plan`            | Task breakdown without writing code                     |
 | `/preview`         | Start/stop/monitor local dev server                     |
+| `/squad`           | Create, run, and manage squads — reusable multi-agent teams for repeatable business processes (`squads/`) |
 | `/status`          | Check project progress                                  |
 | `/test`            | Generate and run tests                                  |
 | `/ui-ux-pro-max`   | Design intelligence search (50 styles, 21 palettes, 50 fonts) — backed by `.agent/.shared/ui-ux-pro-max/`, not a skill folder |
@@ -360,8 +362,8 @@ python .agent/scripts/sync_ide.py --target all
 | Metric              | Value                                                  |
 | -------------------- | --------------------------------------------------------- |
 | **Total Agents**     | 22                                                         |
-| **Total Skills**     | 67 (+ 10 nested under `game-development`)                  |
-| **Total Workflows**  | 21                                                         |
+| **Total Skills**     | 68 (+ 10 nested under `game-development`)                  |
+| **Total Workflows**  | 22                                                         |
 | **Master Scripts**   | 9 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`) |
 | **Skills With Scripts** | 13                                                       |
 | **Kit Tests**        | 1 file, parametrized (`test_kit_integrity.py`)              |

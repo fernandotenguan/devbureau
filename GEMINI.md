@@ -67,6 +67,7 @@ Agent activated → Check frontmatter "skills:" → Read SKILL.md (INDEX) → Re
 | **ADE PIPELINE** | /ade, "pipeline autônomo", "autonomous"                                                   | TIER 0 + orchestrator + /ade   | ADE Workflow                      |
 | **LOOP REQUEST** | "create a loop", "agent loop", "run until" / "crie um loop", "loop autônomo", "rodar sozinho até" | TIER 0 + skill `loop-forge`    | Triple Gate → spec `<nome>-loop.md` (nunca aciona direto) |
 | **SKILLIFY**     | "save this flow", "make reusable" / "salva esse fluxo", "vira script/skill"               | TIER 0 + skill `skillify`      | Oferta → confirmação → artefato reutilizável |
+| **SQUAD**        | /squad, "create a squad", "run the squad" / "monte uma equipe", "crie um squad", "rode o squad" | TIER 0 + skill `squad-forge`   | Squad pipeline (`squads/<nome>/`) com checkpoints |
 
 ---
 
@@ -432,7 +433,7 @@ Tabela de comandos por estágio: `reference/OPERATIONS_DETAIL.md` ("Final Checkl
 ## 📁 QUICK REFERENCE
 
 - **Paths**: ver "System Map Read" acima. Listas completas de agents/skills/scripts: `reference/OPERATIONS_DETAIL.md` ("Quick Reference") e `.agent/ARCHITECTURE.md`.
-- **Workflows-chave**: `/ade` (**ADE Pipeline Autônomo**: req → spec → impl → qa → memory), `/build-saas` (SaaS completo em 7 etapas), `/plan`, `/debug`, `/deploy`, `/orchestrate`, `/brainstorm`, `/enhance`.
+- **Workflows-chave**: `/ade` (**ADE Pipeline Autônomo**: req → spec → impl → qa → memory), `/build-saas` (SaaS completo em 7 etapas), `/squad` (equipes reutilizáveis por processo, `squads/`), `/plan`, `/debug`, `/deploy`, `/orchestrate`, `/brainstorm`, `/enhance`.
 - **Memory Layer** (`.agent/memory/`): `lessons.md` (padrões que funcionaram), `gotchas.md` (erros a evitar), `question-preferences.md` (perguntas do Socratic Gate suprimidas/sempre-fazer). Consulte no início de tasks complexas.
 
 ---
