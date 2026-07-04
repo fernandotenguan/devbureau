@@ -1,6 +1,6 @@
 ---
 name: squad-forge
-description: "Use when the user asks to create, run, or manage a squad — '/squad', 'create a squad', 'squad for <process>', 'monte uma equipe', 'crie um squad', 'rode o squad <nome>', 'equipe de agentes para <trabalho>'. Designs reusable multi-agent teams for ANY repeatable process (client websites, content production, reports, proposals) as squads/<name>/squad.md pipelines that map roles to the kit's 22 agents, then runs them step-by-step with disk state (state.json) and human checkpoints. Never invents a new persona when a kit specialist already covers the role. Out of scope: one-off tasks (use the agents directly) and recurring timed automation (use loop-forge)."
+description: "Use when the user asks to create, run, or manage a squad — '/squad', 'create a squad', 'squad for <process>', 'monte uma equipe', 'crie um squad', 'rode o squad <nome>', 'equipe de agentes para <trabalho>'. Designs reusable multi-agent teams for ANY repeatable process (client websites, content production, reports, proposals) as squads/<name>/squad.md pipelines that map roles to the kit's 23 agents, then runs them step-by-step with disk state (state.json) and human checkpoints. Never invents a new persona when a kit specialist already covers the role. Out of scope: one-off tasks (use the agents directly) and recurring timed automation (use loop-forge)."
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash, PowerShell, AskUserQuestion
 ---
 
@@ -11,7 +11,7 @@ pipeline with human checkpoints. This skill has two jobs: the **Architect** (des
 writes squad definitions) and the **Runner** (executes them, one step at a time, with
 state on disk so a run survives session restarts).
 
-**Governing principle:** a squad COMPOSES what the kit already has — the 22 agents in
+**Governing principle:** a squad COMPOSES what the kit already has — the 23 agents in
 `.agent/agents/` and the skills in `.agent/skills/`. The squad file adds only what the kit
 cannot know: the sequence, the deliverables, the checkpoints, and the client-specific
 context. If a step needs expertise no agent covers, say so explicitly instead of

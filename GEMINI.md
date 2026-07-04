@@ -9,6 +9,7 @@
 - **api-designer**: Expert in API contract design —…
 - **backend-specialist**: Expert backend architect for Node.js,…
 - **code-archaeologist**: Expert in legacy code, refactoring, and…
+- **content-creator**: Marketing and social-media content…
 - **database-architect**: Expert database architect for schema…
 - **debugger**: Expert in systematic debugging, root…
 - **devops-engineer**: Expert in deployment, server…
@@ -69,6 +70,7 @@ Agent activated → Check frontmatter "skills:" → Read SKILL.md (INDEX) → Re
 | **SKILLIFY**     | "save this flow", "make reusable" / "salva esse fluxo", "vira script/skill"               | TIER 0 + skill `skillify`      | Oferta → confirmação → artefato reutilizável |
 | **SQUAD**        | /squad, "create a squad", "run the squad" / "monte uma equipe", "crie um squad", "rode o squad" | TIER 0 + skill `squad-forge`   | Squad pipeline (`squads/<nome>/`) com checkpoints |
 | **HUMANIZE**     | "humanize this", "sounds like AI" / "humaniza esse texto", "tá com cara de IA", "deixa mais natural" | TIER 0 + skill `humanizer`     | Texto reescrito sem marcas de IA         |
+| **CONTENT**      | "create a carousel/post", "publish this", "generate an image" / "cria um carrossel", "publica esse post", "gera uma imagem" | TIER 0 + `content-creator`     | Conteúdo produzido/publicado (`squads/content-production/`) |
 
 ---
 
@@ -100,6 +102,7 @@ Ao auto-aplicar um agente, anuncie na resposta: `🤖 **Applying knowledge of @[
 | slow, performance, bundle, Lighthouse, profiling / lento, otimização, velocidade | `performance-optimizer` |
 | test, coverage, E2E, Playwright, unit test / teste, cobertura | `test-engineer` |
 | schema, migration, query, database, SQL / banco de dados, migração, consulta | `database-architect` |
+| social media, carousel, post copy, publish, campaign / redes sociais, carrossel, publicar, campanha | `content-creator` |
 
 **Example:** "analisa a segurança do meu banco de dados" → linhas `security-auditor` E `database-architect` → `orchestrator` coordena ambos.
 

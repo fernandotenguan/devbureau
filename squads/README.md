@@ -8,4 +8,6 @@ Reusable multi-agent teams for repeatable business processes. Each squad is a fo
 
 Engine: `.agent/skills/squad-forge/SKILL.md` · Command: `/squad` (create / run / list / status / edit).
 
-Included example: **web-agency** — full client-website delivery, from PRD to deploy.
+Included examples:
+- **web-agency** — full client-website delivery, from PRD to deploy.
+- **content-production** — social media content, from research/angle to published post.

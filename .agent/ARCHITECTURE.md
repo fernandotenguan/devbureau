@@ -8,8 +8,8 @@
 
 DevBureau is a modular system consisting of:
 
-- **22 Specialist Agents** - Role-based AI personas
-- **69 Skills** - Domain-specific knowledge modules
+- **23 Specialist Agents** - Role-based AI personas
+- **75 Skills** - Domain-specific knowledge modules
 - **22 Workflows** - Slash command procedures
 
 ---
@@ -20,8 +20,8 @@ DevBureau is a modular system consisting of:
 .agent/
 ├── ARCHITECTURE.md          # This file
 ├── SCRIPTS_REGISTRY.md      # Deterministic tool inventory (Script-First Protocol)
-├── agents/                  # 22 Specialist Agents
-├── skills/                  # 69 Skills
+├── agents/                  # 23 Specialist Agents
+├── skills/                  # 75 Skills
 ├── workflows/                # 22 Slash Commands
 ├── rules/                   # Global Rules (DEVBUREAU.md P0)
 ├── scripts/                 # 9 Master Validation Scripts
@@ -31,7 +31,7 @@ DevBureau is a modular system consisting of:
 
 ---
 
-## 🤖 Agents (22)
+## 🤖 Agents (23)
 
 Specialist AI personas for different domains.
 
@@ -59,10 +59,11 @@ Specialist AI personas for different domains.
 | `documentation-writer`          | Manuals, docs                 | documentation-templates                        |
 | `product-manager`              | Requirements, user stories, backlog | plan-writing, brainstorming               |
 | `explorer-agent`               | Codebase analysis             | architecture, plan-writing                     |
+| `content-creator`               | Marketing/social content       | humanizer, carousel-design-system, social-publisher |
 
 ---
 
-## 🧩 Skills (69)
+## 🧩 Skills (75)
 
 Modular knowledge domains that agents load on-demand, based on task context. Grouped here by theme; the authoritative source of truth for what exists is always `.agent/skills/` itself — run `python .agent/scripts/doctor.py` to verify this list against reality.
 
@@ -89,7 +90,7 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 | `writing-skills` | Authoring discipline for NEW skills going forward — description states when to use (not what it contains), RED-GREEN-REFACTOR validation against a real pressure scenario before adding to the catalog |
 | `pattern-mining` | Extracts generalizable engineering patterns from a reference project the user points at (`/mine-patterns`), proposes a `lessons.md`/skill/agent destination per pattern, never auto-applies |
 | `loop-forge` | Interviews the user and writes hardened agent-loop specs (`<name>-loop.md`) — but only after a mandatory Triple Gate (iteration, script-first, economics) discussed with the user; most requests fail the gate and get a cheaper alternative. Never executes loops |
-| `squad-forge` | Designs and runs squads — reusable multi-agent teams for repeatable business processes (`squads/<name>/squad.md` pipelines mapping roles to the kit's 22 agents), with disk state (`state.json`) and human checkpoints (`/squad`) |
+| `squad-forge` | Designs and runs squads — reusable multi-agent teams for repeatable business processes (`squads/<name>/squad.md` pipelines mapping roles to the kit's 23 agents), with disk state (`state.json`) and human checkpoints (`/squad`) |
 
 ### Frontend & UI
 
@@ -183,6 +184,12 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 | Skill | Description |
 | --- | --- |
 | `humanizer` | Detects and rewrites 33 catalogued AI-writing tells (em dashes, rule of three, inflated significance, AI vocabulary, sycophancy) in EN and PT-BR, with false-positive guardrails — for client-facing copy (posts, carousels, proposals, emails) before delivery |
+| `content-research` | Native-tools-first research (WebSearch/WebFetch) for trending topics, competitor patterns, and citations; escalates to Apify only for scraping at a scale native tools can't handle |
+| `carousel-design-system` | Design-system-first methodology for social/marketing visuals — platform viewport & typography specs (Instagram, LinkedIn, Stories), WCAG contrast rules, anti-patterns |
+| `visual-renderer` | Deterministic HTML/CSS → PNG rendering via a headless-Chromium script (Script-First) — the generic engine behind any HTML-templated visual |
+| `ai-image-generator` | AI image generation from text prompts via OpenRouter, test/production cost modes, reference-image support for brand consistency |
+| `social-publisher` | Publishes/schedules social posts — native Instagram Graph API path (free, direct) plus an optional multi-platform aggregator path; publishing is always a checkpoint |
+| `email-sender` | Transactional/marketing email via the Resend HTTP API — single/batch send, HTML/text, scheduling |
 
 ### Documentation & Debugging
 
@@ -272,12 +279,12 @@ skill-name/
 
 ### Skills With Scripts
 
-13 of the 63 skills ship an executable script alongside their `SKILL.md`:
+17 of the 75 skills ship an executable script alongside their `SKILL.md`:
 
 | Skill | Script(s) |
 | --- | --- |
 | `frontend-design`, `nextjs-react-expert`, `lint-and-validate` | 2 each |
-| `api-patterns`, `database-design`, `geo-fundamentals`, `i18n-localization`, `mobile-design`, `performance-profiling`, `seo-fundamentals`, `testing-patterns`, `vulnerability-scanner`, `webapp-testing` | 1 each |
+| `api-patterns`, `database-design`, `geo-fundamentals`, `i18n-localization`, `mobile-design`, `performance-profiling`, `seo-fundamentals`, `testing-patterns`, `vulnerability-scanner`, `webapp-testing`, `visual-renderer`, `ai-image-generator`, `social-publisher`, `email-sender` | 1 each |
 
 ---
 
@@ -367,11 +374,11 @@ python .agent/scripts/sync_ide.py --target all
 
 | Metric              | Value                                                  |
 | -------------------- | --------------------------------------------------------- |
-| **Total Agents**     | 22                                                         |
-| **Total Skills**     | 69 (+ 10 nested under `game-development`)                  |
+| **Total Agents**     | 23                                                         |
+| **Total Skills**     | 75 (+ 10 nested under `game-development`)                  |
 | **Total Workflows**  | 22                                                         |
 | **Master Scripts**   | 9 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`) |
-| **Skills With Scripts** | 13                                                       |
+| **Skills With Scripts** | 17                                                       |
 | **Kit Tests**        | 1 file, parametrized (`test_kit_integrity.py`)              |
 | **Memory Layer**     | `.agent/memory/` (lessons.md + gotchas.md + benchmark-log.md + pattern-mining-log.md) |
 
@@ -393,5 +400,7 @@ python .agent/scripts/sync_ide.py --target all
 | Debug               | `debugger`                      | systematic-debugging                          |
 | Monitoring/Incident  | `sre-engineer`                  | observability-patterns                         |
 | Plan                | `project-planner`               | brainstorming, plan-writing, stack-sizing        |
+| Social/marketing content | `content-creator`          | humanizer, carousel-design-system, visual-renderer, social-publisher |
 | **Kit Health**      | *(script)*                     | `python .agent/scripts/doctor.py`              |
 | **ADE**             | `orchestrator`                  | `/ade` workflow — 6-phase autonomous pipeline   |
+| **Squads**          | *(any)*                        | `/squad` workflow — reusable teams (`squads/`)  |
