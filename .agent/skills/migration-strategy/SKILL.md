@@ -1,6 +1,6 @@
 ---
 name: migration-strategy
-description: Decides HOW to rebuild or modernize an existing legacy system once it's understood — Strangler Fig, Big Bang, Parallel Run, or Branch by Abstraction — based on risk tolerance, downtime tolerance, team size, and timeline. Use AFTER code-archaeologist has mapped the legacy system, when the goal is "rebuild this on a modern stack" or "migrate this off X", not when adding a normal feature to existing code. Triggers on "modernizar sistema legado", "migrar para outra stack", "reescrever o sistema", "sair do PHP antigo", "trocar de banco de dados em produção".
+description: Use AFTER code-archaeologist has mapped a legacy system, when the goal is "rebuild this on a modern stack" or "migrate this off X" (not a normal feature addition) — decides HOW to rebuild (Strangler Fig, Big Bang, Parallel Run, Branch by Abstraction) based on risk tolerance, downtime tolerance, team size, timeline. Triggers on "modernizar sistema legado", "migrar para outra stack", "reescrever o sistema", "sair do PHP antigo", "trocar de banco de dados em produção".
 allowed-tools: Read, Write, Edit, Glob, Grep
 ---
 

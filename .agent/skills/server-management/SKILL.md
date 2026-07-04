@@ -1,6 +1,6 @@
 ---
 name: server-management
-description: Server management principles and decision-making. Process management, monitoring strategy, and scaling decisions. Use when the server is down, needs monitoring, or the app needs to handle more users. Also triggers on "o servidor caiu", "monitorar o servidor", "escalar o app", "mais usuários simultâneos", or "o app não aguenta".
+description: Use when the server is down, needs monitoring, or the app needs to handle more users — process management, monitoring strategy, scaling decisions. Also triggers on "o servidor caiu", "monitorar o servidor", "escalar o app", "mais usuários simultâneos", or "o app não aguenta".
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 

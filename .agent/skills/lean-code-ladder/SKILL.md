@@ -1,6 +1,6 @@
 ---
 name: lean-code-ladder
-description: Decision procedure for writing the smallest correct solution — climb a 7-rung ladder (does this need to exist, reuse, stdlib, native, existing dependency, one line, only-then-minimum) before writing code. Never cuts validation, error handling, security, or accessibility. Use before writing any new code, and whenever the user says "keep it simple", "don't over-engineer", "yagni", "minimal solution", "lazy mode", or complains about bloat/boilerplate/unnecessary dependencies.
+description: "Use before writing any new code, and whenever the user says \"keep it simple\", \"don't over-engineer\", \"yagni\", \"minimal solution\", \"lazy mode\", or complains about bloat/boilerplate/unnecessary dependencies — decision procedure for the smallest correct solution (climb a 7-rung ladder: exist? reuse? stdlib? native? existing dependency? one line? only-then-minimum). Never cuts validation, error handling, security, or accessibility."
 allowed-tools: Read, Grep, Glob, Edit, Write
 ---
 

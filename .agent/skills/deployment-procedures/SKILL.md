@@ -1,6 +1,6 @@
 ---
 name: deployment-procedures
-description: Production deployment principles. Safe deployment workflows, rollback strategies, and verification. Use when putting the project live, publishing to production, going live, or releasing a new version. Also triggers on "colocar no ar", "publicar", "fazer deploy", "mandar pra produção", "ir pro ar", or "lançar versão".
+description: Use when putting the project live, publishing to production, or releasing a new version — safe deployment workflows, rollback strategies, verification. Also triggers on "colocar no ar", "publicar", "fazer deploy", "mandar pra produção", "ir pro ar", or "lançar versão".
 allowed-tools: Read, Glob, Grep, Bash
 ---
 

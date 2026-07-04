@@ -1,6 +1,6 @@
 ---
 name: testing-patterns
-description: Testing patterns and principles. Unit, integration, and end-to-end test strategies. Use when verifying the app works correctly, checking quality, creating tests, or validating features. Also triggers on "testar", "tá funcionando?", "verificar qualidade", "rode os testes", "garantir que funciona", or "checklist de qualidade".
+description: Use when verifying the app works correctly, checking quality, creating tests, or validating features — unit, integration, and end-to-end test strategies. Also triggers on "testar", "tá funcionando?", "verificar qualidade", "rode os testes", "garantir que funciona", or "checklist de qualidade".
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 permissions: [file_read, shell]
 ---

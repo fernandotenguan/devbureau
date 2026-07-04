@@ -1,6 +1,6 @@
 ---
 name: effort-estimation
-description: Translates a task breakdown or plan into a time/effort range, and optionally a cost range, for non-technical stakeholders. Use after project-planner has produced a task breakdown, when the user asks "quanto tempo leva", "quanto custa", "qual o esforço disso", or needs to communicate scope to someone who isn't going to read a task list.
+description: Use after project-planner has produced a task breakdown, when the user asks "quanto tempo leva", "quanto custa", "qual o esforço disso", or needs to communicate scope to a non-technical stakeholder — translates the breakdown into a time/effort range and optionally a cost range.
 allowed-tools: Read, Write, Edit
 ---
 

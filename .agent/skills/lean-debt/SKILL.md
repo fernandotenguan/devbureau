@@ -1,6 +1,6 @@
 ---
 name: lean-debt
-description: Harvests every `lean:` comment in the codebase into a debt ledger, so the deliberate shortcuts lean-code-ladder leaves behind get tracked instead of rotting into "later means never". One-shot report, changes nothing. Use when the user says "lean debt", "/lean-debt", "what shortcuts did we defer", "list the lean markers", or "what did we mark to revisit".
+description: Use when the user says "lean debt", "/lean-debt", "what shortcuts did we defer", "list the lean markers", or "what did we mark to revisit" — harvests every `lean:` comment in the codebase into a debt ledger, one-shot report, changes nothing.
 allowed-tools: Read, Grep, Glob, Write
 ---
 

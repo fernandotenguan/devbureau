@@ -1,6 +1,6 @@
 ---
 name: karpathy-guidelines
-description: Use when writing, reviewing, or refactoring code to apply Karpathy's four LLM coding disciplines: surface assumptions before implementing, keep code minimal, make only surgical targeted changes, and define verifiable success criteria. Derived from Andrej Karpathy's observations on recurring LLM coding pitfalls.
+description: "Use when writing, reviewing, or refactoring code to apply Karpathy's four LLM coding disciplines: surface assumptions before implementing, keep code minimal, make only surgical targeted changes, and define verifiable success criteria. Derived from Andrej Karpathy's observations on recurring LLM coding pitfalls."
 ---
 
 # Karpathy Guidelines

@@ -1,6 +1,6 @@
 ---
 name: premium-design-orchestrator
-description: Arquiteto de Design Premium e Diretor de Arte Web. Orquestra a criação de interfaces de altíssimo nível usando Divulgação Progressiva, biblioteca curada de paletas premium por nicho e os 5 Pilares Premium de front-end. Também triggers em "design premium", "site premiado", "interface imersiva", "landing page premium", "experiência imersiva".
+description: Use quando o pedido envolver design premium, "site premiado", "interface imersiva", "landing page premium" ou "experiência imersiva" — orquestra a criação de interfaces de altíssimo nível usando Divulgação Progressiva, paletas premium por nicho e os 5 Pilares Premium de front-end.
 version: 1.0.0
 skills: brand-identity-extractor, premium-tech-stack, frontend-design
 ---

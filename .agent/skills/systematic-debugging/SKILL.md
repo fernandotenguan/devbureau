@@ -1,6 +1,6 @@
 ---
 name: systematic-debugging
-description: 4-phase systematic debugging methodology with root cause analysis and evidence-based verification. Use when debugging complex issues, before proposing any fix.
+description: Use when debugging complex issues, before proposing any fix — 4-phase systematic debugging methodology with root cause analysis and evidence-based verification.
 allowed-tools: Read, Glob, Grep, Bash
 ---
 

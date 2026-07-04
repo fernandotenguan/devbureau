@@ -1,6 +1,6 @@
 ---
 name: api-patterns
-description: API design principles and decision-making. REST vs GraphQL vs tRPC selection, response formats, versioning, pagination. Use when designing how the frontend communicates with the backend. Also triggers on "criar API", "conectar o front com o back", "como o app vai se comunicar", or "endpoints".
+description: Use when designing how the frontend communicates with the backend — REST vs GraphQL vs tRPC selection, response formats, versioning, pagination. Also triggers on "criar API", "conectar o front com o back", "como o app vai se comunicar", or "endpoints".
 allowed-tools: Read, Write, Edit, Glob, Grep
 permissions: [file_read]
 ---

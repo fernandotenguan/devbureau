@@ -1,6 +1,6 @@
 ---
 name: seo-fundamentals
-description: SEO fundamentals, E-E-A-T, Core Web Vitals, and Google algorithm principles. Use when you want to appear on Google, improve search ranking, get more organic traffic, or optimize for search engines. Also triggers on "aparecer no Google", "melhorar posição no Google", "SEO", "mais visitas orgânicas", or "não aparece na busca".
+description: Use when you want to appear on Google, improve search ranking, get more organic traffic, or optimize for search engines — SEO fundamentals, E-E-A-T, Core Web Vitals, Google algorithm principles. Also triggers on "aparecer no Google", "melhorar posição no Google", "SEO", "mais visitas orgânicas", or "não aparece na busca".
 allowed-tools: Read, Glob, Grep
 permissions: [file_read]
 ---

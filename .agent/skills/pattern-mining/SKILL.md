@@ -1,6 +1,6 @@
 ---
 name: pattern-mining
-description: Extracts generalizable engineering patterns (architecture, error handling, testing strategy, config/secrets handling, tooling choices) from a finished, professional-grade reference project the user points at, and proposes where each pattern would land in DevBureau's own knowledge base (lessons.md or a specific skill/agent). Never applies anything automatically — produces an Adopt/Consider/Skip report for the user to act on. Use when asked to learn from a senior/professional codebase, mine patterns from a reference project, or via the `/mine-patterns` workflow. Triggers on "aprenda com esse projeto", "extraia os padrões desse repo", "mine patterns from this codebase", "/mine-patterns".
+description: Use when asked to learn from a senior/professional codebase, mine patterns from a reference project, or via the `/mine-patterns` workflow — extracts generalizable engineering patterns (architecture, error handling, testing strategy, config/secrets handling, tooling) from a finished reference project and proposes where each lands in DevBureau's own knowledge base; never applies anything automatically, produces an Adopt/Consider/Skip report. Triggers on "aprenda com esse projeto", "extraia os padrões desse repo", "mine patterns from this codebase", "/mine-patterns".
 allowed-tools: Read, Grep, Glob, Bash, WebFetch, Write
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: premium-tech-stack
-description: Engenheiro de Front-end focado em Experiências Imersivas e Animações de Alta Performance. Implementa os 5 Pilares Premium obrigatórios para sites dignos de premiação. Também triggers em "animações premium", "GSAP", "Three.js", "scroll suave", "transições de página", "experiência imersiva", "5 pilares".
+description: Use quando o pedido envolver "animações premium", "GSAP", "Three.js", "scroll suave", "transições de página" ou "5 pilares" — implementa os 5 Pilares Premium obrigatórios para experiências imersivas e animações de alta performance.
 version: 1.0.0
 ---
 

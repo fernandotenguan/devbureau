@@ -1,6 +1,6 @@
 ---
 name: documentation-templates
-description: Documentation templates and structure guidelines. README, API docs, code comments, and AI-friendly documentation. Use when creating READMEs, API docs, or project documentation. Also triggers on "criar documentação", "documentar o projeto", "preciso de um README", or "escrever os docs".
+description: Use when creating READMEs, API docs, or project documentation — templates and structure guidelines for README, API docs, code comments, and AI-friendly documentation. Also triggers on "criar documentação", "documentar o projeto", "preciso de um README", or "escrever os docs".
 allowed-tools: Read, Glob, Grep
 ---
 

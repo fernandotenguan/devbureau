@@ -1,6 +1,6 @@
 ---
 name: nodejs-best-practices
-description: Node.js development principles and decision-making. Framework selection, async patterns, security, and architecture. Teaches thinking, not copying.
+description: Use when making Node.js architecture decisions — framework selection, async patterns, security, or project structure. Teaches thinking, not copying.
 allowed-tools: Read, Write, Edit, Glob, Grep
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: codebase-audit
-description: Surveys a codebase as a senior advisor and writes prioritized, self-contained implementation plans for a different agent or session to execute. Strictly read-only — never edits source code, only writes to plans/. Use when asked to audit a codebase, find improvement opportunities (bugs, security, performance, test coverage, tech debt, dependencies, DX, docs), suggest what to build next, or generate a handoff plan for another agent. Triggers on "audit this codebase", "find improvements", "what should I fix", "onde levar o projeto", "/audit".
+description: Use when asked to audit a codebase, find improvement opportunities (bugs, security, performance, test coverage, tech debt, dependencies, DX, docs), suggest what to build next, or generate a handoff plan for another agent — surveys as a senior advisor and writes prioritized, self-contained plans; strictly read-only, never edits source, only writes to plans/. Triggers on "audit this codebase", "find improvements", "what should I fix", "onde levar o projeto", "/audit".
 allowed-tools: Read, Grep, Glob, Bash, Agent, Write
 ---
 

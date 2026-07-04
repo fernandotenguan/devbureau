@@ -17,6 +17,22 @@
 
 ---
 
+## 2026-07-03 — Follow-up: wrapper diet + description pass em escala (v3.27.0)
+
+**Trigger:** dos dois itens de maior alavancagem apontados no fim do Skill Re-Audit #1 (abaixo), o usuário pediu para executar os dois.
+
+**Item 1 — wrapper do `sync_ide.py`:** a fonte (`DEVBUREAU.md`) já estava em 9.997/10.000 tokens após a Fase 1 da v3.26.0, mas os 3 targets injetados (`.claude/CLAUDE.md`, `GEMINI.md`, `AGENTS.md`) ainda passavam de 10.600 tokens por causa do wrapper que `sync_ide.py` adiciona (bloco "How to Use Agents" redundante + resumo de 22 agentes truncado em 80 chars). Ação: `build_agent_summary()` truncado para 40 chars (é hint de descoberta, não mecanismo de roteamento — a matriz completa vive em `intelligent-routing`, sempre carregável sob demanda); removido o bloco "How to Use Agents" duplicado nos 3 geradores (Claude/Codex/Antigravity), substituído por uma linha. Isso sozinho não bastou (fonte já estava no teto), então mais uma rodada de compactação na própria `DEVBUREAU.md` em seções não protegidas (Auto-Selection Protocol, EFICIÊNCIA OPERACIONAL, JIT Downscoping/Trilha de Auditoria/Higiene de Dados, Untrusted Content Boundary, File Dependency Awareness, Context Scoping, Headroom). Resultado medido: fonte 9.997→9.472 tokens, os 3 targets caem de ≈10.627-10.653 para ≈9.864-9.890 — todos abaixo de 10k com margem real (~110-136 tokens), não apenas na fonte.
+
+**Item 2 — description-only pass em escala:** confirmado o padrão sistêmico suspeitado no Re-Audit #1 (descriptions what-shaped em vez de trigger-shaped) nas ~65 skills restantes. Achados por triagem completa (extração de todas as 68 descriptions, não amostra):
+- **9 defeitos reais** (não cosméticos): `machine-learning-ops-ml-pipeline` tinha um placeholder de template `$ARGUMENTS` nunca preenchido (frontmatter E corpo); `micro-saas-launcher` e `agent-evaluation` tinham a description literalmente truncada no meio da palavra (`"...growing t..."`, `"...on re..."`), esta última com um `—` escapado como texto literal em vez de em-dash; `ai-engineer`, `agent-memory-mcp`, `nodejs-best-practices`, `python-patterns`, `red-team-tactics`, `startup-analyst` não tinham nenhuma cláusula "use when" na description; `lint-and-validate` tinha o typo "Triggers onKeywords" (sem espaço). Todos corrigidos com description trigger-first completa.
+- **47 skills** com "Use when" funcional mas não-líder — reordenadas trigger-first (mesmo conteúdo, cláusula de gatilho movida para o início).
+- **1 falso positivo da triagem inicial:** `rust-pro` parecia não ter trigger porque `grep -m1` só capturou a primeira linha de uma description YAML multi-linha (folded scalar) — na verdade já tinha "Use PROACTIVELY for..." na continuação. Corrigido só a redação, sem adicionar trigger que já existia.
+- **Regressão própria detectada e corrigida antes do commit:** ao reescrever `lean-code-ladder`, introduzi um `:` não citado dentro do YAML plain scalar (`"ladder: exist? reuse?..."`) que quebra parse YAML estrito (o `test_kit_integrity.py` não pegou porque faz parsing manual linha-a-linha, não YAML real — só descoberto rodando `yaml.safe_load` em todas as 68 frontmatters como verificação extra). Corrigido citando a string. Aproveitado o mesmo passe para citar 3 outras descriptions com o mesmo problema pré-existente (`lean-audit`, `lint-and-validate`, `karpathy-guidelines` — colon não citado em "Out of scope:"/"Triggers on keywords:"/"disciplines:").
+
+**Verificação:** `yaml.safe_load` em todas as 68 frontmatters → 0 erros (antes desta rodada, 4 arquivos quebravam parse YAML estrito sem que o kit soubesse). `pytest .agent/tests/` 312/312. `doctor.py` saudável.
+
+---
+
 ## 2026-07-03 — Skill Re-Audit #1 (novo tipo de run: benchmark apontado para DENTRO, user-requested)
 
 **Trigger:** plano "nota 10" (`nota-10-kit.md`). Diferente dos runs #1–#8 (kit-vs-kit, acha capacidades que faltam), este tipo de run audita a QUALIDADE das skills existentes: description trigger-shaped (regra do `writing-skills`), staleness, contradições com regras mais novas do core, bloat. Piloto com 3 skills de alto tráfego; método reutilizável para as próximas.

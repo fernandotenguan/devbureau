@@ -1,6 +1,6 @@
 ---
 name: code-review-checklist
-description: Code review guidelines covering code quality, security, and best practices. Use when reviewing PRs, auditing code quality, or checking for security issues.
+description: Use when reviewing PRs, auditing code quality, or checking for security issues — code quality, security, and best-practice guidelines.
 allowed-tools: Read, Glob, Grep
 ---
 

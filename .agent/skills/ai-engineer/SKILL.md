@@ -1,6 +1,6 @@
 ---
 name: ai-engineer
-description: Build production-ready LLM applications, advanced RAG systems, and intelligent agents. Implements vector search, multimodal AI, agent orchestration, and enterprise AI integrations.
+description: Use when building a production-grade LLM application — RAG systems, vector search, multimodal AI, agent orchestration, or enterprise AI integrations.
 risk: unknown
 source: community
 date_added: '2026-02-27'

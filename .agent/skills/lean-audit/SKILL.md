@@ -1,6 +1,6 @@
 ---
 name: lean-audit
-description: Finds over-engineering to delete — reinvented standard library, unneeded dependencies, speculative abstractions, dead flexibility. Scans either the current diff (default) or the whole repo. One line per finding, tagged, ranked by impact. Use when the user says "review for over-engineering", "what can we delete", "is this over-engineered", "audit this codebase for bloat", or invokes /lean-audit. Out of scope: correctness bugs, security holes, performance — route those to a normal review.
+description: "Use when the user says \"review for over-engineering\", \"what can we delete\", \"is this over-engineered\", \"audit this codebase for bloat\", or invokes /lean-audit — finds over-engineering to delete (reinvented standard library, unneeded dependencies, speculative abstractions, dead flexibility), one line per finding, ranked by impact. Out of scope: correctness bugs, security holes, performance — route those to a normal review."
 allowed-tools: Read, Grep, Glob, Bash
 ---
 

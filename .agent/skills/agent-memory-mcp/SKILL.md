@@ -1,6 +1,6 @@
 ---
 name: agent-memory-mcp
-description: "A hybrid memory system that provides persistent, searchable knowledge management for AI agents (Architecture, Patterns, Decisions)."
+description: Use when a project needs persistent, searchable cross-session memory beyond flat markdown files — sets up the agentMemory MCP server (external repo, requires Node.js v18+ and its own clone/install step) for architecture/pattern/decision recall.
 risk: unknown
 source: community
 date_added: "2026-02-27"

@@ -1,6 +1,6 @@
 ---
 name: observability-patterns
-description: Observability and incident-response principles — metrics, structured logging, distributed tracing, alerting, SLOs/error budgets, and runbooks. Use when setting up monitoring for a deployed app, investigating a production incident, or deciding what to instrument. Triggers on "monitorar", "alertas", "ficou fora do ar", "como saber se quebrou em produção", "SLO", "uptime", "incident".
+description: Use when setting up monitoring for a deployed app, investigating a production incident, or deciding what to instrument — observability and incident-response principles (metrics, structured logging, distributed tracing, alerting, SLOs/error budgets, runbooks). Triggers on "monitorar", "alertas", "ficou fora do ar", "como saber se quebrou em produção", "SLO", "uptime", "incident".
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 

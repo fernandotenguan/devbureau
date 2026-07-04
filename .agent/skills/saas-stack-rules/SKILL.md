@@ -1,6 +1,6 @@
 ---
 name: saas-stack-rules
-description: Stack-specific rules for SaaS projects using Next.js + FastAPI + Supabase + iron-session + LangGraph + Stripe. Enforces auth patterns, RLS policies, async code, AI agent architecture, and billing security. Use when building SaaS products or full-stack applications with this tech stack.
+description: Use when building SaaS products or full-stack applications on Next.js + FastAPI + Supabase + iron-session + LangGraph + Stripe — enforces auth patterns, RLS policies, async code, AI agent architecture, and billing security for this specific stack.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 

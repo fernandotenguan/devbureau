@@ -1,6 +1,6 @@
 ---
 name: confidence-scale
-description: Marks every factual claim an agent makes about existing code with a confidence level — CONFIRMED, INFERRED, or GAP. Use whenever an agent reads/analyzes code it did not write in this session (legacy analysis, bug investigation, security audit) and reports findings back to the user. Triggers on "analyze this codebase", "what does this code do", "is this safe", "explain this legacy system".
+description: Use whenever an agent reads/analyzes code it did not write in this session (legacy analysis, bug investigation, security audit) and reports findings to the user — marks every factual claim with a confidence level (CONFIRMED, INFERRED, GAP). Triggers on "analyze this codebase", "what does this code do", "is this safe", "explain this legacy system".
 allowed-tools: Read, Grep, Glob
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: geo-fundamentals
-description: Generative Engine Optimization for AI search engines (ChatGPT, Claude, Perplexity). Use when optimizing content for AI discovery and citation.
+description: Use when optimizing content for AI discovery and citation — Generative Engine Optimization for AI search engines (ChatGPT, Claude, Perplexity).
 allowed-tools: Read, Glob, Grep
 permissions: [file_read]
 ---

@@ -1,6 +1,6 @@
 ---
 name: stack-sizing
-description: Determines the right project tier (Prototype, MVP, Growth SaaS, Enterprise/Critical) from timeline, team size, expected scale, and change tolerance, then sets the ceiling and floor for stack choices at every layer (frontend, backend, database, deploy, auth). Use BEFORE any framework/database/hosting decision, and as a coherence check across specialist agents' picks. Triggers on "qual stack usar", "isso é exagero pra um MVP?", "vai escalar?", "que porte é esse projeto".
+description: Use BEFORE any framework/database/hosting decision, and as a coherence check across specialist agents' picks — determines the right project tier (Prototype, MVP, Growth SaaS, Enterprise/Critical) from timeline, team size, expected scale, and change tolerance, setting the ceiling/floor for stack choices at every layer. Triggers on "qual stack usar", "isso é exagero pra um MVP?", "vai escalar?", "que porte é esse projeto".
 allowed-tools: Read, Write, Edit, Glob, Grep
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: accessibility-standards
-description: WCAG 2.1/2.2 compliance principles — semantic HTML, ARIA roles, keyboard navigation, color contrast, screen reader testing, and automated a11y tooling (axe, pa11y, Lighthouse). Use when auditing or building accessible UI, or when a legal/compliance requirement (ADA, EN 301 549, LBI/eMAG) applies. Triggers on "acessibilidade", "leitor de tela", "contraste", "WCAG", "ARIA", "navegação por teclado".
+description: Use when auditing or building accessible UI, or when a legal/compliance requirement (ADA, EN 301 549, LBI/eMAG) applies — WCAG 2.1/2.2 compliance, semantic HTML, ARIA roles, keyboard navigation, color contrast, screen reader testing, automated a11y tooling (axe, pa11y, Lighthouse). Triggers on "acessibilidade", "leitor de tela", "contraste", "WCAG", "ARIA", "navegação por teclado".
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 

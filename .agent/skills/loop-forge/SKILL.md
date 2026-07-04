@@ -1,6 +1,6 @@
 ---
 name: loop-forge
-description: "Interviews the user and WRITES the specification of an agent loop (<name>-loop.md), but ONLY after a mandatory Triple Gate (iteration test, script-first test, economic test) discussed WITH the user proves a loop is actually justified — most requests fail the gate and get a cheaper alternative (script, one-shot, or scheduled prompt). Never executes the loop itself. Triggers: 'create a loop', 'write a loop', 'agent loop', 'run until', 'keep iterating until', 'autonomous loop', 'loop that runs by itself', 'overnight loop', 'coverage loop', 'crie um loop', 'escreve um loop', 'forja um loop', 'loop autônomo', 'rodar sozinho até', 'loop de cobertura', 'loop de erros', 'automatizar tarefa repetitiva com verificação', 'transforma isso num loop'. Do NOT use to actually run a loop or for one-off tasks."
+description: "Use when the user asks to create/write an agent loop — 'create a loop', 'agent loop', 'run until', 'keep iterating until', 'autonomous loop', 'overnight loop', 'coverage loop', 'crie um loop', 'forja um loop', 'loop autônomo', 'rodar sozinho até', 'automatizar tarefa repetitiva com verificação'. Interviews the user and WRITES the loop spec (<name>-loop.md), but ONLY after a mandatory Triple Gate (iteration test, script-first test, economic test) proves a loop is justified — most requests fail the gate and get a cheaper alternative (script, one-shot, scheduled prompt). Never executes the loop itself or handles one-off tasks."
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash, PowerShell, AskUserQuestion
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: framework-benchmarking
-description: Process for periodically comparing DevBureau's agents/skills/workflows against well-regarded external agent-framework collections (Claude Code subagent catalogs, awesome-skills lists, BMAD-METHOD, etc.), scoring gaps, and deciding what to adopt, consider, or skip. Use when running the `/benchmark` workflow, or when evaluating whether a newly-discovered framework/skill collection is worth pulling ideas from. Triggers on "compare with other frameworks", "o que tem de novo no mercado", "vale a pena importar isso".
+description: Use when running the `/benchmark` workflow, or when evaluating whether a newly-discovered framework/skill collection is worth pulling ideas from — periodically compares DevBureau's agents/skills/workflows against well-regarded external collections (Claude Code subagent catalogs, awesome-skills lists, BMAD-METHOD, etc.), scoring gaps and deciding adopt/consider/skip. Triggers on "compare with other frameworks", "o que tem de novo no mercado", "vale a pena importar isso".
 allowed-tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch
 ---
 

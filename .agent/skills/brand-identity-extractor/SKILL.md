@@ -1,6 +1,6 @@
 ---
 name: brand-identity-extractor
-description: Especialista em Engenharia Reversa de UI/UX. Extrai a essência de designs fornecidos via URL ou imagem e cria um Design System automatizado em formato Markdown com variáveis CSS prontas. Também triggers em "extrair identidade", "clonar design", "analisar referência", "extrair paleta", "copiar essência".
+description: Use quando precisar extrair a identidade visual de uma referência (URL ou imagem) e gerar um Design System em Markdown com variáveis CSS prontas — engenharia reversa de UI/UX. Também triggers em "extrair identidade", "clonar design", "analisar referência", "extrair paleta", "copiar essência".
 version: 1.0.0
 ---
 

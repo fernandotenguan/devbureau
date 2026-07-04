@@ -1,14 +1,12 @@
 ---
 name: machine-learning-ops-ml-pipeline
-description: "Design and implement a complete ML pipeline for: $ARGUMENTS"
+description: Use when designing or implementing an ML pipeline — data ingestion, training, evaluation, deployment, and multi-agent MLOps orchestration across those stages.
 risk: unknown
 source: community
 date_added: "2026-02-27"
 ---
 
 # Machine Learning Pipeline - Multi-Agent MLOps Orchestration
-
-Design and implement a complete ML pipeline for: $ARGUMENTS
 
 ## Use this skill when
 

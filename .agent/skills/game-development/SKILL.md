@@ -1,6 +1,6 @@
 ---
 name: game-development
-description: Game development orchestrator. Routes to platform-specific skills based on project needs. Use when building any type of game (2D, 3D, web, mobile, VR). Also triggers on "criar um jogo", "fazer um game", "desenvolvimento de jogo", or "quero fazer um jogo".
+description: Use when building any type of game (2D, 3D, web, mobile, VR) — orchestrator that routes to platform-specific skills based on project needs. Also triggers on "criar um jogo", "fazer um game", "desenvolvimento de jogo", or "quero fazer um jogo".
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
