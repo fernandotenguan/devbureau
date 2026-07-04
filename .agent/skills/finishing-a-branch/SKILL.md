@@ -96,6 +96,17 @@ git worktree prune   # clean up any stale registrations
 
 Run `git worktree remove` from the main repo root, never from inside the worktree being removed — it fails silently otherwise.
 
+## Step 6: Retro Note (DevBureau kit repo only)
+
+Runs after Step 5, regardless of which of the 4 options was chosen (merge/push/keep/discard) — a discarded exploration is still a lesson worth a line. Only fires when the repo being finished is DevBureau's own kit repo (detected the same way as the "Localização Restrita de Integridade do Kit" rule: `.agent/rules/DEVBUREAU.md` exists at the repo root). On any other project, skip this step silently — same precedent as Step 1.5.
+
+Ties the retro to an event that already exists (finishing a branch) instead of inventing a scheduler DevBureau doesn't have.
+
+1. Read `.agent/memory/retro-log.md`'s last entry for the git SHA it recorded.
+2. `git log <last-sha>..HEAD --oneline` to see what shipped since then (if no prior entry exists, summarize the current session's commits instead of the full history).
+3. Check `.agent/memory/lessons.md` and `gotchas.md` for entries added since that SHA.
+4. Append one dated entry to `retro-log.md`: commits shipped (one line each), any new lesson/gotcha worth surfacing, and the current HEAD SHA for the next run to diff against. Do not re-summarize what a prior entry already covered.
+
 ## Common Mistakes
 
 | Mistake | Fix |
@@ -110,4 +121,4 @@ Run `git worktree remove` from the main repo root, never from inside the worktre
 
 ## Integration
 
-Pairs with `using-git-worktrees` for the setup side. `/ade`'s pipeline and `codebase-audit`'s `execute`-adjacent flows hand off here once work is done — neither prescribes what happens to the branch afterward, this skill does. When the target project follows a detectable versioning convention, Step 1.5 also touches its version file and `CHANGELOG.md` before the chosen action executes.
+Pairs with `using-git-worktrees` for the setup side. `/ade`'s pipeline and `codebase-audit`'s `execute`-adjacent flows hand off here once work is done — neither prescribes what happens to the branch afterward, this skill does. When the target project follows a detectable versioning convention, Step 1.5 also touches its version file and `CHANGELOG.md` before the chosen action executes. When the repo being finished is DevBureau's own kit, Step 6 also appends a dated entry to `.agent/memory/retro-log.md`.

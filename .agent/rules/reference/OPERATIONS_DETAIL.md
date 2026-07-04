@@ -158,3 +158,9 @@ da tabela de evidências do Zero-Break, só que enforçada. Registra em `~/.clau
 - `/plan` `/preview` `/status` `/test` `/ui-ux-pro-max`
 - `/ade` → **ADE Pipeline Autônomo** (req → spec → impl → qa → memory)
 - `/build-saas` → SaaS completo em 7 etapas
+- `/finish-branch` → também gera `.agent/memory/retro-log.md` (Step 6), só no repo do próprio kit
+
+### Memory Layer — arquivos completos
+- `lessons.md` / `gotchas.md` / `question-preferences.md` — já referenciados no core
+- `benchmark-log.md` — histórico de runs de `/benchmark` (kit-vs-kit) e de Skill Re-Audit (qualidade interna)
+- `retro-log.md` — síntese datada de commits + lições novas, gerada por `finishing-a-branch` Step 6

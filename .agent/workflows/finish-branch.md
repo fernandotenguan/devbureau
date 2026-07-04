@@ -21,6 +21,7 @@ Implementation is done and tests pass — now what happens to the branch? This c
 3. **Present the menu** — merge / push+PR / keep / discard (3 options if detached HEAD, no local-merge option there).
 4. **Execute the choice** — merge runs tests again on the merged result before cleanup; discard requires a typed `discard` confirmation before deleting anything.
 5. **Clean up** — only for merge and discard, and only a worktree under `.worktrees/`/`worktrees/` (provenance check — never remove a workspace this didn't create).
+6. **Retro note (DevBureau kit repo only)** — appends a dated entry to `.agent/memory/retro-log.md` (commits shipped since the last entry, new lessons/gotchas). Skipped silently on any other project.
 
 ---
 

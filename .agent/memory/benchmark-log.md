@@ -17,6 +17,20 @@
 
 ---
 
+## 2026-07-03 — Decisões: os 5 Consider abertos do run #8 (v3.28.0)
+
+**Trigger:** fechar os 5 itens que vinham se acumulando run após run, numa rodada única de perguntas ao usuário em vez de deixá-los indefinidamente em Consider.
+
+1. ~~`cso`-style two-cadence audit para `vulnerability-scanner`.~~ **Done 2026-07-03** — ver CHANGELOG v3.28.0. Usuário escolheu "convenção manual documentada". Novo `--cadence daily|monthly` no `security_scan.py`: `daily` filtra para só critical/high (zero-noise), `monthly` mostra tudo incluindo achados de baixa confiança ("[?] possible"). Sem flag, comportamento inalterado. Sem scheduler — o usuário decide quando rodar cada um.
+2. Revisão de plano multi-persona (CEO/Design/Eng/DevEx). **Declined 2026-07-03** — usuário confirmou: Socratic Gate já cobre isso front-loaded; adicionar revisão pós-plano por personas separadas seria redundância, mesmo precedente de recusa a catálogo maior dado a BMAD-METHOD/GSD-core/ECC.
+3. Hooks de segurança opt-in por skill (`freeze`/`careful`/`guard`). **Declined for now 2026-07-03** — usuário confirmou: sem caso de uso concreto relatado, e o próprio benchmark já tinha registrado isso como mudança arquitetural maior que qualquer hook adotado até hoje (hooks continuam só globais).
+4. `context_queries` (versão leve do `gbrain`). **Declined 2026-07-03** — usuário confirmou: `lessons.md`/`gotchas.md` lidos manualmente no início de tasks complexas já bastam, sem sinal de que a busca automática resolveria um problema real hoje.
+5. ~~Retrospectiva periódica (`retro`-equivalent).~~ **Done 2026-07-03** — ver CHANGELOG v3.28.0. Usuário escolheu amarrar a um evento existente em vez de scheduler novo ou comando manual: novo Step 6 em `finishing-a-branch` (só quando o repositório sendo fechado é o próprio kit DevBureau) gera entrada datada em `.agent/memory/retro-log.md` minerando `git log` desde a última entrada + novos `lessons.md`/`gotchas.md`.
+
+**Item de distribuição esclarecido (não um dos 5, mas verificado na mesma sessão):** o usuáro perguntou se o pacote já publicado em npmjs.com/package/devbureau resolveria o item "native plugin-marketplace distribution" (run #5/#7, ainda Declined). Não resolve — o texto original do item (linha ~360 deste arquivo) já registra o npm como o modelo *atual* de distribuição do kit, distinto de aparecer dentro do marketplace nativo de cada agente (Claude Code plugin marketplace, Cursor marketplace, instaladores nativos Codex/Copilot). Confirmado no repositório: nenhum manifesto desse tipo existe. Item permanece Declined/aberto, sem mudança de status.
+
+---
+
 ## 2026-07-03 — Follow-up: wrapper diet + description pass em escala (v3.27.0)
 
 **Trigger:** dos dois itens de maior alavancagem apontados no fim do Skill Re-Audit #1 (abaixo), o usuário pediu para executar os dois.
