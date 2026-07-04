@@ -13,3 +13,6 @@ __pycache__/
 # Serena MCP (oraios/serena) project-local cache/config — server stays registered at
 # user scope (available in other projects), just not tracked/used inside this repo.
 .serena/
+
+# GraphIFY outputs (knowledge graph extraction — large, rebuilds on demand)
+graphify-out/
