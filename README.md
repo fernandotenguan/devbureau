@@ -6,10 +6,10 @@
 > without needing to know how to code. Works across Claude Code, Cursor, Codex CLI, OpenCode,
 > GitHub Copilot, Antigravity, Windsurf, Cline, Roo Code, and Zed.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.28.0-blue)](https://github.com/fernandotenguan/devbureau)
-[![Agents](https://img.shields.io/badge/Agents-22-green)](https://github.com/fernandotenguan/devbureau)
-[![Skills](https://img.shields.io/badge/Skills-68-orange)](https://github.com/fernandotenguan/devbureau)
-[![Workflows](https://img.shields.io/badge/Workflows-21-red)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.32.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Agents](https://img.shields.io/badge/Agents-23-green)](https://github.com/fernandotenguan/devbureau)
+[![Skills](https://img.shields.io/badge/Skills-76-orange)](https://github.com/fernandotenguan/devbureau)
+[![Workflows](https://img.shields.io/badge/Workflows-22-red)](https://github.com/fernandotenguan/devbureau)
 [![Tests](https://img.shields.io/badge/Tests-Automated-brightgreen)](https://github.com/fernandotenguan/devbureau)
 
 > Badge links assume the repo is published as `fernandotenguan/devbureau`. Update them if the final published path differs.
@@ -20,9 +20,9 @@
 
 | Components         | Count | Description                                                                  |
 | ------------------ | ----- | ---------------------------------------------------------------------------- |
-| **Agents**         | 22    | Specialist AI personas (frontend, backend, security, SRE, a11y, game dev, etc.) |
-| **Skills**         | 64    | Domain-specific knowledge modules with automated scripts                     |
-| **Workflows**      | 21    | Slash-command procedures including the autonomous `/ade` pipeline             |
+| **Agents**         | 23    | Specialist AI personas (frontend, backend, security, SRE, a11y, game dev, etc.) |
+| **Skills**         | 76    | Domain-specific knowledge modules with automated scripts                     |
+| **Workflows**      | 22    | Slash-command procedures including the autonomous `/ade` pipeline             |
 | **Master Scripts** | 9     | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py` |
 | **Kit Tests**      | ✅    | Automated pytest suite — runs before every commit                            |
 | **Memory Layer**   | ✅    | Persistent lessons and gotchas across sessions                               |
@@ -62,7 +62,7 @@ The most powerful mode. You describe a feature, the kit plans it, shows you the 
 python .agent/scripts/doctor.py
 ```
 
-Validates all 22 agents, 64 skills, 21 workflows, and master scripts in seconds.
+Validates all 23 agents, 76 skills, 22 workflows, and master scripts in seconds.
 
 ### 🔒 Automated Pre-Commit Guard
 
@@ -449,9 +449,9 @@ Both diagrams are editable `.drawio` XML (embedded in the `.png` itself) — see
 ```
 project-root/
 ├── .agent/
-│   ├── agents/          # 22 specialist AI personas
-│   ├── skills/          # 64 knowledge modules
-│   ├── workflows/       # 21 slash-command procedures
+│   ├── agents/          # 23 specialist AI personas
+│   ├── skills/          # 76 knowledge modules
+│   ├── workflows/       # 22 slash-command procedures
 │   ├── scripts/         # master validation scripts
 │   │   ├── doctor.py          # kit health check
 │   │   ├── checklist.py       # priority-based audit

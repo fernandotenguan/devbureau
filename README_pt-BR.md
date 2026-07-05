@@ -6,10 +6,10 @@
 > equipe especializada, sem precisar saber programar. Funciona no Claude Code, Cursor, Codex CLI,
 > OpenCode, GitHub Copilot, Antigravity, Windsurf, Cline, Roo Code e Zed.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.28.0-blue)](https://github.com/fernandotenguan/devbureau)
-[![Agents](https://img.shields.io/badge/Agents-22-green)](https://github.com/fernandotenguan/devbureau)
-[![Skills](https://img.shields.io/badge/Skills-68-orange)](https://github.com/fernandotenguan/devbureau)
-[![Workflows](https://img.shields.io/badge/Workflows-21-red)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.32.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Agents](https://img.shields.io/badge/Agents-23-green)](https://github.com/fernandotenguan/devbureau)
+[![Skills](https://img.shields.io/badge/Skills-76-orange)](https://github.com/fernandotenguan/devbureau)
+[![Workflows](https://img.shields.io/badge/Workflows-22-red)](https://github.com/fernandotenguan/devbureau)
 [![Tests](https://img.shields.io/badge/Tests-Automated-brightgreen)](https://github.com/fernandotenguan/devbureau)
 
 > Os links dos badges assumem que o repositório está publicado como `fernandotenguan/devbureau`. Atualize-os se o caminho final publicado for diferente.
@@ -20,9 +20,9 @@
 
 | Componente          | Quantidade | Descrição                                                                    |
 | -------------------- | ---------- | ----------------------------------------------------------------------------- |
-| **Agentes**          | 22         | Personas de IA especialistas (frontend, backend, segurança, SRE, a11y, jogos, etc.) |
-| **Skills**           | 64         | Módulos de conhecimento de domínio com scripts automatizados                  |
-| **Workflows**        | 21         | Procedimentos de comando de barra, incluindo o pipeline autônomo `/ade`       |
+| **Agentes**          | 23         | Personas de IA especialistas (frontend, backend, segurança, SRE, a11y, jogos, etc.) |
+| **Skills**           | 76         | Módulos de conhecimento de domínio com scripts automatizados                  |
+| **Workflows**        | 22         | Procedimentos de comando de barra, incluindo o pipeline autônomo `/ade`       |
 | **Scripts Mestres**  | 9          | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py` |
 | **Testes do Kit**    | ✅         | Suíte pytest automatizada — roda antes de cada commit                         |
 | **Camada de Memória**| ✅         | Lições e armadilhas persistentes entre sessões                                |
@@ -62,7 +62,7 @@ O modo mais poderoso. Você descreve uma funcionalidade, o kit planeja, mostra a
 python .agent/scripts/doctor.py
 ```
 
-Valida os 22 agentes, 64 skills, 21 workflows e scripts mestres em segundos.
+Valida os 23 agentes, 76 skills, 22 workflows e scripts mestres em segundos.
 
 ### 🔒 Guarda Automática de Pre-Commit
 
@@ -449,9 +449,9 @@ Os dois diagramas são XML `.drawio` editável (incorporado no próprio `.png`) 
 ```
 raiz-do-projeto/
 ├── .agent/
-│   ├── agents/          # 22 personas de IA especialistas
-│   ├── skills/          # 64 módulos de conhecimento
-│   ├── workflows/       # 21 procedimentos de comando de barra
+│   ├── agents/          # 23 personas de IA especialistas
+│   ├── skills/          # 76 módulos de conhecimento
+│   ├── workflows/       # 22 procedimentos de comando de barra
 │   ├── scripts/         # scripts mestres de validação
 │   │   ├── doctor.py          # diagnóstico de saúde do kit
 │   │   ├── checklist.py       # auditoria por prioridade

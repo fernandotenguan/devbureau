@@ -1,487 +1,897 @@
-# 🚀 Como Iniciar ou Continuar Qualquer Projeto
+# 📚 DevBureau - Guia Completo do Usuário
 
-Para iniciar ou continuar um projeto utilizando a estrutura de inteligência personalizada, a cópia da pasta `.agent` para a raiz do novo projeto é suficiente para transferir os agentes, regras e scripts. Contudo, há um passo complementar obrigatório para que a IDE (como Cursor ou Claude) passe a ler e aplicar essas regras de forma nativa.
+> **Bem-vindo!** Este guia mostra como usar o DevBureau do zero. Se você é novo aqui, comece pelo **[Passo 1](#início-rápido)**.
 
-Após copiar a pasta, execute o script de sincronização no terminal do novo projeto:
+---
+
+## 📑 Sumário (Clique para ir direto)
+
+1. [Início Rápido](#início-rápido) — Configure em 2 minutos
+2. [O Que é DevBureau?](#o-que-é-devbureau) — Entenda a base
+3. [Seus Primeiros Passos](#seus-primeiros-passos) — Escolha seu caminho
+4. [Como Usar (Por Tarefa)](#como-usar-por-tarefa) — Exemplos práticos
+5. [Todos os Comandos](#todos-os-comandos) — Referência rápida
+6. [Especialistas Disponíveis](#especialistas-disponíveis) — Quem faz o quê
+7. [Perguntas Frequentes](#perguntas-frequentes)
+8. [Configurações Avançadas](#configurações-avançadas)
+
+---
+
+## Início Rápido
+
+### ⚡ Configure em 2 Minutos
+
+Você baixou o DevBureau? Ótimo! Agora execute **UM COMANDO** para ativar tudo:
+
 ```bash
 python .agent/scripts/sync_ide.py --target all
 ```
 
-Esse comando cria os arquivos de configuração necessários (como `.cursorrules` ou `.clauderules`) apontando para `.agent/rules/DEVBUREAU.md`, ativando o comportamento automático.
+**Pronto!** Sua IDE (Cursor, Claude, VS Code) agora entende os poderes do DevBureau automaticamente.
 
-### 🤖 Configuração para Google Gemini (Gemini Code Assist / AI Studio / Advanced)
+### ✅ Verificar se Funcionou
 
-*   **Gemini Code Assist (VS Code ou IntelliJ):** Não é necessário executar nenhum comando específico para o Gemini Code Assist. A ferramenta analisa e indexa o contexto do workspace automaticamente. Ter a pasta `.agent` e o arquivo `GEMINI.md` na raiz do projeto é suficiente para que o assistente consulte as instruções durante o uso. Ainda assim, executar o script de sincronização é recomendado para manter o ambiente preparado caso use outras ferramentas.
-*   **Google AI Studio ou Gemini Advanced (Web):** Para chats via navegador ou uso direto da API, carregue o conteúdo do arquivo [.agent/rules/DEVBUREAU.md](./.agent/rules/DEVBUREAU.md) na seção de **System Instructions** (Instruções do Sistema) ou anexe o arquivo no primeiro prompt da conversa.
+Para confirmar que tudo está operacional:
 
----
-
-## 🛤️ Roteiro: Por Onde Começar?
-
-Escolha o seu momento atual e siga a recomendação da "Equipe Profissional":
-
-### 1️⃣ "Ainda não tenho a pasta do projeto criada"
-*   **Comando:** `/new-project`
-*   **Por que:** Ele é o único comando que você usa **neste kit base**. Ele vai te dar o "mapa" e os comandos de terminal para você criar sua nova pasta e levar a inteligência para lá.
-
-### 2️⃣ "Já estou na pasta nova, mas minha ideia ainda é vaga"
-*   **Comando:** `/brainstorm`
-*   **Por que:** Antes de gastar tempo criando arquivos, use o consultor. Ele vai te fazer perguntas sobre público-alvo, problema que você resolve e funcionalidades essenciais. É a fase de **concepção**.
-
-### 3️⃣ "Minha ideia está clara, quero desenhar o sistema"
-*   **Comando:** `/build-saas` (para sistemas complexos) ou `/plan` (para uma funcionalidade específica)
-*   **Por que:** Aqui o Arquiteto entra em cena. Ele cria os documentos técnicos (os "mapas da obra") que descrevem como o banco de dados e as telas vão funcionar. **Não escreve código ainda.**
-
-### 4️⃣ "Quero que o agente faça tudo sozinho (Mãos livres)"
-*   **Comando:** `/ade` [descreva sua ideia aqui]
-*   **Por que:** É o modo "Piloto Automático". O agente vai entender sua ideia, criar a especificação e só vai te chamar para você dar seu **"DE ACORDO"** na Fase 3 antes de começar a codar.
-
-### 5️⃣ "Quero construir junto com o agente (Interativo)"
-*   **Comando:** `/create`
-*   **Por que:** Ideal para quem quer ver o processo acontecer passo a passo. O agente vai conversando com você enquanto cria as pastas e os primeiros arquivos.
-
----
-
-## 🗺️ Tabela Mestre: Como Chamar a Equipe
-
-Use esta tabela para saber quem chamar ou qual comando usar. **Lembre-se:** você pode apenas falar naturalmente em Português, e o kit escolherá o especialista certo!
-
-| Especialista / Ferramenta | O que ele faz? | Como chamar (Exemplos) |
-|:---|:---|:---|
-| **🎨 Designer Frontend** | Visual, cores, layout, botões | "@frontend-specialist: melhora o visual", "dark mode" |
-| **⚙️ Arquiteto Backend** | Servidor, API, regras de negócio | "@backend-specialist: cria uma rota", "conecta o front" |
-| **💾 Arquiteto de Banco** | Organização e estrutura de dados | "@database-architect: cria uma tabela de usuários" |
-| **🔍 Detetive (Debugger)** | Conserta erros e bugs | "@debugger: o login não funciona", "erro 404" |
-| **🛡️ Auditor de Segurança** | Protege o app e checa invasões | "@security-auditor: o site está seguro?", "criptografia" |
-| **🚀 Autônomo (/ade)** | Faz uma tarefa completa sozinho | `/ade crie um sistema de login com Google` |
-| **🏗️ Construtor (/create)** | Cria algo novo do zero | `/create dashboard de vendas` |
-| **🧠 Planejador (/plan)** | Planeja antes de codar | `/plan novo sistema de pagamentos` |
-| **🏥 Médico (Doctor)** | Checa se sua IA está "saudável" | `checar kit`, `diagnóstico`, `doctor` |
-| **🧪 Testador** | Garante que tudo funciona (QA) | `/test`, `validar projeto`, `roteiro de testes` |
-
----
-
-## 🎯 Como o Agente Funciona (Em 30 Segundos)
-
-Pense neste kit como uma **equipe de desenvolvimento de elite** composta por 22 especialistas que trabalham para você simultaneamente. 
-
-### Iniciar um Novo Projeto
-Se você quer começar **um novo aplicativo, site ou jogo** do zero, use este comando:
-
-| Comando | O que Faz |
-|---------|-----------|
-| `/new-project` | **Clone Inteligente** — Transfere toda a inteligência desta base para uma nova pasta vazia. |
-
----
-
-## 📋 Comandos Rápidos (Slash Commands)
-
-Estes são atalhos que ativam workflows prontos. Digite diretamente no chat:
-
-### Comandos de Criação e Planejamento
-
-| Comando | Quando Usar | O que Faz |
-|---------|-------------|-----------|
-| `/build-saas` | Iniciar um novo produto SaaS | Guia por 7 etapas de planejamento → gera 3 docs prontos |
-| `/plan` | Planejar qualquer feature | Cria um plano detalhado SEM escrever código ainda |
-| `/create` | Construir algo do zero | Planeja + constrói a aplicação completa |
-| `/brainstorm` | Explorar ideias | Faz perguntas estratégicas antes de decidir |
-
-### Comandos de Desenvolvimento
-
-| Comando | Quando Usar | O que Faz |
-|---------|-------------|-----------|
-| `/enhance` | Melhorar algo existente | Evolui funcionalidade já existente |
-| `/ade` | Tarefa autônoma end-to-end | Pipeline completo: discovery → spec → código → testes |
-| `/debug` | Algo não funciona | Investigação sistemática do problema |
-| `/test` | Verificar qualidade | Cria e roda testes automaticamente |
-
-### Comandos de Publicação
-
-| Comando | Quando Usar | O que Faz |
-|---------|-------------|-----------|
-| `/deploy` | Colocar no ar | Checklist + deploy seguro passo a passo |
-| `/preview` | Ver o projeto rodando | Liga o servidor local para visualização |
-| `/status` | Ver progresso geral | Mostra o estado do projeto |
-
-### Comandos de Design e Interface
-
-| Comando | Quando Usar | O que Faz |
-|---------|-------------|-----------|
-| `/ui-ux-pro-max` | Design premium | 50 estilos visuais disponíveis |
-
-### Comandos de Saúde do Kit *(Novos!)*
-
-| Comando | Quando Usar | O que Faz |
-|---------|-------------|-----------|
-| `checar kit` | Antes de qualquer trabalho importante | Diagnóstico completo do kit (22 agentes, 63 skills) |
-| `verificação final` | Antes de publicar | Roda todos os testes em sequência |
-| `rode todos os testes` | Após fazer mudanças | Garante que nada quebrou |
-
----
-
-## 💎 Pacotes de Expansão (Novos Poderes)
-
-Agora seu kit conta com 3 novos pacotes de inteligência estratégica importados do repositório *Awesome Skills*:
-
-### 1. 🧠 Estratégia e Memória
-*Transforma o agente de um "codificador" em um "consultor de negócios".*
-- **`agent-memory-mcp`**: Permite que o agente tenha memória persistente de longo prazo (Contexto Infinito).
-- **`agent-evaluation`**: Audita a qualidade e confiabilidade de cada entrega da IA.
-
-### 2. 📊 IA Preditiva Pro (Coração do Projeto)
-*Ideal para o Radar Preditivo e análise estatística de loterias.*
-- **`predictive-modeling`**: Padrões avançados para predição e séries temporais.
-- **`ai-engineer`**: Refinamento de modelos neurais e algoritmos de predição.
-- **`machine-learning-ops`**: Cria esteiras automáticas de re-treinamento de dados.
-
-### 3. 💰 SaaS & Business Launcher
-*Para quem quer transformar a ferramenta em um produto real.*
-- **`micro-saas-launcher`**: Facilita a criação de MVPs voltados para o mercado.
-- **`startup-analyst`**: Analisa métricas de negócio (CAC, LTV, Burn Rate).
-
----
-
-## 🤖 Novidade: Pipeline Autônomo `/ade`
-
-O `/ade` é o modo mais poderoso. Você descreve o que quer e o agente executa tudo sozinho, em 6 fases supervisionadas:
-
-```
-Você descreve → Discovery → Spec → ✋ Você aprova → Código → QA → ✅ Pronto
+```bash
+checar kit
 ```
 
-**Exemplos de uso:**
-```
-/ade adicione um sistema de notificações por email
-/ade crie uma tela de dashboard com gráficos de vendas
-/ade implemente login com Google na plataforma
+ou
+
+```bash
+python .agent/scripts/doctor.py
 ```
 
-> **Detalhe importante:** O pipeline vai **pausar na Fase 3** para mostrar o plano detalhado e pedir sua aprovação antes de escrever qualquer código. Isso garante que o resultado seja exatamente o que você quer.
+Se vir mensagens verdes com "✅ OK", significa que os **agentes e skills estão prontos**. Você está pronto para começar!
 
 ---
 
-## 🏗️ Cenário 1: Criar um SaaS do Zero
+## O Que é DevBureau?
 
-### Como Iniciar
+### 🤖 A Ideia Simples
+
+Imagine que você tem uma **equipe de especialistas** que trabalham para você:
+
+- 🎨 Designer frontend (visual, cores, layout)
+- ⚙️ Engenheiro backend (servidor, API, lógica)
+- 💾 Arquiteto de banco de dados (organização de dados)
+- 🧪 Testador (verifica qualidade)
+- 🛡️ Especialista de segurança
+- 🚀 Especialista de deploy
+- ...e muitos outros
+
+**Você nunca precisa fazer nada sozinho.** Você descreve o que quer, eles fazem.
+
+### 💡 Como Funciona
+
+```
+Você: "Quero um sistema de login com Google"
+              ↓
+DevBureau analisa e pensa: "Preciso de backend? Frontend? Segurança?"
+              ↓
+Especialistas relevantes trabalham juntos
+              ↓
+Você aprova o plano
+              ↓
+Código pronto
+              ↓
+Você publica
+```
+
+---
+
+## Seus Primeiros Passos
+
+### Escolha Seu Momento Atual
+
+Qual é sua situação? Clique abaixo:
+
+#### 1️⃣ Não Tenho a Pasta do Projeto Criada Ainda
+
+**Situação:** Tenho uma ideia, mas ainda não criei a pasta do projeto.
+
+**Comando:**
+
+```
+/new-project
+```
+
+**O que acontece:**
+
+- DevBureau cria uma nova pasta com toda a inteligência
+- Você recebe um "mapa" com os primeiros passos
+- Pronto para usar em 30 segundos
+
+---
+
+#### 2️⃣ Tenho a Pasta, Mas Minha Ideia é Vaga
+
+**Situação:** Criei a pasta, mas ainda não sei exatamente o que construir.
+
+**Comando:**
+
+```
+/brainstorm
+```
+
+**O que acontece:**
+
+- DevBureau faz 5-7 perguntas estratégicas
+- Você responde simples (público-alvo, problema que resolve, principais funcionalidades)
+- Ao final: ideia clara e estruturada
+- Tempo: ~10 minutos
+
+**Exemplo de conversa:**
+
+```
+DevBureau: Quem vai usar isso?
+Você: Personal trainers que querem gerenciar alunos
+
+DevBureau: Qual é o maior problema deles hoje?
+Você: Não conseguem ver o progresso de todos os alunos em um único lugar
+
+DevBureau: Qual é a funcionalidade mais importante?
+Você: Um dashboard que mostra todos os alunos e o progresso de cada um
+```
+
+---
+
+#### 3️⃣ Ideia Clara, Quero Desenhar o Sistema
+
+**Situação:** Tenho a ideia clara. Quero saber como fazer antes de codar.
+
+**Comando:**
 
 ```
 /build-saas [descreva sua ideia em uma frase]
 ```
 
-**Exemplo real:**
+**Exemplo:**
+
 ```
-/build-saas aplicativo para personal trainers gerenciarem alunos e treinos
+/build-saas aplicativo para personal trainers gerenciarem alunos, treinos e evolução física
 ```
 
-### O Que Vai Acontecer
+**O que acontece:**
 
-O agente vai te guiar por **7 etapas**, fazendo **uma pergunta de cada vez**:
+- DevBureau guia você por **7 etapas** de planejamento
+- Você responde uma pergunta por vez (não são técnicas, são simples)
+- Ao final: **3 documentos prontos** para implementar
+- Você VÊ tudo antes de uma linha de código ser escrita
 
-1. 🦁 **Discovery** — "Que problema isso resolve?", "Quem vai usar?", "Como monetizar?"
-2. 📋 **Requisitos** — User stories, funcionalidades prioritárias
-3. 💾 **Banco de Dados** — Estrutura dos dados (sem você precisar entender SQL)
-4. ⚙️ **Backend** — Estrutura do servidor e APIs
-5. 🎨 **Frontend** — Páginas, componentes, design
-6. 🔒 **Segurança** — Checklist de proteção automática
-7. 📄 **Documentos Finais** — 3 documentos prontos para implementar
+**As 7 Etapas:**
 
-### Dicas de Ouro
+1. **Discovery** — Quem usa? Qual problema resolve?
+2. **Requisitos** — Quais funcionalidades principais?
+3. **Banco de Dados** — Qual é a estrutura dos dados?
+4. **Backend** — Qual é a estrutura do servidor?
+5. **Frontend** — Quais são as telas e componentes?
+6. **Segurança** — Como proteger os dados?
+7. **Documentação** — Gera os 3 documentos finais
 
-- **Use referências visuais** — "Quero algo como o dashboard do Notion" funciona muito bem
-- **Seja honesto quando não souber** — O agente sugere a melhor opção
-- **Não traduza para técnico** — Fale como falaria com um funcionário: "Quero que o sistema avise o cliente quando o pedido sair para entrega"
+**Tempo total:** ~30-45 minutos
 
 ---
 
-## 🎨 Cenário 2: Criar uma Landing Page ou Site
+#### 4️⃣ Quero Que Tudo Seja Automático (Mãos Livres)
 
-### Como Iniciar
+**Situação:** Não quero responder perguntas. Quero que o agente faça tudo sozinho.
+
+**Comando:**
 
 ```
-/create landing page para [seu produto/serviço]
+/ade [descreva sua ideia com detalhes]
 ```
+
+**Exemplo:**
+
+```
+/ade Crie um aplicativo para personal trainers gerenciarem alunos e treinos. Preciso de:
+- Dashboard com lista de alunos
+- Histórico de treinos por aluno
+- Evolução de peso
+- Login com Google
+- Interface responsiva para mobile e desktop
+```
+
+**O que acontece (Pipeline Autônomo):**
+
+```
+1. Discovery — DevBureau entende sua ideia
+2. Spec — Cria o plano detalhado
+3. ⏸️  VOCÊ APROVA (antes de codar)
+4. Código — Implementa tudo automaticamente
+5. Testes — Verifica se funciona
+6. ✅ Pronto para usar
+```
+
+**Vantagem:** Você só aprova UMA VEZ, e o agente faz tudo. Tempo: ~2-4 horas.
+
+---
+
+#### 5️⃣ Quero Construir Junto, Passo a Passo
+
+**Situação:** Quero ver o processo acontecer. Quero aprender ou acompanhar de perto.
+
+**Comando:**
+
+```
+/create [descreva o que quer]
+```
+
+**Exemplo:**
+
+```
+/create dashboard para personal trainers com lista de alunos e histórico de treinos
+```
+
+**O que acontece:**
+
+- DevBureau conversa com você enquanto cria os arquivos
+- Você aprova cada etapa
+- Aprende o que está sendo feito
+- Tempo: ~3-5 horas
+
+---
+
+### Qual Escolher?
+
+| Sua Situação       | Comando        | Tempo     | Para Quem                  |
+| ------------------ | -------------- | --------- | -------------------------- |
+| Sem projeto criado | `/new-project` | 30 seg    | Quem está começando        |
+| Ideia vaga         | `/brainstorm`  | 10 min    | Quem quer clareza antes    |
+| Ideia clara        | `/build-saas`  | 30-45 min | Quem quer ver o plano      |
+| Quer automático    | `/ade`         | 2-4 horas | Quem quer resultado rápido |
+| Quer aprender      | `/create`      | 3-5 horas | Quem gosta de acompanhar   |
+
+---
+
+## Como Usar (Por Tarefa)
+
+### 🎯 Você Quer Fazer Isso? Clique Aqui
+
+#### Criar um Sistema Novo (SaaS, App, Site)
+
+**Você diz:** Quero criar um aplicativo de agenda para salões de beleza
+
+**Você usa:** `/build-saas` ou `/ade` ou `/create`
+
+**Passo a passo:**
+
+1. Escolha um dos comandos acima (veja "Seus Primeiros Passos")
+2. Descreva sua ideia
+3. Responda as perguntas (simples, sem técnica)
+4. Aprove o plano
+5. Código é gerado automaticamente
+
+**Exemplo completo:**
+
+```
+/build-saas Sistema de agendamento para salões de beleza com gerenciamento de clientes, serviços e horários
+```
+
+---
+
+#### Adicionar uma Funcionalidade Nova
+
+**Você diz:** Quero adicionar um sistema de notificações por email quando alguém marca um horário
+
+**Você usa:** `/ade [descreva a funcionalidade]`
+
+**Exemplo:**
+
+```
+/ade Adicione um sistema de notificações por email quando um cliente marca um horário.
+O email deve conter: nome do serviço, horário, profissional responsável.
+Também envie um lembrete 1 dia antes do agendamento.
+```
+
+**O que você recebe:**
+
+- Plano detalhado (você aprova)
+- Código implementado
+- Testes passando
+- Pronto para usar
+
+---
+
+#### Consertar um Bug (Algo Não Funciona)
+
+**Você diz:** O login não funciona quando uso Chrome
+
+**Você usa:** `/debug [descreva o problema]`
+
+**Exemplo:**
+
+```
+/debug O botão de login não funciona no Chrome. Funciona perfeitamente no Firefox.
+Quando clico, a tela fica branca e nada acontece. Comecei a ter esse problema
+depois que atualizei as dependências.
+```
+
+**O que acontece:**
+
+1. Especialista investiga
+2. Encontra a causa
+3. Corrige
+4. Testa
+5. Pronto
+
+---
+
+#### Melhorar Algo Que Já Existe
+
+**Você diz:** O design da landing page ficou velho. Quero algo mais moderno.
+
+**Você usa:** `/enhance [descreva a melhoria]`
 
 **Exemplos:**
-```
-/create landing page para curso online de fotografia
-/create site institucional para escritório de advocacia
-/create página de vendas para ebook sobre produtividade
-```
-
-### Dicas
-
-- **Mande prints de referência** — "Quero um visual parecido com esse site: [link]"
-- **Descreva o estilo** — "Moderno, escuro, com animações sutis" é suficiente
-- **Liste as seções** — "Hero, benefícios, depoimentos, preço, FAQ, contato"
-
----
-
-## 🐛 Cenário 3: Algo Não Funciona
-
-### Como Iniciar
 
 ```
-/debug [descreva o problema]
+/enhance Deixe o design da landing page mais moderno. Adicione:
+- Animações suaves
+- Paleta de cores mais moderna (azul + branco + laranja)
+- Cards com sombra
+- Fonte maior nos títulos
 ```
 
-**Exemplos:**
-```
-/debug a página de login mostra tela branca
-/debug quando clico em salvar nada acontece
-/debug os dados não aparecem na tabela
-```
-
-### Dicas
-
-- **Descreva o comportamento** — O que deveria acontecer vs o que está acontecendo
-- **Diga quando começou** — "Funcionava antes, parou depois que mudamos X"
-- **Mande print da tela** — Screenshots ajudam muito o diagnóstico
-
----
-
-## 📈 Cenário 4: Melhorar Algo Existente
-
-### Como Iniciar
+ou
 
 ```
-/enhance [descreva a melhoria]
-```
-
-**Exemplos:**
-```
-/enhance adicionar modo escuro no app
-/enhance melhorar performance da página de dashboard
-/enhance adicionar filtro de busca na lista de clientes
+/enhance Melhoramos a performance do dashboard. Estava demorando 5 segundos para carregar.
+Preciso reduzir para menos de 2 segundos.
 ```
 
 ---
 
-## 🚢 Cenário 5: Hora de Publicar
+#### Testar Qualidade
 
-### Como Iniciar
+**Você diz:** Antes de publicar, quero ter certeza que tudo funciona
+
+**Você usa:**
+
+```
+verificação final
+```
+
+ou
+
+```
+rode todos os testes
+```
+
+**O que acontece:**
+
+1. ✅ Segurança — Sem vulnerabilidades?
+2. ✅ Linter — Código limpo?
+3. ✅ Tipos — TypeScript correto?
+4. ✅ Testes — Tudo passa?
+5. ✅ Performance — Lighthouse OK?
+6. ✅ UX — Interface responsiva?
+
+Se tudo passar, você recebe um "✅ Pronto para publicar"
+
+---
+
+#### Publicar em Produção
+
+**Você diz:** Pronto! Quero colocar no ar.
+
+**Você usa:**
 
 ```
 /deploy
 ```
 
-O agente vai:
-1. Rodar checklist de segurança automático
-2. Verificar se todos os testes passam
-3. Confirmar variáveis de ambiente
-4. Guiar o deploy passo a passo
+**O que acontece:**
 
-### Verificação Final Antes de Publicar
-
-```
-verificação final
-```
-ou
-```
-rode todos os testes
-```
+1. Checklist automático de segurança
+2. Verifica se todos os testes passam
+3. Confirma variáveis de ambiente
+4. Guia você passo a passo no deploy
+5. Publica com segurança
 
 ---
 
-## 🏥 Cenário 6 (Novo!): Verificar a Saúde do Kit
+#### Ver o App Rodando
 
-Se algo parecer estranho com o comportamento do agente, ou antes de um trabalho importante:
+**Você diz:** Quero ver meu app funcionando agora
+
+**Você usa:**
 
 ```
-checar kit
-```
-ou
-```
-diagnóstico do kit
-```
-ou
-```
-tudo certo?
+/preview
 ```
 
-O agente vai rodar `doctor.py` e confirmar que todos os 22 agentes, 63 skills e 20 workflows estão funcionando corretamente.
+**O que acontece:**
+
+- Servidor local liga automaticamente
+- Abre seu navegador
+- Você vê o app rodando em tempo real
+- Pode testar, clicar, preencher formulários
 
 ---
 
-## 💡 Dicas de Comunicação com o Agente
+#### Ver Progresso do Projeto
 
-### ✅ Jeitos BONS de Pedir
+**Você diz:** Como está o progresso? Quanto falta?
 
-| O que quer | Como pedir |
-|------------|-----------|
-| Nova funcionalidade | "Quero que o usuário possa exportar relatório em PDF" |
-| Mudança visual | "O botão de login precisa ficar mais visível, cor verde" |
-| Correção | "Quando o usuário clica em salvar, às vezes perde os dados" |
-| Melhoria | "O carregamento da página tá lento, demora uns 5 segundos" |
-| Ideia vaga | "Quero algo parecido com isso: [link/print]" |
-| Feature autônoma | "/ade [descreva tudo em uma frase longa]" |
+**Você usa:**
 
-### ❌ Não Precisa Dizer
+```
+/status
+```
 
-| Não precisa | Por quê |
-|-------------|---------|
-| "Use React hooks" | O agente escolhe a melhor tecnologia |
-| "Faça com TypeScript" | Já é padrão do kit |
-| "Adicione validação de input" | O agente faz automaticamente |
-| "Coloque tratamento de erro" | Já está nas regras |
-| "Use o agente X" | O roteamento é automático |
+**O que você vê:**
 
-### 🎯 A Regra de Ouro
+- ✅ Funcionalidades prontas
+- 🔄 Em progresso
+- ⏳ Planejado
+- Porcentagem de conclusão
 
-> **Descreva o QUE você quer, não COMO fazer.**
+---
+
+### 🤖 Ativar um Especialista Específico
+
+Além dos comandos rápidos, você pode ativar um especialista específico escrevendo `@nome`:
+
+**Como usar:**
+
+```
+@frontend-specialist: melhora o design dessa página, deixa mais moderna
+
+@backend-specialist: cria uma rota para salvar dados de clientes
+
+@security-auditor: verifica se o app está seguro
+
+@database-architect: cria a tabela de usuários com os campos certos
+```
+
+**Todos os especialistas disponíveis:**
+
+| Especialista                 | Usa quando...                        | Comando                   |
+| ---------------------------- | ------------------------------------ | ------------------------- |
+| 🎨 Designer Frontend         | Quer melhorar visual, cores, layout  | `@frontend-specialist`    |
+| ⚙️ Engenheiro Backend        | Quer criar API, servidor, rotas      | `@backend-specialist`     |
+| 💾 Arquiteto de Banco        | Quer estruturar dados, criar tabelas | `@database-architect`     |
+| 📱 Dev Mobile                | Quer criar app iOS/Android           | `@mobile-developer`       |
+| 🔍 Debugger                  | Tem um bug, quer consertar           | `@debugger`               |
+| 🛡️ Auditor de Segurança      | Quer verificar se está seguro        | `@security-auditor`       |
+| 🧪 Testador                  | Quer testar e garantir qualidade     | `@test-engineer`          |
+| 🚀 DevOps                    | Quer fazer deploy ou infraestrutura  | `@devops-engineer`        |
+| ⚡ Otimizador de Performance | Quer deixar mais rápido              | `@performance-optimizer`  |
+| 🌐 Especialista SEO          | Quer aparecer no Google              | `@seo-specialist`         |
+| 📋 Planejador                | Quer planejar tarefas                | `@project-planner`        |
+| 🎮 Dev de Games              | Quer criar um jogo                   | `@game-developer`         |
+| 📄 Documentador              | Quer documentar o projeto            | `@documentation-writer`   |
+| 🔬 Explorador                | Quer analisar o codebase             | `@explorer-agent`         |
+| 🔧 Arqueólogo de Código      | Tem código antigo, quer refatorar    | `@code-archaeologist`     |
+| 🧪 QA Automation             | Quer testes automáticos              | `@qa-automation-engineer` |
+| 🕵️ Pentester                 | Quer testar segurança (ataques)      | `@penetration-tester`     |
+| 🤖 Orquestrador              | Quer múltiplos especialistas         | `@orchestrator`           |
+| 📊 Product Manager           | Quer pensar em requisitos            | `@product-manager`        |
+| 📚 Content Creator           | Quer criar conteúdo/posts            | `@content-creator`        |
+| ♿ Especialista Acessibilidade | Quer o app usável por todos (WCAG)  | `@accessibility-specialist` |
+| 🔌 Designer de API           | Quer desenhar o contrato da API      | `@api-designer`           |
+| 👨‍💼 SRE Engineer              | Quer observabilidade e monitoramento | `@sre-engineer`           |
+
+---
+
+## Todos os Comandos
+
+### 📋 Referência Completa
+
+#### Comandos de Criação e Planejamento
+
+| Comando        | O que faz                                       | Exemplo                         |
+| -------------- | ----------------------------------------------- | ------------------------------- |
+| `/new-project` | Cria uma nova pasta com o kit completo          | `/new-project`                  |
+| `/brainstorm`  | Faz perguntas estratégicas para clarear a ideia | `/brainstorm`                   |
+| `/build-saas`  | Planeja um SaaS em 7 etapas                     | `/build-saas app de delivery`   |
+| `/plan`        | Planeja uma funcionalidade sem codar            | `/plan sistema de pagamentos`   |
+| `/create`      | Cria algo do zero, passo a passo                | `/create landing page`          |
+| `/ade`         | Pipeline autônomo (faz tudo sozinho)            | `/ade crie um login com Google` |
+
+#### Comandos de Desenvolvimento
+
+| Comando    | O que faz                   | Exemplo                                |
+| ---------- | --------------------------- | -------------------------------------- |
+| `/enhance` | Melhora algo existente      | `/enhance deixe o design mais moderno` |
+| `/debug`   | Encontra e corrige bugs     | `/debug o login não funciona`          |
+| `/test`    | Cria e roda testes          | `/test`                                |
+| `/preview` | Abre o servidor local       | `/preview`                             |
+| `/status`  | Mostra progresso do projeto | `/status`                              |
+
+#### Comandos de Deploy e Publicação
+
+| Comando                | O que faz                              |
+| ---------------------- | -------------------------------------- |
+| `/deploy`              | Checklist de segurança e publica       |
+| `verificação final`    | Roda todos os testes antes de publicar |
+| `rode todos os testes` | Executa suite de testes                |
+
+#### Comandos de Saúde do Kit
+
+| Comando       | O que faz                                     |
+| ------------- | --------------------------------------------- |
+| `checar kit`  | Diagnóstico completo (todos os agentes, skills e workflows) |
+| `diagnóstico` | Mesmo que acima                               |
+| `tudo certo?` | Verifica integridade                          |
+
+#### Comando Premium Design
+
+| Comando          | O que faz                          | Tempo     |
+| ---------------- | ---------------------------------- | --------- |
+| `/ui-ux-pro-max` | 50 estilos visuais premium prontos | 2-3 horas |
+
+---
+
+## Especialistas Disponíveis
+
+### 🎨 Design (Frontend + Mobile)
+
+#### **Frontend Specialist** — Designer Web
+
+- **Quando usar:** Visual, cores, layout, botões, responsividade
+- **Exemplos:** "melhora o visual", "dark mode", "deixa mais moderno"
+- **Comando:** `@frontend-specialist`
+
+#### **Mobile Developer** — Dev de Apps
+
+- **Quando usar:** App iOS, Android, React Native, Flutter
+- **Exemplos:** "cria um app mobile", "interface para celular"
+- **Comando:** `@mobile-developer`
+
+---
+
+### ⚙️ Backend (Servidores e Lógica)
+
+#### **Backend Specialist** — Engenheiro de Servidor
+
+- **Quando usar:** API, rotas, servidor, autenticação, lógica de negócio
+- **Exemplos:** "cria uma rota", "conecta frontend com backend"
+- **Comando:** `@backend-specialist`
+
+#### **Database Architect** — Especialista de Banco de Dados
+
+- **Quando usar:** Estrutura de dados, tabelas, SQL, migrations
+- **Exemplos:** "modelar dados", "criar tabela de usuários"
+- **Comando:** `@database-architect`
+
+---
+
+### 🛡️ Qualidade e Segurança
+
+#### **Security Auditor** — Auditor de Segurança
+
+- **Quando usar:** Vulnerabilidades, criptografia, proteção de dados
+- **Exemplos:** "o site está seguro?", "verificar vulnerabilidades"
+- **Comando:** `@security-auditor`
+
+#### **Test Engineer** — Testador
+
+- **Quando usar:** Testes, cobertura, validação de qualidade
+- **Exemplos:** "testar", "verificar qualidade"
+- **Comando:** `@test-engineer`
+
+#### **Debugger** — Especialista em Bugs
+
+- **Quando usar:** Algo não funciona, erro, bug, tela branca
+- **Exemplos:** "não funciona", "tá quebrado", "erro 404"
+- **Comando:** `@debugger`
+
+---
+
+### 🚀 Deploy e Performance
+
+#### **DevOps Engineer** — Especialista de Infraestrutura
+
+- **Quando usar:** Deploy, CI/CD, Docker, servidor, publicação
+- **Exemplos:** "colocar no ar", "fazer deploy", "servidor caiu"
+- **Comando:** `@devops-engineer`
+
+#### **Performance Optimizer** — Otimizador de Velocidade
+
+- **Quando usar:** Site lento, otimização, cache, bundle grande
+- **Exemplos:** "tá lento", "melhorar velocidade", "Core Web Vitals"
+- **Comando:** `@performance-optimizer`
+
+---
+
+### 📊 Estratégia e Conteúdo
+
+#### **Project Planner** — Planejador de Projetos
+
+- **Quando usar:** Planejamento, requisitos, descoberta, roadmap
+- **Exemplos:** "planejar", "quais são os requisitos?"
+- **Comando:** `@project-planner`
+
+#### **Product Manager** — Gerente de Produto
+
+- **Quando usar:** Histórias de usuário, requisitos, backlog
+- **Exemplos:** "histórias de usuário", "requisitos do app"
+- **Comando:** `@product-manager`
+
+#### **Content Creator** — Criador de Conteúdo
+
+- **Quando usar:** Posts, carrosséis, conteúdo para redes sociais
+- **Exemplos:** "cria um post", "design de carousel"
+- **Comando:** `@content-creator`
+
+---
+
+### 🔬 Análise e Especialidades
+
+#### **Orchestrator** — Orquestrador
+
+- **Quando usar:** Tarefa complexa que envolve múltiplos especialistas
+- **Exemplos:** "tarefa complexa", "fazer tudo"
+- **Comando:** `@orchestrator`
+
+#### **Explorer Agent** — Explorador de Codebase
+
+- **Quando usar:** Analisar código, entender projeto, listar arquivos
+- **Exemplos:** "analisar código", "visão geral do projeto"
+- **Comando:** `@explorer-agent`
+
+#### **Code Archaeologist** — Arqueólogo de Código
+
+- **Quando usar:** Refatorar código antigo, limpar código, reorganizar
+- **Exemplos:** "refatorar", "código antigo", "limpar código"
+- **Comando:** `@code-archaeologist`
+
+---
+
+### 📖 Documentação e Específicas
+
+#### **Documentation Writer** — Documentador
+
+- **Quando usar:** README, documentação, guias, API docs
+- **Exemplos:** "documentar", "escrever README"
+- **Comando:** `@documentation-writer`
+
+#### **SEO Specialist** — Especialista em SEO
+
+- **Quando usar:** Aparecer no Google, rankings, visibilidade
+- **Exemplos:** "aparecer no Google", "melhorar SEO"
+- **Comando:** `@seo-specialist`
+
+#### **QA Automation Engineer** — Testador de E2E
+
+- **Quando usar:** Testes automáticos, Playwright, pipelines de teste
+- **Exemplos:** "testar o app inteiro", "E2E test"
+- **Comando:** `@qa-automation-engineer`
+
+---
+
+### 🎮 Especializações Adicionais
+
+#### **Game Developer** — Dev de Games
+
+- **Quando usar:** Criar jogos 2D, 3D, multiplayer
+- **Exemplos:** "criar um jogo", "mecânica de jogo"
+- **Comando:** `@game-developer`
+
+#### **Penetration Tester** — Testador de Segurança
+
+- **Quando usar:** Teste de invasão, red team, pentest
+- **Exemplos:** "simular ataque", "teste de invasão"
+- **Comando:** `@penetration-tester`
+
+---
+
+## Perguntas Frequentes
+
+### ❓ Dúvidas Comuns
+
+#### P: Preciso saber programar para usar DevBureau?
+
+**R:** Não. O kit programa para você. Sua função é descrever o que quer e aprovar o resultado.
+
+#### P: O agente vai me fazer perguntas técnicas?
+
+**R:** Não. As perguntas são estratégicas (público-alvo, funcionalidades, monetização). Decisões técnicas são automáticas.
+
+#### P: E se eu quiser mudar algo depois?
+
+**R:** Basta pedir naturalmente. "Muda o esquema de cores para azul" ou "Adiciona uma página de FAQ".
+
+#### P: Posso usar em qualquer tipo de projeto?
+
+**R:** Sim. Funciona para SaaS, landing pages, apps mobile, jogos, APIs, e-commerce, e muito mais.
+
+#### P: Qual a diferença entre `/build-saas`, `/create` e `/ade`?
+
+**R:**
+
+- **`/build-saas`** — Planeja em 7 etapas, você responde perguntas. Melhor para entender tudo antes de codar.
+- **`/create`** — Cria passo a passo, conversando com você. Melhor se quer aprender.
+- **`/ade`** — Faz tudo autônomo, você aprova UMA VEZ. Melhor se quer velocidade.
+
+#### P: O agente pode ficar em loop (repetindo)?
+
+**R:** Sim, mas o kit tem proteção. Se perceber, basta dizer "para", "cancela" ou "reset". O agente vai parar.
+
+#### P: Como faço backup do meu código?
+
+**R:** Tudo é salvo em Git. Cada mudança pode ser salva com `git commit`. Seu código está protegido.
+
+#### P: Quanto custa?
+
+**R:** DevBureau é gratuito. Você usa sua conta Claude (Cursor, claude.ai, ou extensão IDE).
+
+#### P: Posso deletar algo com segurança?
+
+**R:** Tudo é versionado em Git. Se deletar algo, pode recuperar com `git revert` ou `git restore`.
+
+#### P: Qual é o tamanho máximo de projeto que posso fazer?
+
+**R:** Sem limite. DevBureau funciona de MVPs a aplicações complexas com milhões de usuários.
+
+#### P: O que é uma "Skill"?
+
+**R:** Uma skill é um superpoder. Exemplos: "humanizer" (remove cara de IA do texto), "content-creator" (cria posts para redes sociais).
+
+#### P: O que é um "Squad"?
+
+**R:** Um squad é uma equipe especializada para um processo específico. Exemplo: "squad de content production" para criar posts, imagens, emails automaticamente.
+
+---
+
+## Configurações Avançadas
+
+### 🔧 Para Usuários Experientes
+
+#### Configurar Seu IDE (VSCode, Cursor, JetBrains)
+
+Já executou o comando de setup?
+
+```bash
+python .agent/scripts/sync_ide.py --target all
+```
+
+Se não, execute agora. Isso cria:
+
+- `.cursorrules` — Regras para Cursor
+- `.clauderules` — Regras para Claude
+- Configurações automáticas para seu IDE
+
+---
+
+#### Usar DevBureau com Google Gemini
+
+Se você usa **Gemini Code Assist** (VS Code ou IntelliJ):
+
+- Não precisa executar nenhum comando especial
+- O Gemini analisa a pasta `.agent/` automaticamente
+- Ainda assim, executar `sync_ide.py` é recomendado
+
+Se você usa **Google AI Studio ou Gemini Advanced** (web):
+
+1. Abra [.agent/rules/DEVBUREAU.md](./.agent/rules/DEVBUREAU.md)
+2. Copie todo o conteúdo
+3. Cole na seção de "System Instructions" do seu chat
+4. Pronto!
+
+---
+
+#### Ler os Detalhes Técnicos
+
+Para usuários que querem entender a arquitetura:
+
+**Leia nesta ordem:**
+
+1. `.agent/ARCHITECTURE.md` — Visão geral de agentes e skills
+2. `.agent/rules/DEVBUREAU.md` — Todas as regras detalhadas
+3. `.agent/SCRIPTS_REGISTRY.md` — Lista de todos os scripts disponíveis
+
+---
+
+#### Criar uma Skill Personalizada
+
+Se você quer criar um novo superpoder:
+
+```bash
+/skillify
+```
+
+Isso guia você para criar sua própria skill reutilizável.
+
+---
+
+#### Criar um Squad (Equipe Especializada)
+
+Se você quer montar uma equipe para um processo específico:
+
+```
+/squad [descreva o processo]
+```
+
+**Exemplo:**
+
+```
+/squad Criar um sistema automático que:
+1. Pesquisa notícias sobre marketing
+2. Seleciona as 5 melhores
+3. Cria posts para Instagram
+4. Cria posts para LinkedIn
+5. Publica automaticamente
+```
+
+DevBureau cria uma pasta `squads/marketing-automation/` com todo o setup.
+
+---
+
+#### Verificar Integridade do Kit
+
+Se algo parecer errado:
+
+```bash
+python .agent/scripts/doctor.py
+```
+
+Isso verifica:
+
+- ✅ Todos os agentes estão prontos?
+- ✅ Todas as skills funcionam?
+- ✅ Scripts estão configurados?
+- ✅ Dependências OK?
+
+---
+
+### 📚 Leitura Recomendada Adicional
+
+Se você quer aprender mais:
+
+| Interesse               | Arquivo                      |
+| ----------------------- | ---------------------------- |
+| Guia de Skills          | `.agent/skills/*/SKILL.md`   |
+| Documentação de Agentes | `.agent/agents/*/[nome].md`  |
+| Registro de Scripts     | `.agent/SCRIPTS_REGISTRY.md` |
+| Arquitetura do Kit      | `.agent/ARCHITECTURE.md`     |
+| Todas as Regras         | `.agent/rules/DEVBUREAU.md`  |
+
+---
+
+## 🚀 Próximos Passos
+
+### Comece Agora!
+
+1. **Execute o setup:**
+
+    ```bash
+    python .agent/scripts/sync_ide.py --target all
+    ```
+
+2. **Verifique:**
+
+    ```bash
+    checar kit
+    ```
+
+3. **Escolha seu caminho** (volta ao início):
+    - Ideia vaga → `/brainstorm`
+    - Ideia clara → `/build-saas`
+    - Quer rápido → `/ade`
+    - Quer aprender → `/create`
+
+4. **Aproveite os especialistas** mencionando `@nome` quando precisar
+
+---
+
+## 📞 Precisa de Ajuda?
+
+### Para Erros ou Dúvidas
+
+1. **Tente primeiro:** `checar kit` (diagnóstico automático)
+2. **Se não resolver:** Procure no **[Perguntas Frequentes](#perguntas-frequentes)** acima
+3. **Se ainda não resolver:** Abra uma issue ou procure a documentação em `.agent/rules/DEVBUREAU.md`
+
+---
+
+> **Parabéns!** Você agora sabe como usar DevBureau.
 >
-> ❌ "Crie um useState com useEffect que faz fetch na API..."
-> ✅ "Quero que a lista de produtos atualize automaticamente."
-
----
-
-## 🔄 Fluxo Recomendado para Novos Projetos
-
-```
-1. /brainstorm          ← Explore a ideia com perguntas estratégicas
-2. /build-saas          ← Planeje tudo em 7 etapas
-3. /create              ← Construa o MVP
-4. /enhance             ← Adicione features incrementalmente
-5. /ade [feature]       ← Features complexas com pipeline autônomo
-6. /debug               ← Corrija problemas
-7. verificação final    ← Teste tudo antes de publicar
-8. /deploy              ← Publique com segurança
-```
-
----
-
-## 🧠 Guia Completo: Agentes, Skills e Palavras-Chave
-
-> Use qualquer termo abaixo — em **Português** ou **Inglês** — e o agente correto será ativado automaticamente.
-
-### 🤖 Agentes Especialistas (20)
-
-| Agente | O que faz | 🇧🇷 Termos PT-BR | 🇺🇸 Termos EN |
-|--------|-----------|-------------------|---------------|
-| **🎨 frontend-specialist** | Design, visual, layout, componentes | "muda o visual", "deixa mais bonito", "redesign", "tá feio", "interface moderna", "mudar as cores", "dark mode", "modo escuro", "esquema de cores" | "change design", "UI component", "button", "card", "layout", "style", "CSS", "responsive" |
-| **⚙️ backend-specialist** | Servidor, API, rotas, lógica | "criar rota", "conectar o front", "servidor", "rota", "API", "endpoint" | "create endpoint", "server", "route", "API", "backend", "middleware" |
-| **💾 database-architect** | Banco de dados, tabelas, SQL | "banco de dados", "tabela", "estrutura dos dados", "modelar dados", "schema do banco" | "database", "schema", "table", "query", "migration", "SQL", "prisma" |
-| **📱 mobile-developer** | Apps mobile (React Native, Flutter) | "app mobile", "app para celular", "tela do celular", "app nativo" | "react native", "flutter", "ios", "android", "expo", "mobile app" |
-| **🔍 debugger** | Conserta erros e bugs | "não funciona", "tá quebrado", "dando erro", "travou", "tela branca", "não carrega", "bugado", "caiu" | "error", "bug", "broken", "crash", "not working", "issue", "fix" |
-| **🛡️ security-auditor** | Segurança, proteção, vulnerabilidades | "tá seguro?", "pode ser hackeado?", "verificar segurança", "proteger dados", "criptografar", "auditoria de segurança", "checar vulnerabilidades" | "security", "vulnerability", "auth", "login", "password", "encrypt", "audit" |
-| **🧪 test-engineer** | Testes, qualidade, validação | "testar", "tá funcionando?", "verificar qualidade", "rode os testes", "garantir que funciona", "checklist de qualidade" | "test", "coverage", "unit test", "integration", "validate", "jest", "playwright" |
-| **🚀 devops-engineer** | Deploy, CI/CD, Docker, servidor | "colocar no ar", "publicar", "deploy", "servidor caiu", "mandar pra produção" | "deploy", "CI/CD", "docker", "kubernetes", "hosting", "server" |
-| **⚡ performance-optimizer** | Velocidade, otimização, Core Web Vitals | "tá lento", "demora pra carregar", "pesado", "melhorar velocidade", "site devagar", "fica travando" | "slow", "optimize", "speed", "performance", "cache", "lazy load" |
-| **🌐 seo-specialist** | SEO, Google, visibilidade | "aparecer no Google", "melhorar posição", "SEO", "mais visitas orgânicas", "não aparece na busca" | "SEO", "meta tags", "sitemap", "ranking", "search engine", "analytics" |
-| **🏗️ orchestrator** | Coordena múltiplos agentes | "tarefa complexa", "fazer tudo", "orquestrar", "coordenar" | "orchestrate", "multi-agent", "complex task", "coordinate" |
-| **📋 project-planner** | Planejamento, discovery, roadmap | "planejar", "requisitos", "ideia", "funcionalidades", "MVP" | "plan", "requirements", "discovery", "roadmap", "MVP" |
-| **🎮 game-developer** | Jogos 2D, 3D, multiplayer | "criar um jogo", "fazer um game", "jogo 2D", "mecânica de jogo" | "game", "unity", "godot", "phaser", "multiplayer" |
-| **📄 documentation-writer** | Documentação, README, guias | "documentar", "README", "escrever os docs", "criar documentação" | "documentation", "README", "API docs", "write docs" |
-| **🔬 explorer-agent** | Analisar codebase, explorar código | "analisar código", "visão geral", "listar arquivos", "entender o projeto" | "analyze", "list files", "overview", "explore codebase" |
-| **🔧 code-archaeologist** | Código legado, refatoração | "refatorar", "código antigo", "limpar código", "organizar" | "refactor", "legacy code", "clean up", "reorganize" |
-| **🧪 qa-automation-engineer** | Testes E2E, pipelines de teste | "testar o app inteiro", "simular usuário", "fluxo completo" | "E2E test", "end-to-end", "playwright", "test pipeline" |
-| **🕵️ penetration-tester** | Testes de intrusão, red team | "simular ataque", "pentest", "teste de invasão" | "penetration test", "red team", "attack simulation" |
-| **📊 product-manager** | Requisitos, histórias de usuário, backlog | "histórias de usuário", "o que o app precisa ter", "requisitos", "quem vai usar" | "user stories", "product requirements", "MVP", "backlog" |
-
----
-
-### 💎 Skills Premium Design (Novo!)
-
-| Skill | O que faz | 🇧🇷 Termos PT-BR | 🇺🇸 Termos EN |
-|-------|-----------|-------------------|---------------|
-| **🎨 premium-design-orchestrator** | Paletas, tipografia, design de alto nível | "design premium", "site premiado", "interface imersiva", "landing page premium", "experiência imersiva", "paleta premium", "tipografia premium" | "premium design", "awwwards", "immersive experience", "premium palette", "luxury design" |
-| **🔍 brand-identity-extractor** | Extrai identidade visual de sites | "extrair identidade", "clonar design", "analisar referência", "extrair paleta", "copiar essência", "capturar o visual desse site" | "extract identity", "clone design", "analyze reference", "extract palette", "copy essence" |
-| **⚡ premium-tech-stack** | Animações GSAP, scroll suave, 3D | "animações premium", "GSAP", "Three.js", "scroll suave", "transições de página", "5 pilares", "experiência imersiva" | "GSAP", "ScrollTrigger", "Three.js", "smooth scroll", "page transitions", "premium animations" |
-
----
-
-### 🧠 Skills de Estratégia e IA
-
-| Skill | O que faz | 🇧🇷 Termos PT-BR | 🇺🇸 Termos EN |
-|-------|-----------|-------------------|---------------|
-| **💾 agent-memory-mcp** | Memória persistente do agente | "lembrar contexto", "memória do agente", "lições" | "agent memory", "context", "lessons learned" |
-| **🧪 agent-evaluation** | Avaliação de qualidade da IA | "avaliar a IA", "qualidade da resposta" | "evaluate AI", "agent quality", "performance" |
-| **🤖 ai-engineer** | Construção de apps com LLM/IA | "construir com IA", "agente inteligente", "LLM" | "build with AI", "LLM app", "intelligent agent" |
-| **📈 startup-analyst** | Análise de métricas de startup | "CAC", "LTV", "burn rate", "métricas de negócio" | "startup metrics", "CAC", "LTV", "burn rate" |
-| **🚀 micro-saas-launcher** | Lançamento de micro-SaaS | "lançar SaaS", "MVP rápido", "indie hacker" | "launch SaaS", "quick MVP", "indie hacker" |
-
----
-
-### 🔧 Skills Técnicas Essenciais
-
-| Skill | O que faz | 🇧🇷 Termos PT-BR | 🇺🇸 Termos EN |
-|-------|-----------|-------------------|---------------|
-| **🧹 clean-code** | Código limpo, padrões de qualidade | "código limpo", "refatorar", "melhorar código" | "clean code", "refactor", "code quality" |
-| **🧪 testing-patterns** | Estratégias de teste | "testar", "verificar qualidade", "rode os testes" | "testing", "unit test", "coverage", "TDD" |
-| **🔐 vulnerability-scanner** | Scanner de vulnerabilidades | "checar vulnerabilidades", "seguro?", "auditoria" | "scan vulnerabilities", "security audit", "OWASP" |
-| **📋 plan-writing** | Planejamento de tarefas detalhado | "planejar feature", "quebrar em tarefas" | "plan feature", "task breakdown", "implementation plan" |
-| **🏗️ app-builder** | Construção de apps do zero | "criar do zero", "construir app", "novo projeto" | "build from scratch", "create app", "new project" |
-| **💾 database-design** | Design de banco de dados | "modelar o banco", "estrutura de dados", "schema" | "database design", "data model", "schema", "SQL vs NoSQL" |
-| **🔌 api-patterns** | Design de APIs | "criar API", "conectar front com back", "endpoints" | "API design", "REST", "GraphQL", "endpoints" |
-| **🌐 seo-fundamentals** | SEO técnico e on-page | "aparecer no Google", "SEO", "meta tags" | "SEO", "search ranking", "meta tags", "sitemap" |
-| **⚡ performance-profiling** | Core Web Vitals, otimização | "tá lento", "melhorar velocidade", "otimizar" | "performance", "Core Web Vitals", "optimize", "speed" |
-| **📱 mobile-design** | Design mobile-first | "design pro celular", "interface mobile" | "mobile design", "touch interaction", "app design" |
-| **🎨 frontend-design** | Design thinking para web | "melhorar o visual", "cores", "tipografia" | "visual design", "colors", "typography", "layout" |
-| **🚢 deployment-procedures** | Deploy seguro | "colocar no ar", "publicar", "fazer deploy" | "deploy", "go live", "release", "production" |
-| **🌍 i18n-localization** | Multi-idioma, traduções | "traduzir o app", "multi-idioma", "internacionalizar" | "translate", "multi-language", "localization", "i18n" |
-
----
-
-### ⌨️ Comandos Slash (Atalhos Rápidos)
-
-| Comando | 🇧🇷 Quando usar | 🇺🇸 When to use |
-|---------|-----------------|-----------------|
-| `/brainstorm` | Explorar uma ideia, fazer perguntas | Explore an idea, ask strategic questions |
-| `/build-saas` | Planejar um SaaS completo em 7 etapas | Plan a complete SaaS in 7 steps |
-| `/create` | Construir algo novo do zero | Build something new from scratch |
-| `/plan` | Planejar uma feature sem codar | Plan a feature without coding |
-| `/ade` | Pipeline autônomo (faz tudo sozinho) | Autonomous pipeline (does everything) |
-| `/enhance` | Melhorar algo existente | Improve something existing |
-| `/debug` | Investigar e corrigir um bug | Investigate and fix a bug |
-| `/test` | Criar e rodar testes | Create and run tests |
-| `/deploy` | Publicar em produção | Deploy to production |
-| `/preview` | Ligar servidor local | Start local dev server |
-| `/status` | Ver progresso do projeto | View project progress |
-| `/ui-ux-pro-max` | Design premium com 50 estilos | Premium design with 50 styles |
-| `/new-project` | Criar nova pasta de projeto | Create new project folder |
-| `/orchestrate` | Coordenar tarefa multi-agente | Coordinate multi-agent task |
-
----
-
-### 🏥 Comandos de Saúde do Kit
-
-| Ação | 🇧🇷 Como chamar | 🇺🇸 How to call |
-|------|-----------------|-----------------|
-| Diagnóstico | "checar kit", "diagnóstico", "tudo certo?", "saúde do kit" | "check kit", "doctor", "kit health", "diagnostics" |
-| Testes do kit | "rode os testes do kit", "verificar integridade" | "run kit tests", "verify integrity" |
-| Verificação final | "verificação final", "rode todos os testes" | "final check", "run all tests" |
-| Ver memória | "lições aprendidas", "o que aprendemos" | "lessons learned", "gotchas", "memory" |
-
-
----
-
-## ❓ Perguntas Frequentes
-
-**P: Preciso saber programar?**
-R: Não. O agente programa para você. Sua função é dar a direção e aprovar as entregas.
-
-**P: O agente vai me fazer perguntas técnicas?**
-R: Não. As perguntas são estratégicas (público, funcionalidades, monetização). Decisões técnicas são automáticas.
-
-**P: E se eu quiser mudar algo depois?**
-R: Basta pedir. "Muda o esquema de cores para azul escuro" ou "Adiciona uma página de FAQ".
-
-**P: Posso usar em qualquer tipo de projeto?**
-R: Sim. O kit funciona para SaaS, landing pages, apps mobile, jogos, APIs, e muito mais.
-
-**P: O que é `/build-saas`?**
-R: É um assistente que te faz as perguntas certas em 7 etapas e gera 3 documentos prontos: especificação do backend, do frontend, e um plano de implementação com tarefas de 5-15 minutos.
-
-**P: Qual a diferença entre `/create` e `/ade`?**
-R: `/create` é interativo (o agente faz perguntas e você responde). `/ade` é autônomo (o agente faz tudo, te mostra o plano e aguarda apenas sua aprovação antes de codar).
-
-**P: O que acontece se o agente "travar" ou ficar repetindo?**
-R: O kit tem proteção automática contra loops. Se perceber que está em loop, basta dizer **"para"** ou **"cancelar"**. O agente vai encerrar a tarefa e perguntar o que você prefere fazer.
-
-**P: Meu código fica salvo em algum lugar?**
-R: Sim, no seu repositório GitHub. Cada mudança aprovada pode ser salva com `git commit`.
-
----
-
-> 💡 **Lembre-se:** Você é o dono do produto. O agente é sua equipe de desenvolvimento.
-> Diga o que quer alcançar — ele cuida do resto.
+> Lembre-se: **Você é o dono do produto. DevBureau é sua equipe de desenvolvimento.**
+>
+> 🎉 Bom trabalho!

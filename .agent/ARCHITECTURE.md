@@ -9,7 +9,7 @@
 DevBureau is a modular system consisting of:
 
 - **23 Specialist Agents** - Role-based AI personas
-- **75 Skills** - Domain-specific knowledge modules
+- **76 Skills** - Domain-specific knowledge modules
 - **22 Workflows** - Slash command procedures
 
 ---
@@ -21,7 +21,7 @@ DevBureau is a modular system consisting of:
 ├── ARCHITECTURE.md          # This file
 ├── SCRIPTS_REGISTRY.md      # Deterministic tool inventory (Script-First Protocol)
 ├── agents/                  # 23 Specialist Agents
-├── skills/                  # 75 Skills
+├── skills/                  # 76 Skills
 ├── workflows/                # 22 Slash Commands
 ├── rules/                   # Global Rules (DEVBUREAU.md P0)
 ├── scripts/                 # 9 Master Validation Scripts
@@ -63,7 +63,7 @@ Specialist AI personas for different domains.
 
 ---
 
-## 🧩 Skills (75)
+## 🧩 Skills (76)
 
 Modular knowledge domains that agents load on-demand, based on task context. Grouped here by theme; the authoritative source of truth for what exists is always `.agent/skills/` itself — run `python .agent/scripts/doctor.py` to verify this list against reality.
 
@@ -79,6 +79,7 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 | `parallel-agents` | Multi-agent orchestration patterns for independent/parallel tasks |
 | `intelligent-routing` | Automatic agent selection based on request analysis |
 | `skill-scaffolder` | Automated skill creation, discovery, and improvement — verify no duplicates exist, generate complete boilerplate for new skills or improvements to existing ones, optional benchmarking for objective skill outputs |
+| `skillify` | Codifies a multi-step flow that just succeeded in the current session into a reusable artifact (script, skill, or workflow) — offer-then-confirm, never for flows that never ran |
 | `stack-sizing` | Project-tier sizing (Prototype/MVP/Growth SaaS/Enterprise) and stack ceiling/floor per layer |
 | `migration-strategy` | Picks the rollout approach (Strangler Fig, Big Bang, Parallel Run, Branch by Abstraction) for rebuilding/modernizing an existing legacy system |
 | `effort-estimation` | Translates a task breakdown into a tier-aware time/cost range for non-technical stakeholders |
@@ -279,7 +280,7 @@ skill-name/
 
 ### Skills With Scripts
 
-17 of the 75 skills ship an executable script alongside their `SKILL.md`:
+17 of the 76 skills ship an executable script alongside their `SKILL.md`:
 
 | Skill | Script(s) |
 | --- | --- |
@@ -375,7 +376,7 @@ python .agent/scripts/sync_ide.py --target all
 | Metric              | Value                                                  |
 | -------------------- | --------------------------------------------------------- |
 | **Total Agents**     | 23                                                         |
-| **Total Skills**     | 75 (+ 10 nested under `game-development`)                  |
+| **Total Skills**     | 76 (+ 10 nested under `game-development`)                  |
 | **Total Workflows**  | 22                                                         |
 | **Master Scripts**   | 9 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`) |
 | **Skills With Scripts** | 17                                                       |

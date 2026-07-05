@@ -243,3 +243,80 @@ class TestCrossReferences:
         # Allow warnings instead of hard failures for cross-refs (aliases exist)
         if issues:
             print(f"\n  ⚠  Possible ghost references (may be aliases): {issues}")
+
+
+# ── docs sync tests ───────────────────────────────────────────────────────────
+class TestDocsSync:
+    """Canonical docs must match what's on disk (KIT_MASTER_RULES.md, rule 5).
+
+    Runs in the pre-commit hook: adding/removing an agent, skill, or workflow
+    without updating ARCHITECTURE.md and the README badges blocks the commit.
+    """
+
+    @staticmethod
+    def _disk_counts() -> dict[str, int]:
+        return {
+            "Agents": len(get_all_agents()),
+            "Skills": len(get_all_skill_dirs()),
+            "Workflows": len(get_all_workflows()),
+        }
+
+    @staticmethod
+    def _package_version() -> str:
+        import json
+
+        package_json = REPO_ROOT / "package.json"
+        return json.loads(package_json.read_text(encoding="utf-8"))["version"]
+
+    def test_kit_master_rules_exists(self) -> None:
+        assert (REPO_ROOT / "KIT_MASTER_RULES.md").exists(), (
+            "KIT_MASTER_RULES.md not found at repo root — it is referenced by "
+            "DEVBUREAU.md and both READMEs as the kit-maintenance governance doc"
+        )
+
+    @pytest.mark.parametrize("readme_name", ["README.md", "README_pt-BR.md"])
+    def test_readme_badges_match_disk(self, readme_name: str) -> None:
+        readme = REPO_ROOT / readme_name
+        if not readme.exists():
+            pytest.skip(f"{readme_name} not found")
+        content = readme.read_text(encoding="utf-8", errors="ignore")
+        counts = self._disk_counts()
+        expected_badges = {
+            f"badge/Agents-{counts['Agents']}-": f"Agents badge ({counts['Agents']})",
+            f"badge/Skills-{counts['Skills']}-": f"Skills badge ({counts['Skills']})",
+            f"badge/Workflows-{counts['Workflows']}-": f"Workflows badge ({counts['Workflows']})",
+            f"badge/DevBureau-v{self._package_version()}-": f"Version badge (v{self._package_version()})",
+        }
+        stale = [label for needle, label in expected_badges.items() if needle not in content]
+        assert not stale, (
+            f"{readme_name} badges out of sync with disk — expected {stale}. "
+            "Update the badges (and any counts in the body) per KIT_MASTER_RULES.md rule 5."
+        )
+
+    def test_architecture_counts_match_disk(self) -> None:
+        arch = AGENT_DIR / "ARCHITECTURE.md"
+        if not arch.exists():
+            pytest.skip("ARCHITECTURE.md not found")
+        content = arch.read_text(encoding="utf-8", errors="ignore")
+        counts = self._disk_counts()
+        mismatches: list[str] = []
+
+        for kind, disk_count in counts.items():
+            # Section headers: "## 🤖 Agents (23)" etc.
+            for match in re.finditer(rf"^##[^\n]*\b{kind} \((\d+)\)", content, re.MULTILINE):
+                documented = int(match.group(1))
+                if documented != disk_count:
+                    mismatches.append(
+                        f"{kind} section header says {documented}, disk has {disk_count}"
+                    )
+            # Statistics table: "| **Total Agents** | 23 |" etc.
+            stats_match = re.search(rf"\*\*Total {kind}\*\*\s*\|\s*(\d+)", content)
+            if stats_match and int(stats_match.group(1)) != disk_count:
+                mismatches.append(
+                    f"Total {kind} in stats table says {stats_match.group(1)}, disk has {disk_count}"
+                )
+
+        assert not mismatches, (
+            f"ARCHITECTURE.md out of sync with disk: {mismatches}. "
+            "Update it per KIT_MASTER_RULES.md rule 5."
+        )
