@@ -320,6 +320,14 @@ For animation patterns: [animation-guide.md](animation-guide.md), for advanced: 
 - [ ] Progress/achievement indicators
 - [ ] Moments of delight
 
+### Technical Baseline (Non-Negotiable Numbers)
+
+- [ ] Text contrast ≥ 4.5:1 (WCAG AA)
+- [ ] Responsive breakpoints tested: 375px, 768px, 1024px, 1440px
+- [ ] Micro-interaction transitions: 150-300ms
+- [ ] `cursor: pointer` on every clickable non-`<button>` element
+- [ ] Visible focus state on every interactive element (keyboard nav)
+
 ---
 
 ## 9. Anti-Patterns (What NOT to Do)

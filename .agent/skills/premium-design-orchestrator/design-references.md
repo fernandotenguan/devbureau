@@ -97,6 +97,7 @@
 | **Flowbite** | https://flowbite.com | Blocos de UI prontos + Figma, principal concorrente do Uiverse |
 | **DaisyUI** | https://daisyui.com | Design system completo sobre Tailwind |
 | **Shadcn UI** | https://ui.shadcn.com | Componentes instalados via CLI direto no projeto |
+| **21st.dev** | https://21st.dev | Marketplace de componentes React feitos por humanos (não gerados por IA), compatível com shadcn — navegar e escolher manualmente para reaproveitar em um projeto |
 | **CSS Buttons / Loaders** | https://cssbuttons.io | Microelementos específicos (botões, loaders) |
 
 ---

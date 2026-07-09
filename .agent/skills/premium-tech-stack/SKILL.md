@@ -37,6 +37,19 @@ version: 1.0.0
 - ✅ **Sempre** estruture animações em timelines, não em chamadas soltas
 - ✅ **Sempre** use `scrub: true` no ScrollTrigger para sincronizar com scroll
 
+**Alternativa para animação de componente (React/Next.js): Motion**
+
+Para animações locais ao componente — entrada/saída de modais, listas reordenáveis, `layout` shifts, gestures de drag — prefira `Motion` (motion.dev, ex-Framer Motion, MIT, import `motion/react`) em vez de GSAP. GSAP continua obrigatório para ScrollTrigger e timelines de storytelling por seção; Motion é mais leve e declarativo para o que é local ao componente.
+
+| Caso de uso | Ferramenta |
+|---|---|
+| Scroll-driven timeline, storytelling por seção | GSAP + ScrollTrigger |
+| Entrada/saída de modal, `AnimatePresence`, layout shift de lista/grid | Motion (`motion/react`) |
+| SplitText letra a letra | GSAP SplitText |
+| Drag/gesture de componente | Motion |
+
+**Regra:** escolha uma ferramenta por caso de uso — não empilhe as duas libs para o mesmo efeito.
+
 ---
 
 ### Pilar 2: ScrollSmoother / Lenis
@@ -81,7 +94,7 @@ version: 1.0.0
 
 ---
 
-### Pilar 4: Motion (Truque dos 30KB)
+### Pilar 4: Vídeo Otimizado (Truque do Poster 30KB)
 
 **Obrigatório para:** Vídeos de fundo com performance otimizada.
 
