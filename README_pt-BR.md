@@ -6,7 +6,7 @@
 > equipe especializada, sem precisar saber programar. Funciona no Claude Code, Cursor, Codex CLI,
 > OpenCode, GitHub Copilot, Antigravity, Windsurf, Cline, Roo Code e Zed.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.33.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.33.1-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-23-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-77-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-22-red)](https://github.com/fernandotenguan/devbureau)

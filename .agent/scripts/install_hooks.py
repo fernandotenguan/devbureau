@@ -48,6 +48,14 @@ def run_check(command: list, label: str) -> bool:
 
 
 def main() -> None:
+    # KIT_MASTER_RULES.md only ships in devbureau's own source repo (excluded
+    # from package.json's "files" list) — its absence means this is a project
+    # that installed devbureau, not the kit itself. Skip silently so a
+    # derived project's commits are never blocked by devbureau's own
+    # kit-health checks.
+    if not (REPO_ROOT / "KIT_MASTER_RULES.md").exists():
+        sys.exit(0)
+
     print("\\n🔍 DevBureau — Pre-commit check")
     print("─" * 40)
 
@@ -101,6 +109,21 @@ BOLD = "\033[1m"
 
 def main() -> None:
     print(f"\n{BOLD}🪝 Installing DevBureau pre-commit hook...{RESET}")
+
+    # This hook runs doctor.py + the kit's own integrity tests — meaningful
+    # only inside devbureau's source repo. KIT_MASTER_RULES.md is the
+    # reliable signal (excluded from package.json's "files" list, so it
+    # never ships to a project that installed devbureau).
+    if not (REPO_ROOT / "KIT_MASTER_RULES.md").exists():
+        print(
+            f"  {RED}✘{RESET} KIT_MASTER_RULES.md not found — this isn't the devbureau "
+            "source repo."
+        )
+        print(
+            "    This hook checks devbureau's OWN kit health (agents/skills/scripts), "
+            "not your project's. Nothing installed."
+        )
+        sys.exit(1)
 
     if not GIT_HOOKS_DIR.exists():
         print(f"  {RED}✘{RESET} .git/hooks/ not found — is this a git repository?")
