@@ -51,6 +51,7 @@ Para tarefas marcadas como sensíveis (segurança, dados de produção, dinheiro
 - [ ] Quais arquivos/comandos/ferramentas foram usados para produzir esse resultado?
 - [ ] Algum passo pulou uma checagem de segurança, apagou evidência de erro, ou silenciou um aviso só para o resultado "parecer" certo?
 - [ ] Se sim → marque 🔴 BLOCKING mesmo que a saída final esteja correta. Um resultado certo por um caminho perigoso é uma falha de qualidade, não um sucesso.
+- [ ] **Exemplo concreto — proteção de config:** editar/enfraquecer um arquivo de config de lint/formatter/tooling (`eslint.config.*`, `tsconfig.json`, `.flake8`, `pyproject.toml [tool.*]`, etc.) só para um check parar de reclamar, em vez de corrigir o código que ele está sinalizando, é 🔴 BLOCKING — mesmo com o lint/build "verde" no final. A trava existe para pegar o código, não para ser contornada.
 
 ## AI & LLM Review Patterns (2025)
 

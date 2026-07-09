@@ -103,6 +103,11 @@ python .agent/scripts/verify_all.py
 | **Pre-Deploy**   | `python .agent/scripts/checklist.py . --url <URL>` | Full Suite + Performance + E2E    |
 | **IDE Sync**     | `python .agent/scripts/sync_ide.py --target all`   | Sincroniza kit para Claude/Cursor |
 
+**Batch no fim, não por edição:** `auto_fixer.py`/`checklist.py --selective` rodam **uma vez**,
+sobre todos os caminhos alterados na tarefa, pouco antes de finalizar — nunca após cada Edit/Write
+individual. Rodar a cada edição multiplica custo de tokens/tempo sem ganho: o objetivo é o estado
+final dos arquivos tocados, não um checkpoint por escrita.
+
 **Inventário completo de scripts (15):** ver `.agent/SCRIPTS_REGISTRY.md` — fonte única; a
 tabela por skill que vivia no core foi consolidada lá.
 

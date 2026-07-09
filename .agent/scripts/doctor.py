@@ -51,6 +51,13 @@ def section(title: str) -> None:
     print(f"\n{CYAN}{BOLD}{title}{RESET}")
 
 
+def score_from(errors: int, total: int) -> int:
+    """0-10 score for a section: full marks if there's nothing to check."""
+    if total <= 0:
+        return 10
+    return max(0, round(10 * (total - errors) / total))
+
+
 def extract_frontmatter_field(content: str, field: str) -> str:
     """Extract a field value from YAML frontmatter."""
     for line in content.splitlines():
@@ -68,7 +75,7 @@ def collect_skill_refs_from_frontmatter(content: str) -> list[str]:
 
 
 # ── check functions ──────────────────────────────────────────────────────────
-def check_directory_structure() -> int:
+def check_directory_structure() -> tuple[int, int]:
     """Verify required .agent/ subdirectories exist."""
     errors = 0
     required_dirs = [
@@ -95,17 +102,17 @@ def check_directory_structure() -> int:
                 f"{directory.name}/ not found (optional — will be created on first use)"
             )
 
-    return errors
+    return errors, len(required_dirs)
 
 
-def check_agents() -> int:
+def check_agents() -> tuple[int, int]:
     """Validate all agent .md files have required frontmatter."""
     errors = 0
     agents = list(AGENTS_DIR.glob("*.md")) if AGENTS_DIR.exists() else []
 
     if not agents:
         fail("No agents found in .agent/agents/")
-        return 1
+        return 1, 1
 
     broken = []
     for agent_path in sorted(agents):
@@ -121,10 +128,10 @@ def check_agents() -> int:
     else:
         ok(f"Agents: {len(agents)} found, 0 broken frontmatter")
 
-    return errors
+    return errors, len(agents)
 
 
-def check_skills() -> int:
+def check_skills() -> tuple[int, int]:
     """Validate all skill directories have a SKILL.md."""
     errors = 0
     skill_dirs = (
@@ -133,7 +140,7 @@ def check_skills() -> int:
 
     if not skill_dirs:
         fail("No skills found in .agent/skills/")
-        return 1
+        return 1, 1
 
     missing_skill_md = []
     empty_skill_md = []
@@ -155,12 +162,17 @@ def check_skills() -> int:
         for s in empty_skill_md:
             warn(f"skills/{s}/SKILL.md — appears nearly empty (<100 chars)")
 
-    return errors
+    return errors, len(skill_dirs)
 
 
-def check_cross_references() -> int:
-    """Check that skills referenced in agent frontmatter actually exist."""
-    errors = 0
+def check_cross_references() -> tuple[int, int]:
+    """Check that skills referenced in agent frontmatter actually exist.
+
+    Ghost refs are warnings, not blocking errors (a ref may be a documented
+    alias) — the returned count feeds the section score only, it is never
+    added to the pre-commit-blocking total_errors.
+    """
+    total_refs = 0
     ghost_refs: list[str] = []
     agents = list(AGENTS_DIR.glob("*.md")) if AGENTS_DIR.exists() else []
     available_skills: set[str] = set()
@@ -184,6 +196,7 @@ def check_cross_references() -> int:
     for agent_path in agents:
         content = agent_path.read_text(encoding="utf-8", errors="ignore")
         skill_refs = collect_skill_refs_from_frontmatter(content)
+        total_refs += len(skill_refs)
         for ref in skill_refs:
             ref_slug = ref.replace(" ", "-").lower()
             # Try exact match and partial match (some refs use short names)
@@ -200,17 +213,17 @@ def check_cross_references() -> int:
     else:
         ok("Cross-references: 0 ghost skills detected")
 
-    return errors
+    return len(ghost_refs), total_refs
 
 
-def check_workflows() -> int:
+def check_workflows() -> tuple[int, int]:
     """Validate all workflow files have a description in frontmatter."""
     errors = 0
     workflows = list(WORKFLOWS_DIR.glob("*.md")) if WORKFLOWS_DIR.exists() else []
 
     if not workflows:
         fail("No workflows found in .agent/workflows/")
-        return 1
+        return 1, 1
 
     broken = []
     for wf_path in sorted(workflows):
@@ -226,10 +239,10 @@ def check_workflows() -> int:
     else:
         ok(f"Workflows: {len(workflows)} found, 0 broken frontmatter")
 
-    return errors
+    return errors, len(workflows)
 
 
-def check_master_scripts() -> int:
+def check_master_scripts() -> tuple[int, int]:
     """Verify master scripts exist in .agent/scripts/."""
     errors = 0
     expected_scripts = ["checklist.py", "verify_all.py"]
@@ -250,7 +263,7 @@ def check_master_scripts() -> int:
         else:
             warn(f"scripts/{script_name}: not found (optional)")
 
-    return errors
+    return errors, len(expected_scripts)
 
 
 def check_tests() -> int:
@@ -311,26 +324,26 @@ def check_version_drift() -> int:
     return 0
 
 
-def check_devbureau_rules() -> int:
+def check_devbureau_rules() -> tuple[int, int]:
     """Verify DEVBUREAU.md rules file exists."""
     rules_path = RULES_DIR / "DEVBUREAU.md"
     if rules_path.exists() and rules_path.stat().st_size > 1000:
         ok(f"DEVBUREAU.md (P0 rules): ✅ ({rules_path.stat().st_size} bytes)")
     else:
         fail("DEVBUREAU.md: MISSING or too small")
-        return 1
-    return 0
+        return 1, 1
+    return 0, 1
 
 
-def check_python_version() -> int:
+def check_python_version() -> tuple[int, int]:
     """Check Python version compatibility."""
     version = sys.version_info
     if version >= (3, 9):
         ok(f"Python {version.major}.{version.minor}.{version.micro} ✅")
     else:
         fail(f"Python {version.major}.{version.minor} — version 3.9+ required")
-        return 1
-    return 0
+        return 1, 1
+    return 0, 1
 
 
 # ── main ─────────────────────────────────────────────────────────────────────
@@ -339,30 +352,48 @@ def main() -> None:
     print("─" * 50)
 
     total_errors = 0
+    scoreboard: list[tuple[str, int]] = []
 
     section("Python Environment")
-    total_errors += check_python_version()
+    errors, total = check_python_version()
+    total_errors += errors
+    scoreboard.append(("Python Environment", score_from(errors, total)))
 
     section("Directory Structure")
-    total_errors += check_directory_structure()
+    errors, total = check_directory_structure()
+    total_errors += errors
+    scoreboard.append(("Directory Structure", score_from(errors, total)))
 
     section("DEVBUREAU.md Rules (P0)")
-    total_errors += check_devbureau_rules()
+    errors, total = check_devbureau_rules()
+    total_errors += errors
+    scoreboard.append(("DEVBUREAU.md Rules", score_from(errors, total)))
 
     section("Agents")
-    total_errors += check_agents()
+    errors, total = check_agents()
+    total_errors += errors
+    scoreboard.append(("Agents", score_from(errors, total)))
 
     section("Skills")
-    total_errors += check_skills()
+    errors, total = check_skills()
+    total_errors += errors
+    scoreboard.append(("Skills", score_from(errors, total)))
 
     section("Cross-References (Agents → Skills)")
-    total_errors += check_cross_references()
+    ghost_refs, refs_checked = check_cross_references()
+    # Ghost refs are advisory (aliases can produce false positives) — they
+    # feed the scoreboard but never block the pre-commit exit code.
+    scoreboard.append(("Cross-References", score_from(ghost_refs, refs_checked)))
 
     section("Workflows")
-    total_errors += check_workflows()
+    errors, total = check_workflows()
+    total_errors += errors
+    scoreboard.append(("Workflows", score_from(errors, total)))
 
     section("Master Scripts")
-    total_errors += check_master_scripts()
+    errors, total = check_master_scripts()
+    total_errors += errors
+    scoreboard.append(("Master Scripts", score_from(errors, total)))
 
     section("Kit Tests")
     check_tests()
@@ -372,6 +403,14 @@ def main() -> None:
 
     section("Version")
     check_version_drift()
+
+    section("Kit Health Score")
+    for name, sc in scoreboard:
+        bar_color = GREEN if sc >= 8 else YELLOW if sc >= 5 else RED
+        print(f"  {name:.<32} {bar_color}{sc}/10{RESET}")
+    overall = round(sum(sc for _, sc in scoreboard) / len(scoreboard))
+    overall_color = GREEN if overall >= 8 else YELLOW if overall >= 5 else RED
+    print(f"  {BOLD}{'Overall':.<32} {overall_color}{overall}/10{RESET}")
 
     print("\n" + "─" * 50)
     if total_errors == 0:

@@ -9,7 +9,7 @@
 DevBureau is a modular system consisting of:
 
 - **23 Specialist Agents** - Role-based AI personas
-- **76 Skills** - Domain-specific knowledge modules
+- **77 Skills** - Domain-specific knowledge modules
 - **22 Workflows** - Slash command procedures
 
 ---
@@ -21,7 +21,7 @@ DevBureau is a modular system consisting of:
 ├── ARCHITECTURE.md          # This file
 ├── SCRIPTS_REGISTRY.md      # Deterministic tool inventory (Script-First Protocol)
 ├── agents/                  # 23 Specialist Agents
-├── skills/                  # 76 Skills
+├── skills/                  # 77 Skills
 ├── workflows/                # 22 Slash Commands
 ├── rules/                   # Global Rules (DEVBUREAU.md P0)
 ├── scripts/                 # 9 Master Validation Scripts
@@ -63,7 +63,7 @@ Specialist AI personas for different domains.
 
 ---
 
-## 🧩 Skills (76)
+## 🧩 Skills (77)
 
 Modular knowledge domains that agents load on-demand, based on task context. Grouped here by theme; the authoritative source of truth for what exists is always `.agent/skills/` itself — run `python .agent/scripts/doctor.py` to verify this list against reality.
 
@@ -92,6 +92,7 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 | `pattern-mining` | Extracts generalizable engineering patterns from a reference project the user points at (`/mine-patterns`), proposes a `lessons.md`/skill/agent destination per pattern, never auto-applies |
 | `loop-forge` | Interviews the user and writes hardened agent-loop specs (`<name>-loop.md`) — but only after a mandatory Triple Gate (iteration, script-first, economics) discussed with the user; most requests fail the gate and get a cheaper alternative. Never executes loops |
 | `squad-forge` | Designs and runs squads — reusable multi-agent teams for repeatable business processes (`squads/<name>/squad.md` pipelines mapping roles to the kit's 23 agents), with disk state (`state.json`) and human checkpoints (`/squad`) |
+| `config-gc` | Human-in-the-loop garbage collection for the kit's own `.agent/` tree — scans for orphaned skills/scripts/memory files, confirm-each-deletion, never auto-deletes |
 
 ### Frontend & UI
 
@@ -376,7 +377,7 @@ python .agent/scripts/sync_ide.py --target all
 | Metric              | Value                                                  |
 | -------------------- | --------------------------------------------------------- |
 | **Total Agents**     | 23                                                         |
-| **Total Skills**     | 76 (+ 10 nested under `game-development`)                  |
+| **Total Skills**     | 77 (+ 10 nested under `game-development`)                  |
 | **Total Workflows**  | 22                                                         |
 | **Master Scripts**   | 9 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`) |
 | **Skills With Scripts** | 17                                                       |
