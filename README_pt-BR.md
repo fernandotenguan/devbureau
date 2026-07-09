@@ -6,10 +6,10 @@
 > equipe especializada, sem precisar saber programar. Funciona no Claude Code, Cursor, Codex CLI,
 > OpenCode, GitHub Copilot, Antigravity, Windsurf, Cline, Roo Code e Zed.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.33.1-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.34.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-23-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-77-orange)](https://github.com/fernandotenguan/devbureau)
-[![Workflows](https://img.shields.io/badge/Workflows-22-red)](https://github.com/fernandotenguan/devbureau)
+[![Workflows](https://img.shields.io/badge/Workflows-29-red)](https://github.com/fernandotenguan/devbureau)
 [![Tests](https://img.shields.io/badge/Tests-Automated-brightgreen)](https://github.com/fernandotenguan/devbureau)
 
 > Os links dos badges assumem que o repositório está publicado como `fernandotenguan/devbureau`. Atualize-os se o caminho final publicado for diferente.
@@ -22,11 +22,11 @@
 | -------------------- | ---------- | ----------------------------------------------------------------------------- |
 | **Agentes**          | 23         | Personas de IA especialistas (frontend, backend, segurança, SRE, a11y, jogos, etc.) |
 | **Skills**           | 77         | Módulos de conhecimento de domínio com scripts automatizados                  |
-| **Workflows**        | 22         | Procedimentos de comando de barra, incluindo o pipeline autônomo `/ade`       |
-| **Scripts Mestres**  | 9          | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py` |
+| **Workflows**        | 29         | Procedimentos de comando de barra, incluindo o pipeline autônomo `/ade`       |
+| **Scripts Mestres**  | 10         | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py`, `github_coordination.py` |
 | **Testes do Kit**    | ✅         | Suíte pytest automatizada — roda antes de cada commit                         |
 | **Camada de Memória**| ✅         | Lições e armadilhas persistentes entre sessões                                |
-| **Hooks**            | 6          | Git pre-commit (todos os IDEs) + 5 hooks do Claude Code: bloqueia edições em arquivos auto-gerados, bloqueia escritas fora da worktree atual, bloqueia bypass de `git --no-verify`/hooksPath, varredura consultiva de prompt-injection em Read/WebFetch/WebSearch, aviso consultivo de `console.log` em arquivos JS/TS editados |
+| **Hooks**            | 10         | Git pre-commit (todos os IDEs) + 9 hooks do Claude Code: bloqueia edições em arquivos auto-gerados, bloqueia escritas fora da worktree atual, bloqueia bypass de `git --no-verify`/hooksPath, varredura consultiva de prompt-injection, aviso consultivo de `console.log`, auto-fix ao editar, aviso consultivo de Purple Ban/biblioteca de UI, detecção consultiva de loop de ferramenta, monitoramento consultivo de saúde de MCP |
 | **MCP**              | 1          | `.mcp.json` inicial com o servidor MCP do GitHub (OAuth, sem token no arquivo) |
 
 ---
@@ -62,7 +62,7 @@ O modo mais poderoso. Você descreve uma funcionalidade, o kit planeja, mostra a
 python .agent/scripts/doctor.py
 ```
 
-Valida os 23 agentes, 77 skills, 22 workflows e scripts mestres em segundos.
+Valida os 23 agentes, 77 skills, 29 workflows e scripts mestres em segundos.
 
 ### 🔒 Guarda Automática de Pre-Commit
 
@@ -451,7 +451,7 @@ raiz-do-projeto/
 ├── .agent/
 │   ├── agents/          # 23 personas de IA especialistas
 │   ├── skills/          # 77 módulos de conhecimento
-│   ├── workflows/       # 22 procedimentos de comando de barra
+│   ├── workflows/       # 29 procedimentos de comando de barra
 │   ├── scripts/         # scripts mestres de validação
 │   │   ├── doctor.py          # diagnóstico de saúde do kit
 │   │   ├── checklist.py       # auditoria por prioridade

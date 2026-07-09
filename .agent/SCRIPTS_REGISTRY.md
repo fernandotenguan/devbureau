@@ -40,6 +40,7 @@ Invoke: `python .agent/scripts/<script>.py`
 | `sync_ide.py` | Regenerates IDE rule files (Claude, Cursor, Codex, Copilot…) from `.agent/` sources | "sync IDE", "propagate rules" / "sincronizar IDE", "propagar regras" |
 | `install_hooks.py` | Installs the git pre-commit hook (doctor + kit tests) | "install hooks" / "instalar hooks" |
 | `token_footprint.py` | Measures approx. token cost of the kit's generated rule files | "token cost", "context footprint" / "custo de tokens", "pegada de contexto" |
+| `github_coordination.py` | GitHub Issues-backed epic coordination (claim/decompose/validate/publish/review/unblock/sync) for `/squad`/`/ade` work spanning multiple sessions/agents; wraps `gh` CLI | "coordinate this epic", "claim this issue" / "coordenar esse epic", "reivindicar essa issue" |
 | `validation_config.py` | Support module: central config for selective validation (not invoked directly) | — (imported by `checklist.py`) |
 
 ## Skill Scripts (`.agent/skills/<skill>/scripts/`)

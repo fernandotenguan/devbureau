@@ -71,6 +71,7 @@ Agent activated → Check frontmatter "skills:" → Read SKILL.md (INDEX) → Re
 | **SQUAD**        | /squad, "create a squad", "run the squad" / "monte uma equipe", "crie um squad", "rode o squad" | TIER 0 + skill `squad-forge`   | Squad pipeline (`squads/<nome>/`) com checkpoints |
 | **HUMANIZE**     | "humanize this", "sounds like AI" / "humaniza esse texto", "tá com cara de IA", "deixa mais natural" | TIER 0 + skill `humanizer`     | Texto reescrito sem marcas de IA         |
 | **CONTENT**      | "create a carousel/post", "publish this", "generate an image" / "cria um carrossel", "publica esse post", "gera uma imagem" | TIER 0 + `content-creator`     | Conteúdo produzido/publicado (`squads/content-production/`) |
+| **EPIC**         | /epic-claim, /epic-sync, "coordinate this across sessions", "claim this issue" / "coordenar entre sessões", "reivindicar essa issue" | TIER 0 + `github_coordination.py` | Estado de coordenação lido/gravado no corpo da issue GitHub |
 
 ---
 
@@ -372,7 +373,12 @@ Nunca "leu o arquivo do agente → começou a codar". Antes de codar, responda: 
 3. **Sistematize o Repetível (Systematization Protocol):** Não resolva problemas recorrentes de forma isolada (one-off). Ao identificar padrões recorrentes, entregue a solução específica e proponha uma versão sistematizada (template, checklist, prompt salvo, assistente customizado ou skill reutilizável). Se o usuário repetir a tarefa, ofereça a sistematização proativamente.
 4. **Pense Antes de Responder (Clarification Prompting):** Nunca adivinhe em silêncio. Releia o pedido procurando ambiguidade. Apresente as opções e pergunte a correta se houver múltiplas interpretações. Se faltar informação crítica de negócio (contexto, público-alvo, histórico), faça uma pergunta objetiva e crítica antes de responder. Se estiver razoavelmente confiante mas não seguro, declare suas suposições. Apenas avance direto se o pedido for trivial/óbvio ou em caso de urgência explícita.
 5. **Elevação de Nível (Effort Scaffolding):** Inverta o viés de respostas preguiçosas para pedidos simples ou vagos (menos de duas frases de contexto, sem público-alvo ou critérios de sucesso). Aplique frameworks: opções vs. critérios para decisões; sintoma vs. causa para diagnósticos; etapas e dependências para planejamentos; dimensões para análises; problema-solução-resultados para criação.
-6. **Execução Orientada por Meta (Self-Eval Prompting):** Aplica-se a trabalhos com critérios objetivos de execução (análise, revisão, código). Antes de executar, declare os critérios de sucesso da tarefa em uma linha. Execute contra esses critérios. Antes de entregar, realize uma checagem ponto a ponto (self-evaluation) e itere se necessário até passar.
+6. **Execução Orientada por Meta (Self-Eval Prompting):** Aplica-se a trabalhos com critérios objetivos de execução (análise, revisão, código). Antes de executar, declare os critérios de sucesso da tarefa em uma linha. Execute contra esses critérios. Antes de entregar, realize uma checagem ponto a ponto (self-evaluation) e itere se necessário até passar. Para tarefas não-triviais (3+ arquivos, 50+ linhas, ou uma sessão de debug com 3+ tentativas), a checagem final passa pelos 5 eixos abaixo, cada um com uma evidência concreta (não um "sim" genérico):
+   - **Precisão** — a saída bate com o que foi lido/testado, não com suposição?
+   - **Completude** — todo escopo pedido foi coberto, ou algo ficou de fora sem ser dito?
+   - **Clareza** — quem ler a resposta entende sem precisar perguntar de novo?
+   - **Acionabilidade** — o usuário sabe exatamente o próximo passo (nada, aprovar, decidir)?
+   - **Concisão** — algo aqui poderia ser cortado sem perder informação?
 7. **Recuo Estratégico (Step-Back Prompting):** Diante de problemas complexos sem solução óbvia, que envolvem decisões ou aceitam múltiplas abordagens, identifique primeiro o princípio governante ou framework teórico geral. Enuncie-o de forma explícita na resposta antes de aplicar ao caso prático.
 8. **Verificação em Cadeia (Chain of Verification):** Aplica-se a respostas dependentes de conhecimento factual com risco de erro (dados, datas, citações, generalizações estatísticas). Antes de afirmar, rascunhe a resposta internamente, gere de 3 a 5 perguntas de verificação e responda cada uma de forma isolada. Se falhar, corrija ou sinalize incerteza. Use busca/ferramentas se disponíveis; sinalize fatos que possam ter mudado após o corte de treinamento do modelo.
 9. **Confiança Calibrada (Verbalized Confidence):** Comunique o nível de certeza em linguagem natural de forma fluida (ex: "tenho alta confiança em X, mas Y pode requerer confirmação"). Não use marcações artificiais como colchetes. Quando for limite real de conhecimento e sem ferramentas, diga "não sei" em vez de fabular uma resposta plausível.
@@ -437,7 +443,7 @@ Tabela de comandos por estágio: `reference/OPERATIONS_DETAIL.md` ("Final Checkl
 ## 📁 QUICK REFERENCE
 
 - **Paths**: ver "System Map Read" acima. Listas completas de agents/skills/scripts: `reference/OPERATIONS_DETAIL.md` ("Quick Reference") e `.agent/ARCHITECTURE.md`.
-- **Workflows-chave**: `/ade` (**ADE Pipeline Autônomo**: req → spec → impl → qa → memory), `/build-saas` (SaaS completo em 7 etapas), `/squad` (equipes reutilizáveis por processo, `squads/`), `/plan`, `/debug`, `/deploy`, `/orchestrate`, `/brainstorm`, `/enhance`.
+- **Workflows-chave**: `/ade` (**ADE Pipeline Autônomo**: req → spec → impl → qa → memory), `/build-saas` (SaaS completo em 7 etapas), `/squad` (equipes reutilizáveis por processo, `squads/`), `/epic-claim`/`/epic-sync`/etc. (coordenação opcional via GitHub Issues para `/squad`/`/ade` entre sessões, ver `github_coordination.py`), `/plan`, `/debug`, `/deploy`, `/orchestrate`, `/brainstorm`, `/enhance`.
 - **Memory Layer** (`.agent/memory/`): `lessons.md` (padrões que funcionaram), `gotchas.md` (erros a evitar), `question-preferences.md` (perguntas do Socratic Gate suprimidas/sempre-fazer). Consulte no início de tasks complexas.
 
 ---

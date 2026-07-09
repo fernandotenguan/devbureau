@@ -30,6 +30,10 @@ squads/
 Code deliverables (an actual website/app) do NOT go in `output/` — they live in their own
 project folder/repo; `output/` holds the documents and `state.json` records the project path.
 
+> `state.json` assumes one active run on one disk. If a squad's work needs to coordinate
+> across multiple sessions/agents that don't share disk, see `/epic-claim`/`/epic-sync`
+> (GitHub Issues coordination, optional, does not replace `state.json`).
+
 ---
 
 ## Phase A — Architect (create / edit)

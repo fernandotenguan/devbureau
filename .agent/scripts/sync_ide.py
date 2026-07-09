@@ -84,7 +84,13 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
       -c core.hooksPath= bypass attempts (CLAUDE.md's Git Safety Protocol).
     - PostToolUse: advisory scan of Read/WebFetch/WebSearch output for known
       prompt-injection patterns (DEVBUREAU.md's Untrusted Content Boundary),
-      advisory warning when an edited JS/TS file still has console.log()."""
+      advisory warning when an edited JS/TS file still has console.log(),
+      advisory warning on banned colors/UI libraries in frontend files
+      (frontend-specialist.md's Purple Ban / No Default UI Libraries),
+      advisory loop-detection warning mirroring DEVBUREAU.md's Loop
+      Detection Rules table.
+    - PreToolUse + PostToolUse: advisory MCP server health tracking, warns
+      before a call if that server has failed 3+ times in a row."""
     settings_path = REPO_ROOT / ".claude" / "settings.json"
     settings: dict = {}
     if settings_path.exists():
@@ -137,6 +143,30 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
         "PostToolUse",
         "Edit|Write|MultiEdit",
         'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/auto_fix_on_edit.py"',
+    )
+    _merge_claude_hook(
+        settings,
+        "PostToolUse",
+        "Edit|Write|MultiEdit",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/warn_generic_design.py"',
+    )
+    _merge_claude_hook(
+        settings,
+        "PostToolUse",
+        "Edit|Write|MultiEdit|Bash|Grep|Read",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/detect_tool_loop.py"',
+    )
+    _merge_claude_hook(
+        settings,
+        "PreToolUse",
+        "mcp__.*",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/check_mcp_health.py"',
+    )
+    _merge_claude_hook(
+        settings,
+        "PostToolUse",
+        "mcp__.*",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/check_mcp_health.py"',
     )
 
     write_output(settings_path, json.dumps(settings, indent=2) + "\n", dry_run)

@@ -159,6 +159,8 @@ Riscos identificados:
 
 **Ledger de progresso (reaproveita o `{task-slug}.md` já criado na Fase 2 — não cria um arquivo novo):** cada checkbox de "Critério de sucesso" é marcado como feito **no próprio arquivo**, ao vivo, conforme cada subtask conclui — não só escrito uma vez no início. Se a execução for retomada após uma interrupção (compactação de contexto, sessão encerrada no meio), o primeiro passo é reler `{task-slug}.md` e tratar os checkboxes já marcados como já feitos, não refazer. Se o próprio arquivo se perder, `git log`/`git diff` no SHA aprovado (campo "Aprovado no commit" da Fase 2) mostra o que já foi criado/modificado em disco como sinal de recuperação.
 
+> Isso cobre retomada dentro do mesmo checkout/disco. Se a execução precisa coordenar múltiplas sessões/agentes que **não** compartilham disco (times, CI, sessões paralelas), ver `/epic-claim`/`/epic-sync` — coordenação via GitHub Issues, opcional, não substitui o ledger local.
+
 ```
 Drift check (rodar ANTES do primeiro passo, sempre):
   git diff --stat <SHA aprovado na Fase 3>..HEAD -- <arquivos a modificar listados na spec>

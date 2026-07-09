@@ -10,7 +10,7 @@ DevBureau is a modular system consisting of:
 
 - **23 Specialist Agents** - Role-based AI personas
 - **77 Skills** - Domain-specific knowledge modules
-- **22 Workflows** - Slash command procedures
+- **29 Workflows** - Slash command procedures
 
 ---
 
@@ -22,7 +22,7 @@ DevBureau is a modular system consisting of:
 ├── SCRIPTS_REGISTRY.md      # Deterministic tool inventory (Script-First Protocol)
 ├── agents/                  # 23 Specialist Agents
 ├── skills/                  # 77 Skills
-├── workflows/                # 22 Slash Commands
+├── workflows/                # 29 Slash Commands
 ├── rules/                   # Global Rules (DEVBUREAU.md P0)
 ├── scripts/                 # 9 Master Validation Scripts
 ├── tests/                   # Kit Integrity Tests
@@ -228,7 +228,7 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 
 ---
 
-## 🔄 Workflows (22)
+## 🔄 Workflows (29)
 
 Slash command procedures. Invoke with `/command`.
 
@@ -244,6 +244,13 @@ Slash command procedures. Invoke with `/command`.
 | `/debug`           | Systematic problem investigation                       |
 | `/deploy`          | Pre-flight checks + guided deployment                   |
 | `/enhance`         | Improve existing code/features                          |
+| `/epic-claim`      | Claim a GitHub epic issue for one session/agent (coordination layer for `/squad`/`/ade`) |
+| `/epic-decompose`  | Record an epic issue's checklist as a structured task list |
+| `/epic-publish`    | Write the current coordination state back to an epic issue |
+| `/epic-review`     | Record a review verdict on an epic issue's coordination state |
+| `/epic-sync`       | Mirror epic issue state into a local read-only cache     |
+| `/epic-unblock`    | Sweep blocked epics whose dependencies are now closed    |
+| `/epic-validate`   | Check an epic issue is claimed and its dependencies are closed |
 | `/finish-branch`   | Structured close-out (merge/PR/keep/discard) once work is done |
 | `/lean-audit`      | Finds over-engineering to delete in the current diff (default) or the whole repo |
 | `/lean-debt`       | Harvests `lean:` shortcut markers into a one-shot debt ledger |
@@ -322,6 +329,10 @@ Master validation scripts that orchestrate skill-level scripts.
 | `.agent/scripts/hooks/scan_injection.py` | Claude Code only (`PostToolUse`) | Read/WebFetch/WebSearch returns content | Advisory-only: prints a warning if known prompt-injection patterns or invisible Unicode are found, reinforcing DEVBUREAU.md's Untrusted Content Boundary — never blocks |
 | `.agent/scripts/hooks/block_no_verify.py` | Claude Code only (`PreToolUse`) | Bash command containing `git ... --no-verify` or `-c core.hooksPath=` | Blocks the command — makes `CLAUDE.md`'s Git Safety Protocol ("NEVER skip hooks") hard-blocking instead of prose-only |
 | `.agent/scripts/hooks/warn_debug_statements.py` | Claude Code only (`PostToolUse`) | Edit/Write/MultiEdit on a `.ts`/`.tsx`/`.js`/`.jsx` file | Advisory-only: warns if the file still contains `console.log(...)` calls — never blocks |
+| `.agent/scripts/hooks/auto_fix_on_edit.py` | Claude Code only (`PostToolUse`) | Edit/Write/MultiEdit on a recognized code file | Advisory-only: runs `auto_fixer.py` on the touched file automatically, fails silently if unavailable |
+| `.agent/scripts/hooks/warn_generic_design.py` | Claude Code only (`PostToolUse`) | Edit/Write/MultiEdit on a `.css`/`.scss`/`.tsx`/`.jsx`/`.html`/`.vue` file | Advisory-only: warns on banned color families (purple/violet/indigo/magenta) or banned default UI library imports — reinforces `frontend-specialist.md`'s Purple Ban / No Default UI Libraries, never blocks |
+| `.agent/scripts/hooks/detect_tool_loop.py` | Claude Code only (`PostToolUse`) | Edit/Write/MultiEdit/Bash/Grep/Read | Advisory-only: mirrors 2 rows of DEVBUREAU.md's Loop Detection Rules table (same tool+args+error 3×, Edit content-mismatch 2×) using per-session state in `_hook_state.py` — never blocks |
+| `.agent/scripts/hooks/check_mcp_health.py` | Claude Code only (`PreToolUse` + `PostToolUse`) | Any `mcp__*` tool call | Advisory-only: tracks consecutive failures per MCP server, warns before a call if that server failed 3× in a row recently — never blocks |
 
 > Cursor does not yet expose a pre-write blocking hook (`afterFileEdit` is informational only as of this writing), so the hooks above are Claude-Code-specific. See `.agent/memory/benchmark-log.md` (2026-06-26 and 2026-06-27 Run #6) for the research behind this.
 
@@ -378,8 +389,8 @@ python .agent/scripts/sync_ide.py --target all
 | -------------------- | --------------------------------------------------------- |
 | **Total Agents**     | 23                                                         |
 | **Total Skills**     | 77 (+ 10 nested under `game-development`)                  |
-| **Total Workflows**  | 22                                                         |
-| **Master Scripts**   | 9 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`) |
+| **Total Workflows**  | 29                                                         |
+| **Master Scripts**   | 10 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`, `github_coordination`) |
 | **Skills With Scripts** | 17                                                       |
 | **Kit Tests**        | 1 file, parametrized (`test_kit_integrity.py`)              |
 | **Memory Layer**     | `.agent/memory/` (lessons.md + gotchas.md + benchmark-log.md + pattern-mining-log.md) |

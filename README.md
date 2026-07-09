@@ -6,10 +6,10 @@
 > without needing to know how to code. Works across Claude Code, Cursor, Codex CLI, OpenCode,
 > GitHub Copilot, Antigravity, Windsurf, Cline, Roo Code, and Zed.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.33.1-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.34.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-23-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-77-orange)](https://github.com/fernandotenguan/devbureau)
-[![Workflows](https://img.shields.io/badge/Workflows-22-red)](https://github.com/fernandotenguan/devbureau)
+[![Workflows](https://img.shields.io/badge/Workflows-29-red)](https://github.com/fernandotenguan/devbureau)
 [![Tests](https://img.shields.io/badge/Tests-Automated-brightgreen)](https://github.com/fernandotenguan/devbureau)
 
 > Badge links assume the repo is published as `fernandotenguan/devbureau`. Update them if the final published path differs.
@@ -21,12 +21,12 @@
 | Components         | Count | Description                                                                  |
 | ------------------ | ----- | ---------------------------------------------------------------------------- |
 | **Agents**         | 23    | Specialist AI personas (frontend, backend, security, SRE, a11y, game dev, etc.) |
-| **Skills**         | 76    | Domain-specific knowledge modules with automated scripts                     |
-| **Workflows**      | 22    | Slash-command procedures including the autonomous `/ade` pipeline             |
-| **Master Scripts** | 9     | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py` |
+| **Skills**         | 77    | Domain-specific knowledge modules with automated scripts                     |
+| **Workflows**      | 29    | Slash-command procedures including the autonomous `/ade` pipeline             |
+| **Master Scripts** | 10    | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py`, `github_coordination.py` |
 | **Kit Tests**      | ✅    | Automated pytest suite — runs before every commit                            |
 | **Memory Layer**   | ✅    | Persistent lessons and gotchas across sessions                               |
-| **Hooks**          | 6     | Git pre-commit (all IDEs) + 5 Claude Code hooks: block edits to auto-generated files, block writes outside the current worktree, block `git --no-verify`/hooksPath bypass, advisory prompt-injection scan on Read/WebFetch/WebSearch, advisory `console.log` warning on edited JS/TS files |
+| **Hooks**          | 10    | Git pre-commit (all IDEs) + 9 Claude Code hooks: block edits to auto-generated files, block writes outside the current worktree, block `git --no-verify`/hooksPath bypass, advisory prompt-injection scan, advisory `console.log` warning, auto-fix on edit, advisory Purple Ban/UI-library warning, advisory tool-loop detection, advisory MCP health tracking |
 | **MCP**            | 1     | Starter `.mcp.json` with the GitHub MCP server (OAuth, no token in the file) |
 
 ---
@@ -62,7 +62,7 @@ The most powerful mode. You describe a feature, the kit plans it, shows you the 
 python .agent/scripts/doctor.py
 ```
 
-Validates all 23 agents, 77 skills, 22 workflows, and master scripts in seconds.
+Validates all 23 agents, 77 skills, 29 workflows, and master scripts in seconds.
 
 ### 🔒 Automated Pre-Commit Guard
 
@@ -451,7 +451,7 @@ project-root/
 ├── .agent/
 │   ├── agents/          # 23 specialist AI personas
 │   ├── skills/          # 76 knowledge modules
-│   ├── workflows/       # 22 slash-command procedures
+│   ├── workflows/       # 29 slash-command procedures
 │   ├── scripts/         # master validation scripts
 │   │   ├── doctor.py          # kit health check
 │   │   ├── checklist.py       # priority-based audit

@@ -27,6 +27,15 @@
             "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/block_no_verify.py\""
           }
         ]
+      },
+      {
+        "matcher": "mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/check_mcp_health.py\""
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -49,6 +58,33 @@
           {
             "type": "command",
             "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/auto_fix_on_edit.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/warn_generic_design.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit|Bash|Grep|Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/detect_tool_loop.py\""
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/check_mcp_health.py\""
           }
         ]
       }

@@ -6,6 +6,10 @@ antigravity-doc
 /others
 __pycache__/
 
+# Runtime scratch state for stateful Claude Code hooks (detect_tool_loop.py,
+# check_mcp_health.py) — per-session JSON, not kit source.
+.agent/.tmp/
+
 # Third-party Claude Code skills installed locally (not part of DevBureau's own kit,
 # e.g. drawio-skill — install per .claude/skills/README.md if you need it again)
 .claude/skills/
