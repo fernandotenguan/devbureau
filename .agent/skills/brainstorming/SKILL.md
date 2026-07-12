@@ -24,11 +24,31 @@ allowed-tools: Read, Glob, Grep
 ### 🚫 MANDATORY: 3 Questions Before Implementation
 
 1. **STOP** - Do NOT start coding
-2. **ASK** - Minimum 3 questions:
-   - 🎯 Purpose: What problem are you solving?
-   - 👥 Users: Who will use this?
-   - 📦 Scope: Must-have vs nice-to-have?
-3. **WAIT** - Get response before proceeding
+2. **EXTRACT** - Silently run the Intent Extraction Matrix (below) against the request + session context
+3. **ASK** - Minimum 3 questions for new builds, targeting the **missing critical dimensions** from the matrix — never the same generic trio by reflex. Purpose (🎯), Users (👥), and Scope (📦) are the fallback ONLY when the matrix yields nothing more specific to this request
+4. **WAIT** - Get response before proceeding
+
+### 🧭 Intent Extraction Matrix (run SILENTLY before generating questions)
+
+> Adapted from `nidhinjs/prompt-master`'s 9-dimension intent extraction (see `pattern-mining-log.md`, 2026-07-11). Extraction is invisible to the user — no meta-commentary like "analyzing your request".
+
+| Dimension | What to extract | Critical when |
+|-----------|-----------------|---------------|
+| **Goal / Problem** | The business problem being solved, not the feature name | Always |
+| **Users / Audience** | Who uses it, their technical level | Always on new features/products |
+| **Scope** | Must-have vs nice-to-have; 1 file or 50 | Always |
+| **Success criteria** | How the user will judge "it worked" — binary where possible | Complex builds |
+| **Constraints** | Must / must-not, deadline, budget, brand rules | If mentioned or implied |
+| **Existing context** | Project state, stack, decisions already made this session | Existing project |
+| **Content / Input** | Real content in hand vs placeholder | UI or content work |
+| **Output shape** | Page? API? Component? Report? Automation? | Deliverable is ambiguous |
+| **Examples / References** | Reference designs, competitors, shared images | Design work |
+
+**Rules:**
+
+1. A dimension already answered (this session or a previous one), inferable from the codebase, or suppressed in `question-preferences.md` is **filled, not asked** — state the assumption in one line instead (Gate Decision table in DEVBUREAU.md).
+2. Questions target only missing **critical** dimensions, highest architectural impact first.
+3. **Max 3 questions per round.** If a new build has fewer than 3 critical dimensions missing, fill the remaining slots with edge-case/trade-off questions (per DEVBUREAU.md's Socratic Gate) — never with dimensions the matrix already filled.
 
 ### 🔇 Before Asking: Check Suppressed Questions
 
@@ -58,9 +78,9 @@ Before firing ANY question above, read `.agent/memory/question-preferences.md`:
 ### Question Generation Process
 
 ```
-1. Parse request → Extract domain, features, scale indicators
+1. Parse request → Run Intent Extraction Matrix (above) → note missing critical dimensions
 2. Identify decision points → Blocking vs. deferable
-3. Generate questions → Priority: P0 (blocking) > P1 (high-leverage) > P2 (nice-to-have)
+3. Generate questions → Priority: P0 (blocking) > P1 (high-leverage) > P2 (nice-to-have), scoped to missing dimensions
 4. Format with trade-offs → What, Why, Options, Default
 ```
 

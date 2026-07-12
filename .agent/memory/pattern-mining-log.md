@@ -867,3 +867,19 @@ Ran `sync_ide.py --target all` and `doctor.py` after merging. Sources 1-3 of Wav
 **Consider (needs a decision):** automated hook-driven confidence-scored instinct memory vs. DevBureau's manual `lessons.md`/`gotchas.md` (biggest-scope item in this entry); GitHub-Issues epic coordination for `/squad`/`/ade` multi-session work; automated Purple-Ban/Template-Ban enforcement hook; context-exhaustion/scope-creep/tool-loop warning hook; MCP health-check before tool use; sharper 5-axis self-eval rubric for directive #6. All six require a Claude Code hook-execution mechanism DevBureau doesn't currently wire up (DevBureau today expresses these as prose rules the agent self-applies, not `hooks.json`-triggered scripts) — the underlying open decision is whether DevBureau adopts a `hooks.json` layer at all, which several of these Consider items depend on.
 
 **Skip:** `gateguard-fact-force` (confirms existing third-party GateGuard reference, nothing new); doc-file-warning (redundant with Docs Sync Guard).
+
+## 2026-07-11 — nidhinjs/prompt-master
+
+**Repo:** https://github.com/nidhinjs/prompt-master — single-skill repo (SKILL.md 460 lines + references/), prompt-engineering skill that generates paste-ready prompts for external AI tools (Claude, Cursor, Midjourney, video AI). Mature structure: versioned frontmatter (v1.7.0), zone-based layout (primacy/middle), per-tool routing tables.
+**Origin:** user asked whether DevBureau has an equivalent and whether it would improve inbound request interpretation before building.
+**Patterns found:**
+
+| Pattern | Confidence | Where observed | Destination | Verdict |
+|---|---|---|---|---|
+| 9-dimension silent intent extraction; ask only about missing critical dimensions | 🟢 | `SKILL.md` "Intent Extraction" table | `brainstorming/SKILL.md` (Socratic Gate) | Adopt |
+| Hard cap of 3 clarifying questions before producing | 🟢 | `SKILL.md` hard rules | `brainstorming/SKILL.md` (same graft) | Adopt |
+| Per-tool prompt routing (Claude literal-following, no-CoT on reasoning-native models, Midjourney params) | 🟢 | `SKILL.md` "Tool Routing" + `references/templates.md` | would be a new outbound `prompt-engineering` skill | Skip (for now) |
+| Zone-based skill layout (PRIMACY/MIDDLE zones for rule priority) | 🟡 | `SKILL.md` structure | `writing-skills` | Skip |
+
+**Adopt (merged same session, v3.35.0):** Intent Extraction Matrix grafted into `brainstorming/SKILL.md` — silent extraction of 9 dimensions adapted to software-building context (goal, users, scope, success criteria, constraints, existing context, content/input, output shape, references); questions target only missing critical dimensions with a 3-per-round cap; the old fixed Purpose/Users/Scope trio demoted to fallback. Respects DEVBUREAU.md P0 (minimum 3 questions for new builds — remaining slots fill with edge-case/trade-off questions) and `question-preferences.md` suppression.
+**Skip rationale:** outbound prompt-generation for external tools is a real gap but no demonstrated demand yet (Regra dos Três); `content-creator`/`ai-image-generator` already cover image-prompt needs. Zone-based layout solves rule-priority drift DevBureau already handles via P0>P1>P2 tiers.

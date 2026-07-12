@@ -116,3 +116,13 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Solução:** Revisar todo arquivo de config gerado automaticamente antes do primeiro commit; preferir paths relativos ou placeholders quando o formato permitir.
 **Evidência:** `.agent/memory/pattern-mining-log.md` — frank_fbi (`.ai-jail` com home dir do autor).
 **Prevenção:** Adicionar configs de sandbox/tooling pessoal ao `.gitignore` por padrão, só commitando uma versão `.example` sem dados pessoais.
+
+## 2026-07-11 — Pseudo-CSS de posts de rede social tratado como código real (cenário RED da skill hover-effects)
+
+**Gatilho:** Usuário compartilha imagem/vídeo de efeito de UI de rede social ("Hover Button Effects Pt.X") pedindo para reproduzir, muitas vezes atribuindo a um repositório GitHub.
+**Confiança:** 🟢 Observado
+**Sintoma:** (a) O código exibido na imagem (`surface: wave(x, y)`, `blades: part(x)`, `filter: thermal()`) não é CSS real — é shorthand ilustrativo do post; um agente sob pressão tenta usá-lo ou inventa propriedades equivalentes. (b) A atribuição de origem pode estar errada: `suraniharsh/CodeCandy` foi apontado como fonte dos efeitos, mas clone + grep provou que é um app gerenciador de snippets sem nenhum dos efeitos. (c) As paletas dessas imagens são quase sempre roxas (violação do Purple Ban se copiadas).
+**Causa raiz:** Imagens de showcase priorizam estética do post, não fidelidade técnica; nomes de contas de rede social colidem com nomes de repositórios não relacionados.
+**Solução:** Tratar a imagem como briefing visual, nunca como código; verificar a fonte real (clonar/grepar) antes de afirmar que um repo contém algo; mapear o efeito mostrado para a técnica real (canvas, SVG filter, mask, custom props).
+**Evidência:** Sessão 2026-07-11 — criação da skill `hover-effects` (v3.35.0); CodeCandy clonado e verificado sem os efeitos.
+**Prevenção:** Skill `.agent/skills/hover-effects/SKILL.md` abre com a seção "Social-Media Pseudo-CSS (READ FIRST)" endereçando exatamente essa racionalização.

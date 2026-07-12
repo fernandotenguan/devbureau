@@ -9,7 +9,7 @@
 DevBureau is a modular system consisting of:
 
 - **23 Specialist Agents** - Role-based AI personas
-- **77 Skills** - Domain-specific knowledge modules
+- **78 Skills** - Domain-specific knowledge modules
 - **29 Workflows** - Slash command procedures
 
 ---
@@ -21,7 +21,7 @@ DevBureau is a modular system consisting of:
 ├── ARCHITECTURE.md          # This file
 ├── SCRIPTS_REGISTRY.md      # Deterministic tool inventory (Script-First Protocol)
 ├── agents/                  # 23 Specialist Agents
-├── skills/                  # 77 Skills
+├── skills/                  # 78 Skills
 ├── workflows/                # 29 Slash Commands
 ├── rules/                   # Global Rules (DEVBUREAU.md P0)
 ├── scripts/                 # 9 Master Validation Scripts
@@ -63,7 +63,7 @@ Specialist AI personas for different domains.
 
 ---
 
-## 🧩 Skills (77)
+## 🧩 Skills (78)
 
 Modular knowledge domains that agents load on-demand, based on task context. Grouped here by theme; the authoritative source of truth for what exists is always `.agent/skills/` itself — run `python .agent/scripts/doctor.py` to verify this list against reality.
 
@@ -99,6 +99,7 @@ Modular knowledge domains that agents load on-demand, based on task context. Gro
 | Skill | Description |
 | --- | --- |
 | `frontend-design` | Design thinking for web UI — layout, color, typography decisions |
+| `hover-effects` | Pointer-driven micro-interaction recipes — ripple, spotlight, magnetic, scratch-off, particle/SVG hover effects |
 | `web-design-guidelines` | UI code review against Web Interface Guidelines |
 | `tailwind-patterns` | Tailwind CSS v4, CSS-first config, container queries, design tokens |
 | `nextjs-react-expert` | React/Next.js performance optimization (internal skill name: `react-best-practices`) |
@@ -388,7 +389,7 @@ python .agent/scripts/sync_ide.py --target all
 | Metric              | Value                                                  |
 | -------------------- | --------------------------------------------------------- |
 | **Total Agents**     | 23                                                         |
-| **Total Skills**     | 77 (+ 10 nested under `game-development`)                  |
+| **Total Skills**     | 78 (+ 10 nested under `game-development`)                  |
 | **Total Workflows**  | 29                                                         |
 | **Master Scripts**   | 10 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`, `github_coordination`) |
 | **Skills With Scripts** | 17                                                       |

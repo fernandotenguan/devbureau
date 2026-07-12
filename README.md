@@ -6,9 +6,9 @@
 > without needing to know how to code. Works across Claude Code, Cursor, Codex CLI, OpenCode,
 > GitHub Copilot, Antigravity, Windsurf, Cline, Roo Code, and Zed.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.34.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.35.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-23-green)](https://github.com/fernandotenguan/devbureau)
-[![Skills](https://img.shields.io/badge/Skills-77-orange)](https://github.com/fernandotenguan/devbureau)
+[![Skills](https://img.shields.io/badge/Skills-78-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-29-red)](https://github.com/fernandotenguan/devbureau)
 [![Tests](https://img.shields.io/badge/Tests-Automated-brightgreen)](https://github.com/fernandotenguan/devbureau)
 
@@ -21,7 +21,7 @@
 | Components         | Count | Description                                                                  |
 | ------------------ | ----- | ---------------------------------------------------------------------------- |
 | **Agents**         | 23    | Specialist AI personas (frontend, backend, security, SRE, a11y, game dev, etc.) |
-| **Skills**         | 77    | Domain-specific knowledge modules with automated scripts                     |
+| **Skills**         | 78    | Domain-specific knowledge modules with automated scripts                     |
 | **Workflows**      | 29    | Slash-command procedures including the autonomous `/ade` pipeline             |
 | **Master Scripts** | 10    | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py`, `github_coordination.py` |
 | **Kit Tests**      | ✅    | Automated pytest suite — runs before every commit                            |
@@ -62,7 +62,7 @@ The most powerful mode. You describe a feature, the kit plans it, shows you the 
 python .agent/scripts/doctor.py
 ```
 
-Validates all 23 agents, 77 skills, 29 workflows, and master scripts in seconds.
+Validates all 23 agents, 78 skills, 29 workflows, and master scripts in seconds.
 
 ### 🔒 Automated Pre-Commit Guard
 

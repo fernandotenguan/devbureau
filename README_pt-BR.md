@@ -6,9 +6,9 @@
 > equipe especializada, sem precisar saber programar. Funciona no Claude Code, Cursor, Codex CLI,
 > OpenCode, GitHub Copilot, Antigravity, Windsurf, Cline, Roo Code e Zed.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.34.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.35.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-23-green)](https://github.com/fernandotenguan/devbureau)
-[![Skills](https://img.shields.io/badge/Skills-77-orange)](https://github.com/fernandotenguan/devbureau)
+[![Skills](https://img.shields.io/badge/Skills-78-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-29-red)](https://github.com/fernandotenguan/devbureau)
 [![Tests](https://img.shields.io/badge/Tests-Automated-brightgreen)](https://github.com/fernandotenguan/devbureau)
 
@@ -21,7 +21,7 @@
 | Componente          | Quantidade | Descrição                                                                    |
 | -------------------- | ---------- | ----------------------------------------------------------------------------- |
 | **Agentes**          | 23         | Personas de IA especialistas (frontend, backend, segurança, SRE, a11y, jogos, etc.) |
-| **Skills**           | 77         | Módulos de conhecimento de domínio com scripts automatizados                  |
+| **Skills**           | 78         | Módulos de conhecimento de domínio com scripts automatizados                  |
 | **Workflows**        | 29         | Procedimentos de comando de barra, incluindo o pipeline autônomo `/ade`       |
 | **Scripts Mestres**  | 10         | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py`, `github_coordination.py` |
 | **Testes do Kit**    | ✅         | Suíte pytest automatizada — roda antes de cada commit                         |
@@ -62,7 +62,7 @@ O modo mais poderoso. Você descreve uma funcionalidade, o kit planeja, mostra a
 python .agent/scripts/doctor.py
 ```
 
-Valida os 23 agentes, 77 skills, 29 workflows e scripts mestres em segundos.
+Valida os 23 agentes, 78 skills, 29 workflows e scripts mestres em segundos.
 
 ### 🔒 Guarda Automática de Pre-Commit
 
@@ -450,7 +450,7 @@ Os dois diagramas são XML `.drawio` editável (incorporado no próprio `.png`) 
 raiz-do-projeto/
 ├── .agent/
 │   ├── agents/          # 23 personas de IA especialistas
-│   ├── skills/          # 77 módulos de conhecimento
+│   ├── skills/          # 78 módulos de conhecimento
 │   ├── workflows/       # 29 procedimentos de comando de barra
 │   ├── scripts/         # scripts mestres de validação
 │   │   ├── doctor.py          # diagnóstico de saúde do kit
