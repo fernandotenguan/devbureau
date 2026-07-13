@@ -75,13 +75,87 @@ def _merge_claude_hook(settings: dict, event: str, matcher: str, command: str) -
         )
 
 
+# Permission preset implementing DEVBUREAU.md's "MATRIZ DE DECISÃO" at the
+# harness layer, so an approved plan runs end-to-end without recurring prompts:
+# AUTO rows (edit code, create files, local commits, tests, kit scripts,
+# dependency installs) are pre-allowed; PERGUNTE/CRÍTICO rows (push, delete,
+# destructive git) are pinned to "ask" so no future broad allow rule can
+# silently swallow them. Force-push to main stays model-refused per the matrix
+# (permission rules are prefix matches and can't see the target branch).
+# PowerShell mirrors cover Windows sessions where that tool replaces Bash.
+PERMISSIONS_DEFAULT_MODE = "acceptEdits"
+
+PERMISSIONS_ALLOW = [
+    "Bash(git status*)",
+    "Bash(git diff*)",
+    "Bash(git log*)",
+    "Bash(git show*)",
+    "Bash(git branch*)",
+    "Bash(git add *)",
+    "Bash(git commit *)",
+    "Bash(python .agent/scripts/*)",
+    "Bash(python .agent/skills/*)",
+    "Bash(python -m pytest*)",
+    "Bash(pytest*)",
+    "Bash(npm install*)",
+    "Bash(npm run *)",
+    "Bash(npm test*)",
+    "Bash(npx tsc*)",
+    "Bash(pnpm install*)",
+    "Bash(pnpm run *)",
+    "Bash(yarn install*)",
+    "Bash(yarn run *)",
+    "Bash(mkdir *)",
+    "PowerShell(git status*)",
+    "PowerShell(git diff*)",
+    "PowerShell(git log*)",
+    "PowerShell(git show*)",
+    "PowerShell(git branch*)",
+    "PowerShell(git add *)",
+    "PowerShell(git commit *)",
+    "PowerShell(python .agent/scripts/*)",
+    "PowerShell(python .agent/skills/*)",
+    "PowerShell(python -m pytest*)",
+    "PowerShell(npm run *)",
+    "PowerShell(npm install*)",
+]
+
+PERMISSIONS_ASK = [
+    "Bash(git push*)",
+    "Bash(rm *)",
+    "Bash(git reset --hard*)",
+    "Bash(git clean*)",
+    "PowerShell(git push*)",
+    "PowerShell(Remove-Item *)",
+    "PowerShell(git reset --hard*)",
+]
+
+
+def _merge_claude_permissions(settings: dict) -> None:
+    """Merge DevBureau's permission preset into settings without clobbering
+    anything the user configured: defaultMode is only set when absent, and
+    allow/ask entries are appended only if not already present (the user's
+    own rules, including a stricter deny, always survive the merge)."""
+    permissions = settings.setdefault("permissions", {})
+    permissions.setdefault("defaultMode", PERMISSIONS_DEFAULT_MODE)
+    for key, preset in (("allow", PERMISSIONS_ALLOW), ("ask", PERMISSIONS_ASK)):
+        existing = permissions.setdefault(key, [])
+        existing.extend(rule for rule in preset if rule not in existing)
+
+
 def ensure_claude_protect_hook(dry_run: bool) -> None:
-    """Merge DevBureau's Claude Code hooks into .claude/settings.json without
-    disturbing any other settings the user already has configured there:
+    """Merge DevBureau's Claude Code hooks and permission preset into
+    .claude/settings.json without disturbing any other settings the user
+    already has configured there:
+    - permissions: DEVBUREAU.md's Decision Matrix as harness rules — safe
+      recurring operations pre-allowed + acceptEdits default (only when the
+      user hasn't set a mode), publish/delete/destructive pinned to ask.
     - SessionStart: auto-run sync_ide.py at session start to keep CLAUDE.md fresh.
     - PreToolUse: block edits to auto-generated files, block writes outside
       the current git worktree (using-git-worktrees), block git --no-verify /
-      -c core.hooksPath= bypass attempts (CLAUDE.md's Git Safety Protocol).
+      -c core.hooksPath= bypass attempts (CLAUDE.md's Git Safety Protocol),
+      block UI-file edits until the specialist agent/design skill was Read
+      this session (DEVBUREAU.md's Agent Routing Checklist, step 2).
     - PostToolUse: advisory scan of Read/WebFetch/WebSearch output for known
       prompt-injection patterns (DEVBUREAU.md's Untrusted Content Boundary),
       advisory warning when an edited JS/TS file still has console.log(),
@@ -101,6 +175,8 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
                 f"  {YELLOW}⚠{RESET} Could not parse {settings_path} — skipping hook merge."
             )
             return
+
+    _merge_claude_permissions(settings)
 
     _merge_claude_hook(
         settings,
@@ -125,6 +201,12 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
         "PreToolUse",
         "Bash",
         'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/block_no_verify.py"',
+    )
+    _merge_claude_hook(
+        settings,
+        "PreToolUse",
+        "Edit|Write|MultiEdit",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/enforce_design_context.py"',
     )
     _merge_claude_hook(
         settings,

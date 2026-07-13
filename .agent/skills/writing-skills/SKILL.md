@@ -4,9 +4,9 @@ description: Use when authoring a NEW skill for the kit — how to write the des
 allowed-tools: Read, Write, Edit, Grep, Glob
 ---
 
-# Writing Skills (Source: obra/superpowers)
+# Writing Skills
 
-> Scope: applies to skills created from now on. The existing 62 skills are not being retrofitted — see `.agent/memory/benchmark-log.md`, Run #5, item 2 for why (heavy lift, no evidence the existing skills are failing in practice).
+> Scope: applies to skills created from now on. The existing 62 skills are not being retrofitted — heavy lift, no evidence the existing skills are failing in practice.
 
 ## The Core Problem
 

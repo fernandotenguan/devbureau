@@ -741,6 +741,16 @@ Beyond quick commands, you can activate a specific specialist by writing `@name`
 
 ## Advanced Configuration
 
+### 🔓 Approved Plan = Uninterrupted Work (Claude Code)
+
+Once you approve a plan, the agent runs it end-to-end **without asking permission at every step** for the safe day-to-day actions: editing code, creating files, running tests, making local commits, and installing project dependencies. This ships pre-configured (`sync_ide.py` writes the pre-approvals into `.claude/settings.json` of every project using the kit).
+
+The agent **still stops and asks** before anything that publishes or destroys: pushing code to the remote repository (`git push`), deleting files, irreversibly discarding changes, or any production action. That is the kit's Decision Matrix safety brake, and we recommend keeping it.
+
+Your own rules win: if you already configured permissions in `.claude/settings.json`, the kit only adds its own entries and never overwrites yours. To review or adjust, use the `/permissions` command inside Claude Code.
+
+---
+
 ### 🔧 For Experienced Users
 
 #### Configure Your IDE (VSCode, Cursor, JetBrains)

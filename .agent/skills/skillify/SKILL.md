@@ -5,9 +5,8 @@ description: Use when a multi-step flow just SUCCEEDED in the current session an
 
 # Skillify — Codificar um fluxo de sessão bem-sucedido em artefato reutilizável
 
-> Origem: benchmark run #8 (gstack `skillify`, generalizado). Complementa, não substitui, o
-> Protocolo Script-First: a Regra dos Três cobre repetição ENTRE sessões; skillify cobre o
-> momento "isso acabou de funcionar NESTA sessão e vale guardar".
+> Complementa, não substitui, o Protocolo Script-First: a Regra dos Três cobre repetição ENTRE
+> sessões; skillify cobre o momento "isso acabou de funcionar NESTA sessão e vale guardar".
 
 ## Quando disparar
 
@@ -16,6 +15,18 @@ description: Use when a multi-step flow just SUCCEEDED in the current session an
    (não "deve ter funcionado" — evidência fresca, per Zero-Break) E há sinal de recorrência
    (o usuário já fez algo parecido antes, ou disse que fará de novo). Nesse caso, OFEREÇA em
    uma frase; nunca crie sem resposta.
+
+## Regra de Promoção — não consagre palpites
+
+> Um artefato salvo é **autoritativo**: a próxima sessão confia nele sem re-derivar. Por isso a barra é alta.
+
+Só promova um fluxo a artefato quando as **três** condições valem:
+
+1. **Verificação que passou.** O fluxo foi verificado de verdade (teste verde, comando com exit 0, repro reproduzido) — e o artefato registra QUAL foi essa verificação. "Pareceu funcionar" não conta.
+2. **Padrão de falha nomeado.** Você consegue nomear a falha que esse fluxo evita ou diagnostica (ex: "cache de build velho → erros de tipo fantasma"), não um vago "às vezes quebra".
+3. **Pelo menos um beco-sem-saída descartado.** Uma abordagem concreta tentada e eliminada, com o motivo — registrada no artefato numa seção "O que não funcionou" (pular um beco conhecido na próxima sessão vale tanto quanto o caminho de ouro).
+
+Faltando qualquer uma: vira nota tentativa em `lessons.md`/`gotchas.md` (marcada como não-verificada) ou é descartado. Nunca escreva valores de segredos no artefato — só ONDE encontrá-los (nome da env var, secret manager).
 
 ## Regras invioláveis
 

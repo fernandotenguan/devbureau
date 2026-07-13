@@ -6,8 +6,6 @@ allowed-tools: Read, Bash
 
 # Finishing a Branch
 
-> Source: obra/superpowers
-
 ## Overview
 
 Closing out finished work needs the same discipline as starting it. An open-ended "what would you like to do?" produces ambiguous answers; a structured menu doesn't.

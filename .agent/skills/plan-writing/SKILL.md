@@ -6,8 +6,6 @@ allowed-tools: Read, Glob, Grep
 
 # Plan Writing
 
-> Source: obra/superpowers
-
 ## Overview
 This skill provides a framework for breaking down work into clear, actionable tasks with verification criteria.
 

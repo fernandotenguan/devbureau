@@ -8,8 +8,6 @@ but nothing enforced that until now - this hook makes it hard-blocking
 instead of advisory.
 No-op for any Bash command that isn't a git invocation.
 Registered in .claude/settings.json by sync_ide.py's generate_claude_config().
-Source: affaan-m/ECC's scripts/hooks/block-no-verify.js (DevBureau's own
-condensed Python version - see benchmark-log.md Run #7).
 """
 
 import json

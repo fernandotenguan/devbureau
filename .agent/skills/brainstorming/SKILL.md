@@ -30,7 +30,7 @@ allowed-tools: Read, Glob, Grep
 
 ### 🧭 Intent Extraction Matrix (run SILENTLY before generating questions)
 
-> Adapted from `nidhinjs/prompt-master`'s 9-dimension intent extraction (see `pattern-mining-log.md`, 2026-07-11). Extraction is invisible to the user — no meta-commentary like "analyzing your request".
+> 9-dimension silent intent extraction. Extraction is invisible to the user — no meta-commentary like "analyzing your request".
 
 | Dimension | What to extract | Critical when |
 |-----------|-----------------|---------------|
@@ -59,6 +59,16 @@ Before firing ANY question above, read `.agent/memory/question-preferences.md`:
 3. If the topic is marked **Sempre perguntar**, ask it anyway — that status is an explicit confirmation the user wants it asked every time, not an oversight.
 4. If the user says something like "para de perguntar isso", "já respondi isso antes", "stop asking that" — append a new dated entry to `question-preferences.md` immediately (same format as `lessons.md`/`gotchas.md`: date, Gatilho, Status, Razão do usuário, Evidência). Do this before continuing with the rest of the response, not as an afterthought.
 5. This check never suppresses the FIRST time a topic comes up in a brand-new project/context — suppression only applies once an entry actually exists for that topic.
+
+### 📊 Telemetria do Gate (feche o loop de aprendizado)
+
+Todo disparo do Gate gera **uma linha** em `.agent/memory/gate-telemetry.md`, no fim da interação (não no meio):
+
+1. **Perguntou e o usuário respondeu** → registre as dimensões que faltavam, quantas perguntas, e se a resposta **mudou o plano** (escopo/abordagem diferente do que seria feito sem perguntar).
+2. **Prosseguiu com suposição declarada** → registre a suposição e, quando o resultado ficar claro, se ela estava **correta**.
+3. Nunca acumule débito: se a sessão está terminando e a linha não foi escrita, escreva antes de encerrar. Uma linha, sem prosa extra — o formato está no próprio arquivo.
+
+Esses dados alimentam `question-preferences.md`: tópico com "Mudou o plano? = Não" repetido é candidato a supressão (proponha ao usuário); suposição errada repetida vira "Sempre perguntar".
 
 ---
 

@@ -36,6 +36,15 @@
             "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/check_mcp_health.py\""
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/enforce_design_context.py\""
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -99,6 +108,52 @@
           }
         ]
       }
+    ]
+  },
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git show*)",
+      "Bash(git branch*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(python .agent/scripts/*)",
+      "Bash(python .agent/skills/*)",
+      "Bash(python -m pytest*)",
+      "Bash(pytest*)",
+      "Bash(npm install*)",
+      "Bash(npm run *)",
+      "Bash(npm test*)",
+      "Bash(npx tsc*)",
+      "Bash(pnpm install*)",
+      "Bash(pnpm run *)",
+      "Bash(yarn install*)",
+      "Bash(yarn run *)",
+      "Bash(mkdir *)",
+      "PowerShell(git status*)",
+      "PowerShell(git diff*)",
+      "PowerShell(git log*)",
+      "PowerShell(git show*)",
+      "PowerShell(git branch*)",
+      "PowerShell(git add *)",
+      "PowerShell(git commit *)",
+      "PowerShell(python .agent/scripts/*)",
+      "PowerShell(python .agent/skills/*)",
+      "PowerShell(python -m pytest*)",
+      "PowerShell(npm run *)",
+      "PowerShell(npm install*)"
+    ],
+    "ask": [
+      "Bash(git push*)",
+      "Bash(rm *)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean*)",
+      "PowerShell(git push*)",
+      "PowerShell(Remove-Item *)",
+      "PowerShell(git reset --hard*)"
     ]
   }
 }

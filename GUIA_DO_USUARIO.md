@@ -741,6 +741,16 @@ Além dos comandos rápidos, você pode ativar um especialista específico escre
 
 ## Configurações Avançadas
 
+### 🔓 Plano Aprovado = Trabalho Sem Interrupções (Claude Code)
+
+Quando você aprova um plano, o agente executa do início ao fim **sem pedir permissão a cada passo** para as ações seguras do dia a dia: editar código, criar arquivos, rodar testes, fazer commits locais e instalar dependências do projeto. Isso vem configurado de fábrica (o `sync_ide.py` grava as pré-aprovações em `.claude/settings.json` de todo projeto que usa o kit).
+
+O agente **ainda vai parar e perguntar** antes de qualquer ação que publica ou destrói algo: enviar código para o repositório remoto (`git push`), apagar arquivos, descartar mudanças de forma irreversível ou qualquer ação de produção. Esse é o freio de segurança da Matriz de Decisão do kit, e recomendamos não removê-lo.
+
+Suas próprias regras vencem: se você já configurou permissões no `.claude/settings.json`, o kit só acrescenta as dele, nunca sobrescreve as suas. Para revisar ou ajustar, use o comando `/permissions` dentro do Claude Code.
+
+---
+
 ### 🔧 Para Usuários Experientes
 
 #### Configurar Seu IDE (VSCode, Cursor, JetBrains)

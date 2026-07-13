@@ -53,7 +53,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido (minerado de repositório externo, ainda não validado em uso próprio do DevBureau)
 **Padrão identificado:** Toda regra invariante deve citar o bug/incidente concreto que ela previne (ex.: "single-writer SQLite — evita a race da issue X"), não apenas declarar a regra. Isso transforma "por que isso existe" em um contrato revisável e durável, em vez de uma opinião que se perde com o tempo. Formato completo em `.agent/skills/documentation-templates/SKILL.md` §8.
 **Pitfall evitado:** Regras sem justificativa registrada são as primeiras a serem "simplificadas" ou removidas por um agente futuro que não entende por que existem.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — akitaonrails/ai-memory, `docs/ARCHITECTURE.md` "Cross-cutting invariants".
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/documentation-templates/SKILL.md`
 
 ## 2026-06-28 — Defense-in-depth como checklist documentado, não princípio vago
@@ -62,7 +62,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Traduzir "defesa em profundidade" em uma lista numerada e concreta de camadas independentes e individualmente desativáveis (ex.: validação de input, SSRF, sanitização de filename, prompt size cap) — cada uma testável isoladamente. Checklist completo agora em `security-auditor.md`.
 **Pitfall evitado:** Princípios genéricos ("pense como atacante") não geram ação verificável; uma lista numerada sim.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — ai-jail, FrankClaw (checklist de 11 pontos), FrankSherlock.
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/agents/security-auditor.md`
 
 ## 2026-06-28 — Loop de auto-melhoria precisa de trilha de auditoria + gate de avaliação
@@ -71,7 +71,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Toda proposta de auto-melhoria deve: (1) logar em uma trilha de auditoria antes de aplicar, (2) passar por um gate de avaliação executável antes de ser promovida, (3) ter aprovação opt-in por padrão — nunca auto-aprovação silenciosa, (4) usar claim por sessão para que uma falha não fique re-tentando para sempre.
 **Pitfall evitado:** Auto-melhoria sem gate é exatamente o cenário que o protocolo Anti-Hallucination do `DEVBUREAU.md` já tenta prevenir manualmente — esse padrão automatiza a mesma garantia.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — akitaonrails/ai-memory, `docs/auto-improvement-loop.md`.
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/agent-evaluation/SKILL.md`
 
 ## 2026-06-28 — Markdown em disco como fonte de verdade, índice é sempre reconstruível
@@ -80,7 +80,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟢 Confirmado (é o modelo que o próprio `.agent/memory/` já usa; agora com vocabulário formal)
 **Padrão identificado:** Arquivo markdown versionado em git é a fonte de verdade; qualquer índice derivado (SQLite, cache, busca) deve ser reconstruível a partir dos arquivos a qualquer momento — nunca a única cópia do dado. "Compile, don't retrieve."
 **Pitfall evitado:** Guardar conhecimento só em um índice binário/DB quebra grep, diff de git e portabilidade entre IDEs.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — akitaonrails/ai-memory; já confirmado pelo próprio design do DevBureau (`.agent/memory/*.md`).
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/architecture/SKILL.md`, `.agent/memory/`
 
 ## 2026-06-28 — Falhar para o lado cauteloso em degradação
@@ -89,7 +89,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Modo degradado deve ficar MAIS conservador, nunca mais confiante — nunca "inventar" um veredito suportado por repetição. Para primitivas de segurança, a falha deve sempre cair para o lado mais restritivo (ex.: recusar iniciar sem auth, em vez de iniciar com auth fraca).
 **Pitfall evitado:** Degradação que mantém ou aumenta confiança quando dados ficam incompletos é a forma mais comum de um sistema "mentir com convicção".
-**Evidência:** `.agent/memory/pattern-mining-log.md` — frank_fbi, frank_investigator, ai-jail.
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/agents/security-auditor.md`
 
 ## 2026-06-28 — Configuração centralizada: um schema tipado, um resolvedor único
@@ -98,7 +98,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Toda config passa por UM resolvedor único com precedência clara (arquivo > ENV > default); proibido ler `process.env`/`os.environ` diretamente em qualquer outro lugar do código.
 **Pitfall evitado:** Leitura dispersa de ENV é a causa raiz mais comum de "funciona local, quebra em prod" — cada ponto de leitura pode aplicar um default diferente.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — FrankMD, distrobox-gaming, ai-memory, ai-jail, ai-usagebar (5 confirmações independentes).
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/saas-stack-rules/SKILL.md`
 
 ## 2026-06-28 — UPDATE condicional atômico para eliminar race de contador/limite
@@ -107,7 +107,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Um único `UPDATE ... WHERE count < max AND not_expired` (sucesso = "1 linha afetada") substitui o padrão check-then-act, eliminando o TOCTOU sem precisar de lock explícito.
 **Pitfall evitado:** Ler o valor, decidir em código, depois escrever de volta é uma race condition clássica sob qualquer carga concorrente real.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — FrankMega, ai-memory (single-writer actor), frank_investigator (timestamp watermark).
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/database-design/SKILL.md`
 
 ## 2026-06-28 — Testar na fronteira, nunca no SO real
@@ -116,7 +116,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Stubar a fronteira (ex.: `Errno::EACCES` via mock) em vez de fazer `chmod` real; injetar o path/dependência (`Cache.at(path)`) em vez de depender de `$HOME` global — necessário inclusive para builds que rodam testes na máquina do usuário (ex.: pacotes AUR).
 **Pitfall evitado:** Testes que tocam o SO real são lentos, frágeis entre plataformas, e podem vazar segredos reais do ambiente de quem roda o teste.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — FrankMD, ai-usagebar, frank_investigator.
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/testing-patterns/SKILL.md`
 
 ## 2026-06-28 — Fan-out limitado + timeout em duas camadas para chamadas externas
@@ -125,7 +125,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Concorrência limitada por janela deslizante (cap fixo, reabastece ao completar) + timeout por tarefa DENTRO de um timeout global; falha parcial é um status tipado por item, não aborta o lote inteiro — só falha se TODAS as chamadas falharem.
 **Pitfall evitado:** Disparar chamadas ilimitadas em paralelo estoura rate limit do provedor; um único endpoint lento sem timeout duplo trava o lote inteiro.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — ghpending (`commands/digest.rs`).
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/api-patterns/rate-limiting.md`
 
 ## 2026-06-28 — Três níveis de risco de ferramenta (ReadOnly/Mutating/Destructive)
@@ -134,7 +134,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido (minerado de repositório externo, ainda não validado em uso próprio do DevBureau)
 **Padrão identificado:** Classificar toda ação/ferramenta em um de três tiers — ReadOnly (nunca pede confirmação), Mutating (confirma por padrão, pode ter override explícito), Destructive (sempre confirma, sem override silencioso) — em vez de decidir caso a caso na hora. Isso é a mesma lógica da seção "Executing actions with care" do `CLAUDE.md`, só que como classificação explícita em vez de prosa.
 **Pitfall evitado:** Decidir "isso é arriscado?" de forma ad-hoc a cada chamada produz inconsistência — a mesma ação pode ser tratada diferente em sessões diferentes.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — FrankClaw (tool risk levels + UI de aprovação inline).
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/agents/security-auditor.md`
 
 ## 2026-06-28 — Gates operacionais para execuções longas sem supervisão
@@ -143,7 +143,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Três guardas independentes: (1) matar a execução se a velocidade/throughput cair abaixo de um limiar, (2) timeout de "sem progresso" separado do timeout total, (3) limpar processo travado de uma tentativa anterior antes de iniciar um retry.
 **Pitfall evitado:** Um pipeline autônomo sem esses gates pode ficar preso indefinidamente, consumindo recursos sem produzir sinal de que travou.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — llm-coding-benchmark ("Notes"/llama-swap stale processes).
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/agent-evaluation/SKILL.md`
 
 ## 2026-06-28 — Máquina de estados de job com auto-reparo
@@ -152,7 +152,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Ciclo de vida explícito (ex.: Pending→InProgress→Completed→Accepted) com detecção de "travado" (tempo no estado atual excede um limite) e recuperação automática — reagendar ou reverter, nunca deixar o item parado para sempre.
 **Pitfall evitado:** Sem detecção de "travado", um job interrompido fica invisível até alguém notar manualmente que nada avançou.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — FrankClaw (`cron/` crate, job lifecycle).
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/agent-evaluation/SKILL.md`
 
 ## 2026-06-28 — Pipeline em DAG com dependências explícitas por fase
@@ -161,7 +161,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Declarar a dependência de cada fase explicitamente (fase X só roda depois que fase Y terminou) em vez de depender de ordem implícita no código; fases independentes podem rodar em paralelo (fan-out).
 **Pitfall evitado:** Ordem implícita quebra silenciosamente quando alguém reordena passos sem entender a dependência real entre eles.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — frank_fbi (README "Job Pipeline").
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/architecture/SKILL.md`
 
 ## 2026-06-28 — Nunca persistir automaticamente um override pontual
@@ -170,7 +170,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Um override passado explicitamente em uma execução vale só para aquela execução; só é gravado como novo padrão default se o usuário pedir isso explicitamente (ex.: uma flag `--init`/`--save`). Separar "tentar agora" de "isso é o novo padrão salvo".
 **Pitfall evitado:** Sem essa separação, um teste pontual ("deixa eu só tentar com X") silenciosamente se torna o comportamento permanente do projeto.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — ai-jail (README/CLAUDE.md "Merge behavior").
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** N/A (princípio a aplicar em qualquer script novo do kit que escreva config)
 
 ## 2026-06-28 — Checklist de docs-sync amarrando feature a documentação
@@ -179,16 +179,16 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Manter uma lista explícita de "o que precisa mudar junto" sempre que um certo tipo de mudança acontece (ex.: mudar uma regra de análise → atualizar README + página de metodologia + i18n en/pt-BR + método de API JSON), em vez de confiar na memória de quem está editando.
 **Pitfall evitado:** Documentação que deveria acompanhar a feature fica defasada porque "atualizar os docs" nunca foi uma etapa explícita do checklist de PR.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — frank_investigator (CLAUDE.md "Documentation").
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/documentation-templates/SKILL.md`
 
 ## 2026-06-28 — Decisão pendente: AGENTS.md único vs. sync por IDE
 
 **Gatilho:** Avaliar se o DevBureau deveria migrar de "um `.agent/` sincronizado para cada IDE via `sync_ide.py`" para "um único AGENTS.md como fonte, com CLAUDE.md/GEMINI.md como ponteiros finos".
 **Confiança:** 🔴 Hipótese — decisão estratégica NÃO tomada, registrada apenas para discussão futura, não é uma migração recomendada.
-**Padrão identificado:** O repositório de origem (FrankMD) usa um único `AGENTS.md` tool-agnostic como fonte, com um `CLAUDE.md` fino que só aponta para ele — modelo mais simples de manter, mas assume que todos os IDEs consomem o mesmo formato igualmente bem. O DevBureau hoje faz o oposto: gera conteúdo específico por IDE via `sync_ide.py` a partir de `.agent/rules/DEVBUREAU.md`, o que permite adaptar formato/tom por ferramenta mas exige manter o pipeline de sync.
+**Padrão identificado:** O repositório de origem observado usa um único `AGENTS.md` tool-agnostic como fonte, com um `CLAUDE.md` fino que só aponta para ele — modelo mais simples de manter, mas assume que todos os IDEs consomem o mesmo formato igualmente bem. O DevBureau hoje faz o oposto: gera conteúdo específico por IDE via `sync_ide.py` a partir de `.agent/rules/DEVBUREAU.md`, o que permite adaptar formato/tom por ferramenta mas exige manter o pipeline de sync.
 **Pitfall evitado:** Trocar de modelo sem comparar o custo real de manutenção dos dois lados pode trocar um problema conhecido (manter `sync_ide.py`) por um desconhecido (perda de adaptação por IDE).
-**Evidência:** `.agent/memory/pattern-mining-log.md` — akitaonrails/FrankMD (`CLAUDE.md`, `AGENTS.md`).
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/scripts/sync_ide.py`, `.agent/rules/DEVBUREAU.md`, `CLAUDE.md`
 
 ## 2026-06-28 — Backup-antes-de-sobrescrever como hábito de script, não passo opcional
@@ -197,7 +197,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Operações que tocam config/arquivo existente fazem backup do estado atual ANTES de sobrescrever, como parte do próprio script — não como uma etapa manual que alguém pode esquecer de rodar.
 **Pitfall evitado:** Sem backup automático, uma regeneração que dá errado (ou um valor de origem corrompido) destrói o estado anterior sem chance de comparação/rollback.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — distrobox-gaming (README "Backup and Restore"), ai-memory (overlay COW reviewable).
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/deployment-procedures/SKILL.md`
 
 ## 2026-06-28 — Avaliação em duas fases: gerar, depois forçar validação
@@ -206,7 +206,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Separar "gerar" de "validar" em dois passos distintos — o segundo passo é um prompt/etapa dedicado que força a verificação real (build, boot, teste de fumaça), em vez de assumir que a geração já implica correção.
 **Pitfall evitado:** Avaliação de um único passo (gerar e julgar no mesmo turno) mede completude estrutural, não se a coisa de fato funciona — mesmo pitfall do item já mesclado "completude estrutural ≠ correção em runtime".
-**Evidência:** `.agent/memory/pattern-mining-log.md` — llm-coding-benchmark ("Benchmark Workflow").
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/agent-evaluation/SKILL.md`
 
 ## 2026-06-28 — Reavaliar o histórico quando uma regra de auditoria estava errada
@@ -215,7 +215,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Corrigir a regra E voltar para reavaliar todos os casos anteriores afetados por ela, documentando a correção — não só aplicar a regra nova daqui para frente.
 **Pitfall evitado:** Deixar avaliações antigas erradas "como estavam" porque "a regra só mudou agora" deixa o histórico inconsistente e mina a confiança no processo de avaliação como um todo.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — llm-coding-benchmark ("Previously-miscategorized kwargs pattern").
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/agent-evaluation/SKILL.md`, `.agent/skills/pattern-mining/SKILL.md`
 
 ## 2026-06-28 — Reescrita cirúrgica de config gerada pelo usuário
@@ -224,7 +224,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Tocar SOMENTE as chaves que de fato mudaram, preservando comentários, linhas em branco e formatação do resto do arquivo; "descomentar" uma chave quando ela ganha valor, em vez de reescrever o arquivo inteiro do zero a cada sync.
 **Pitfall evitado:** Reescrever o arquivo inteiro destrói qualquer personalização/comentário que o usuário tenha adicionado manualmente, mesmo em partes não relacionadas à mudança.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — FrankMD (`app/models/config.rb` `save_keys`).
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/scripts/sync_ide.py`
 
 ## 2026-06-28 — Preflight fail-fast antes de provisionar/montar ambiente
@@ -233,7 +233,7 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Validar pré-condições (permissões, paths obrigatórios, UID/GID, ferramentas instaladas) ANTES de começar a executar passos de provisionamento — falhar rápido e com mensagem clara, em vez de falhar no meio do processo deixando estado parcial.
 **Pitfall evitado:** Falhar no meio de um provisionamento deixa o ambiente em estado parcial, mais difícil de diagnosticar do que uma falha clara no início.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — distrobox-gaming (`roles/check_host`).
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/deployment-procedures/SKILL.md`, `.agent/scripts/doctor.py`
 
 ## 2026-06-28 — Notas de release citam CVE de dependência transitiva
@@ -242,5 +242,5 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Confiança:** 🟡 Inferido
 **Padrão identificado:** Toda nota de release que inclui um bump de dependência cita explicitamente a classe de CVE corrigida quando aplicável, não só "atualizou dependências".
 **Pitfall evitado:** "Bump de dependências" genérico esconde se a mudança era cosmética ou corrigia uma vulnerabilidade real — quem decide se atualiza urgente ou não precisa dessa informação.
-**Evidência:** `.agent/memory/pattern-mining-log.md` — FrankMD (`releases/v0.3.6.md`).
+**Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/deployment-procedures/SKILL.md`

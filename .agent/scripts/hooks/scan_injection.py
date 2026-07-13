@@ -8,8 +8,6 @@ on its own - the agent is asked to treat audited content as data, but nothing
 enforces that. Pattern match only: no semantic understanding, advisory only,
 never blocks the tool call.
 Registered in .claude/settings.json by sync_ide.py's generate_claude_config().
-Source: open-gsd/gsd-core's gsd-read-injection-scanner.js (DevBureau's own
-condensed, Python, advisory-only version - see benchmark-log.md Run #6).
 """
 
 import json

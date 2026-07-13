@@ -1,6 +1,6 @@
 ---
 name: framework-benchmarking
-description: Use when running the `/benchmark` workflow, or when evaluating whether a newly-discovered framework/skill collection is worth pulling ideas from — periodically compares DevBureau's agents/skills/workflows against well-regarded external collections (Claude Code subagent catalogs, awesome-skills lists, BMAD-METHOD, etc.), scoring gaps and deciding adopt/consider/skip. Triggers on "compare with other frameworks", "o que tem de novo no mercado", "vale a pena importar isso".
+description: Use when running the `/benchmark` workflow, or when evaluating whether a newly-discovered framework/skill collection is worth pulling ideas from — periodically compares DevBureau's agents/skills/workflows against well-regarded external collections (Claude Code subagent catalogs, awesome-skills lists, agent-kit frameworks, etc.), scoring gaps and deciding adopt/consider/skip. Triggers on "compare with other frameworks", "o que tem de novo no mercado", "vale a pena importar isso".
 allowed-tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch
 ---
 
@@ -8,7 +8,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch
 
 > **The goal is not to copy the biggest catalog — it's to find what makes DevBureau more useful without violating its own principles (tiered stack sizing, lean roster, works across every IDE).**
 
-A bigger number of agents/skills is not automatically better. BMAD-METHOD ships 50+ workflows; DevBureau deliberately stays leaner because its audience includes non-programmers who'd drown in that many menus. Benchmarking is about finding gaps and validated decisions, not maximizing catalog size.
+A bigger number of agents/skills is not automatically better. Some external kits ship 50+ workflows; DevBureau deliberately stays leaner because its audience includes non-programmers who'd drown in that many menus. Benchmarking is about finding gaps and validated decisions, not maximizing catalog size.
 
 ---
 
@@ -23,16 +23,7 @@ A bigger number of agents/skills is not automatically better. BMAD-METHOD ships 
 
 ## 1. Known Sources (Watch List)
 
-Keep this list current in `references/sources.md` — update it whenever a run discovers a new credible source. As of the last run, it covers:
-
-| Source | What it's good for | Credibility signal (at last check) |
-|---|---|---|
-| `bmad-code-org/BMAD-METHOD` | Scale-adaptive planning methodology, agent persona design | Active, official org repo |
-| `hesreallyhim/awesome-claude-code` | Hand-curated, broadest community signal | 36.8k+ stars, canonical list |
-| `VoltAgent/awesome-claude-code-subagents` | Subagent catalog by category | 154+ agents, 10 categories |
-| `VoltAgent/awesome-agent-skills` | Cross-tool skill catalog (Claude Code, Codex, Gemini CLI, Cursor, Antigravity) | 1000+ skills |
-| `sickn33/antigravity-awesome-skills` | Skills + installer CLI, multi-tool (this is DevBureau's own stated import source per CHANGELOG v2.2.0) | 1,600+ skills, active installer |
-| `rohitg00/awesome-claude-code-toolkit` | Breadth check: hooks, MCP configs, plugins — categories DevBureau under-covers | 135 agents, 20 hooks, 14 MCP configs |
+The curated list of external sources lives in `references/sources.md` (kept locally, not part of the distributed kit — a maintenance-only research note). Update it whenever a run discovers a new credible source: name, URL, what it's good for, credibility signal (stars, last commit, official vs. community).
 
 ---
 

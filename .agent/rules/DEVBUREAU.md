@@ -238,6 +238,7 @@ If the user says any of the following, **immediately stop all in-progress action
 3. **Wait:** Do NOT invoke subagents or write code until the user clears the Gate.
 4. **Reference:** Full protocol in `@[skills/brainstorming]`.
 5. **Respect suppressed questions:** Before asking ANY Gate question, check `.agent/memory/question-preferences.md`. If the topic is marked **Suprimida**, skip the question and proceed with the most recent reasonable assumption, stating it explicitly. If the user says something like "stop asking that" / "I already answered this" / "pare de perguntar isso", log a new entry there immediately — do not wait for confirmation.
+6. **Log every Gate firing:** One row in `.agent/memory/gate-telemetry.md` at the end of the interaction — whether you asked (did the answer change the plan?) or proceeded with a declared assumption (was it correct?). Format and review rules live in that file; details in `@[skills/brainstorming]` ("Telemetria do Gate").
 
 ### Gate Decision: Ask vs. Proceed with Declared Assumption
 
@@ -409,6 +410,6 @@ Tabela de comandos por estágio: `reference/OPERATIONS_DETAIL.md` ("Final Checkl
 
 - **Paths**: ver "System Map Read" acima. Listas completas de agents/skills/scripts: `reference/OPERATIONS_DETAIL.md` ("Quick Reference") e `.agent/ARCHITECTURE.md`.
 - **Workflows-chave**: `/ade` (**ADE Pipeline Autônomo**: req → spec → impl → qa → memory), `/build-saas` (SaaS completo em 7 etapas), `/squad` (equipes reutilizáveis por processo, `squads/`), `/epic-claim`/`/epic-sync`/etc. (coordenação opcional via GitHub Issues para `/squad`/`/ade` entre sessões, ver `github_coordination.py`), `/plan`, `/debug`, `/deploy`, `/orchestrate`, `/brainstorm`, `/enhance`.
-- **Memory Layer** (`.agent/memory/`): `lessons.md` (padrões que funcionaram), `gotchas.md` (erros a evitar), `question-preferences.md` (perguntas do Socratic Gate suprimidas/sempre-fazer). Consulte no início de tasks complexas.
+- **Memory Layer** (`.agent/memory/`): `lessons.md` (padrões que funcionaram), `gotchas.md` (erros a evitar), `question-preferences.md` (perguntas do Socratic Gate suprimidas/sempre-fazer), `gate-telemetry.md` (uma linha por disparo do Gate: a pergunta valeu? a suposição estava certa?). Consulte no início de tasks complexas.
 
 ---

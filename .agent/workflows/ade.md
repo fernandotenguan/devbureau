@@ -145,7 +145,7 @@ Riscos identificados:
 **Agent:** `@orchestrator`
 **Delegação:** skills específicas por subtask
 
-**Seleção de modelo por subtask** (Source: obra/superpowers — sem depender de nenhuma capacidade especial do host, apenas o parâmetro `model` do Agent tool quando disponível):
+**Seleção de modelo por subtask** (sem depender de nenhuma capacidade especial do host, apenas o parâmetro `model` do Agent tool quando disponível):
 
 | Tipo de subtask | Modelo | Exemplo |
 |---|---|---|
@@ -204,7 +204,7 @@ python .agent/scripts/checklist.py .
 npm test 2>/dev/null || python -m pytest . 2>/dev/null || echo "No tests configured"
 ```
 
-**Passo 4 — Cobertura de decisão (Source: open-gsd/gsd-core):** "testes passam" não é o mesmo que "o que foi decidido na Fase 2 foi de fato implementado." Reler a spec da Fase 2 e confirmar, item por item:
+**Passo 4 — Cobertura de decisão:** "testes passam" não é o mesmo que "o que foi decidido na Fase 2 foi de fato implementado." Reler a spec da Fase 2 e confirmar, item por item:
 - Cada item de "Critério de sucesso" tem o checkbox marcado E corresponde a um comportamento real verificável (não só "parece que está lá").
 - Nenhuma decisão registrada na spec foi silenciosamente trocada por outra durante a Fase 4 (ex.: a spec dizia "validação no backend", o código só validou no frontend).
 - Nenhum item de "Arquivos a criar/modificar" ficou de fora sem uma Condição de PARE registrada explicando por quê.

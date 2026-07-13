@@ -5,9 +5,6 @@ Advisory-only: warns when an edited/written JS/TS file still contains a
 console.log(...) call, the most common leftover-debug-statement pattern.
 Never blocks - just a nudge, same advisory-only design as scan_injection.py.
 Registered in .claude/settings.json by sync_ide.py's generate_claude_config().
-Source: affaan-m/ECC's scripts/hooks/check-console-log.js and
-post-edit-console-warn.js (DevBureau's own condensed Python version - see
-benchmark-log.md Run #7).
 """
 
 import json

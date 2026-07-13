@@ -265,7 +265,7 @@ Break into 5-15 min tasks organized by batch:
 
 Each task must have: clear description, files involved, and how to verify it worked.
 
-### 7.4: Project State → `STATE.md` (Source: open-gsd/gsd-core)
+### 7.4: Project State → `STATE.md`
 
 Implementation of these batches happens later, across many separate `/ade` sessions (one feature at a time, possibly days or weeks apart) — chat history won't survive that gap. Create `STATE.md` at the project root, one row per batch from 7.3, all starting `pending`:
 

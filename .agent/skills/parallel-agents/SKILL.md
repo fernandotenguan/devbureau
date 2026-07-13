@@ -27,7 +27,7 @@ This skill enables coordinating multiple specialized agents through Antigravity'
 
 ---
 
-## When NOT to Fan Out (Source: obra/superpowers)
+## When NOT to Fan Out
 
 This skill answers "which specialist for which domain." Before fanning out N agents in parallel, also check whether the tasks should run in parallel at all — a different question.
 
@@ -38,7 +38,7 @@ This skill answers "which specialist for which domain." Before fanning out N age
 
 **Safe to parallelize when:** tasks are genuinely independent investigations or fixes — different files/modules, no shared state, no task's output changes another's approach. Pattern 1 (Comprehensive Analysis) above is the canonical safe case: each domain agent reads the same code but writes nothing, so there's no race.
 
-## Dependency Waves (Source: open-gsd/gsd-core)
+## Dependency Waves
 
 Real task sets are rarely *all* independent or *all* dependent — usually some subset can run together and the rest waits on their output. Instead of one flat fan-out or one fully sequential chain, group into waves:
 

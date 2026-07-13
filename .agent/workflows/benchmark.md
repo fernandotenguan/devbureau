@@ -75,7 +75,7 @@ When `/benchmark` is triggered:
 ```
 /benchmark
 /benchmark focus on hooks and MCP coverage
-/benchmark check if BMAD-METHOD added anything new since last run
+/benchmark check if the planning-methodology source added anything new since last run
 ```
 
 ---

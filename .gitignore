@@ -20,3 +20,16 @@ __pycache__/
 
 # GraphIFY outputs (knowledge graph extraction — large, rebuilds on demand)
 graphify-out/
+
+# Kept locally only, never pushed: internal research notes that name the
+# external repos/frameworks DevBureau's own maintenance benchmarked or mined
+# ideas from. The kit itself (agents/skills/workflows) ships without these —
+# they're working notes for whoever maintains this repo, not part of the
+# product. See KIT_MASTER_RULES.md rule 7 (Benchmarking Contínuo) for the
+# workflow these support.
+CHANGELOG.md
+.agent/memory/pattern-mining-log.md
+.agent/memory/benchmark-log.md
+.agent/skills/framework-benchmarking/references/sources.md
+/ecc-benchmark-improvements.md
+/nota-10-kit.md

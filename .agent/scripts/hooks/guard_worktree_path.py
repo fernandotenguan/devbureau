@@ -8,8 +8,6 @@ constraint hard-blocking instead of advisory.
 No-op outside a worktree (a normal repo checkout has no separate root to
 violate), and no-op for relative paths (already scoped to cwd).
 Registered in .claude/settings.json by sync_ide.py's generate_claude_config().
-Source: open-gsd/gsd-core's gsd-worktree-path-guard.js (DevBureau's own
-condensed Python version - see benchmark-log.md Run #6).
 """
 
 import json

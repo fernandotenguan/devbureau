@@ -6,8 +6,6 @@ allowed-tools: Read, Bash
 
 # Using Git Worktrees
 
-> Source: obra/superpowers
-
 ## Overview
 
 Isolate work in its own workspace so it can't disturb the branch the user is already on. Prefer the host's native worktree tool when one exists; fall back to plain `git worktree` only when it doesn't.

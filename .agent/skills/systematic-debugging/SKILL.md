@@ -6,8 +6,6 @@ allowed-tools: Read, Glob, Grep, Bash
 
 # Systematic Debugging
 
-> Source: obra/superpowers
-
 ## Overview
 
 Random fixes waste time and create new bugs. Quick patches mask underlying issues.

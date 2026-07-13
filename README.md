@@ -6,7 +6,7 @@
 > without needing to know how to code. Works across Claude Code, Cursor, Codex CLI, OpenCode,
 > GitHub Copilot, Antigravity, Windsurf, Cline, Roo Code, and Zed.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.35.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.36.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-23-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-78-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-29-red)](https://github.com/fernandotenguan/devbureau)
@@ -26,7 +26,7 @@
 | **Master Scripts** | 10    | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py`, `github_coordination.py` |
 | **Kit Tests**      | ✅    | Automated pytest suite — runs before every commit                            |
 | **Memory Layer**   | ✅    | Persistent lessons and gotchas across sessions                               |
-| **Hooks**          | 10    | Git pre-commit (all IDEs) + 9 Claude Code hooks: block edits to auto-generated files, block writes outside the current worktree, block `git --no-verify`/hooksPath bypass, advisory prompt-injection scan, advisory `console.log` warning, auto-fix on edit, advisory Purple Ban/UI-library warning, advisory tool-loop detection, advisory MCP health tracking |
+| **Hooks**          | 11    | Git pre-commit (all IDEs) + 10 Claude Code hooks: block edits to auto-generated files, block writes outside the current worktree, block `git --no-verify`/hooksPath bypass, block UI-file edits until the specialist agent was read this session, advisory prompt-injection scan, advisory `console.log` warning, auto-fix on edit, advisory Purple Ban/UI-library warning, advisory tool-loop detection, advisory MCP health tracking |
 | **MCP**            | 1     | Starter `.mcp.json` with the GitHub MCP server (OAuth, no token in the file) |
 
 ---

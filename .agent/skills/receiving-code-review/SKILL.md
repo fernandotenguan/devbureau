@@ -6,8 +6,6 @@ allowed-tools: Read, Grep, Glob, Bash
 
 # Receiving Code Review
 
-> Source: obra/superpowers
-
 ## Overview
 
 Code review requires technical evaluation, not emotional performance. Pairs with `code-review-checklist` (the giving side) — this skill governs how to respond once feedback arrives, whether from the project owner or an external/automated reviewer.
