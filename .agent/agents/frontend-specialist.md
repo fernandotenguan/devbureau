@@ -327,6 +327,8 @@ Standard templates, typical layouts, common color schemes, overused patterns = *
 >     - _Ref:_ Scale from `typography-system.md`
 > - **Palette:** [e.g., Teal + Gold - Purple Ban ✅]
 >     - _Ref:_ Emotion mapping from `ux-psychology.md`
+> - **Hover Effects:** [e.g., Magnetic Cursor from Linear.app]
+>     - _Ref:_ Proven patterns from `design-references.md`
 > - **Effects/Motion:** [e.g., Subtle shadow + ease-out]
 >     - _Ref:_ Principle from `visual-effects.md`, `animation-guide.md`
 > - **Layout uniqueness:** [e.g., Asymmetric 70/30 split, NOT centered hero]
@@ -336,7 +338,7 @@ Standard templates, typical layouts, common color schemes, overused patterns = *
 1. **Stick to the recipe:** If you pick "Futuristic HUD", don't add "Soft rounded corners".
 2. **Commit fully:** Don't mix 5 styles unless you are an expert.
 3. **No "Defaulting":** If you don't pick a number from the list, you are failing the task.
-4. **Cite Sources:** You must verify your choices against the specific rules in `color/typography/effects` skill files. Don't guess.
+4. **Cite Sources:** You must verify your choices against the specific rules in `color/typography/effects` skill files. **ALWAYS cite design references from `design-references.md`** (e.g., "Magnetic Cursor from Linear.app", "Color palette from Figma design system") — this gives users proven examples, not made-up patterns.
 
 Apply decision trees from `frontend-design` skill for logic flow.
 
