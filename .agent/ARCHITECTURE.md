@@ -298,7 +298,7 @@ skill-name/
 
 ---
 
-## 📂 Scripts (9 master + tests)
+## 📂 Scripts (10 master + tests)
 
 Master validation scripts that orchestrate skill-level scripts.
 
@@ -319,6 +319,8 @@ Master validation scripts that orchestrate skill-level scripts.
 | `session_manager.py`     | Project state, tech stack detection           | Status checks                     |
 | `install_hooks.py`       | Installs the git pre-commit hook              | Once, after cloning/copying the kit |
 | `token_footprint.py`     | Measures the approx. token cost of the kit's own generated rule files | Periodically, to watch context-footprint growth |
+| `github_coordination.py` | GitHub Issues-backed epic coordination for `/squad`/`/ade` work spanning sessions (wraps `gh` CLI) | `/epic-claim`, `/epic-sync`, and related epic workflows |
+| `blast_radius.py`        | Finds which files reference a given file, backing File Dependency Awareness with a real scan | Before editing a shared/high-fanin file |
 
 ### Hooks (deterministic enforcement, not prose)
 
@@ -392,7 +394,7 @@ python .agent/scripts/sync_ide.py --target all
 | **Total Agents**     | 23                                                         |
 | **Total Skills**     | 78 (+ 10 nested under `game-development`)                  |
 | **Total Workflows**  | 29                                                         |
-| **Master Scripts**   | 10 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`, `github_coordination`) |
+| **Master Scripts**   | 11 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`, `github_coordination`, `blast_radius`) |
 | **Skills With Scripts** | 17                                                       |
 | **Kit Tests**        | 1 file, parametrized (`test_kit_integrity.py`)              |
 | **Memory Layer**     | `.agent/memory/` (lessons.md + gotchas.md + benchmark-log.md + pattern-mining-log.md) |

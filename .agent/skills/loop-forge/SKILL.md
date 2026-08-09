@@ -39,9 +39,13 @@ Ask: **"does the result of each turn change the next action?"**
 
 ### Gate 2 — Script-first test (connects to `.agent/SCRIPTS_REGISTRY.md`)
 Two questions, in order:
-1. **"Can the WHOLE task be done by a deterministic script?"** If yes → no loop. Route to the
-   Script-First Protocol (DEVBUREAU.md): use an existing registry script or, if the task has
-   recurred, propose creating one. A loop wrapping a fully deterministic task is pure waste.
+1. **"Can the WHOLE task be done by a deterministic script?"** Check existing coverage before
+   answering — read `.agent/SCRIPTS_REGISTRY.md` AND scan `.agent/skills/` for a skill that
+   already owns this workflow; a missing registry row is not proof no owner exists. If yes → no
+   loop. Route to the Script-First Protocol (DEVBUREAU.md): use an existing registry script or,
+   if the task has recurred, propose creating one (per the registry's Promotion checklist, which
+   requires the same existing-coverage check). A loop wrapping a fully deterministic task is pure
+   waste.
 2. **"Can the loop's CHECK be a deterministic script?"** (test run, lint, count, diff, registry
    script). Strongly prefer yes — a loop whose only verifier is LLM judgment is where reward
    hacking and self-deception live. If the check must be judgment-based, it gets hardened in

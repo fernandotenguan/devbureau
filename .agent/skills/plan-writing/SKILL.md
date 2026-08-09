@@ -170,6 +170,26 @@ After writing the plan, check it against the original request with fresh eyes �
 
 Fix issues inline as you find them — no need to re-run the whole review after a fix.
 
+## Segunda Opinião (Opcional, planos de alto risco)
+
+O Self-Review acima é o mesmo agente que escreveu o plano relendo o próprio raciocínio — não pega o próprio ponto cego. Para planos de risco real, use um segundo agente independente antes de apresentar o plano para aprovação do usuário.
+
+**Quando disparar** (qualquer um destes, não todos):
+- Classificado como COMPLEX CODE ou DESIGN pelo REQUEST_CLASSIFIER (DEVBUREAU.md) **e** toca 3+ arquivos.
+- Algum passo do plano cai em "PERGUNTE"/"EXIGIR + TRADUÇÃO" na Matriz de Decisão (ação irreversível, produção, dados de cliente).
+- `blast_radius.py` aponta risco HIGH em algum arquivo-alvo do plano (`.agent/SCRIPTS_REGISTRY.md`).
+- O usuário pede explicitamente uma segunda opinião.
+
+Fora desses casos, pule esta seção — não é gate obrigatório para planos simples; rodar sem necessidade é o mesmo desperdício de tokens que o Triple Gate do `loop-forge` evita para loops.
+
+**Como rodar:**
+1. Termine de escrever `{task-slug}.md` primeiro. O revisor nunca vê o seu raciocínio, só o artefato final e o pedido original do usuário (mesma disciplina do `triangulate-spec-review` do better-harness: contexto bruto, não a conclusão).
+2. Dispare via `Agent` tool com `subagent_type: "Plan"` (esse tipo já não tem acesso a Edit/Write — a garantia de "revisor não edita" fica estrutural, não só uma instrução que pode ser ignorada) e `run_in_background: false` (o resultado bloqueia o próximo passo, não pode rodar em paralelo silenciosamente).
+3. Prompt do revisor: cole o conteúdo de `{task-slug}.md` e o pedido original do usuário; peça achados classificados com o mesmo vocabulário do `code-review-checklist` (🔴 BLOCKING / 🟡 SUGGESTION / 🟢 NIT) aplicado ao PLANO, não a código — lacunas de entendimento do objetivo, limites de escopo não declarados, passo irreversível sem rollback, verificação sem comando concreto.
+4. **Normalize:** corrija todo 🔴 BLOCKING antes de prosseguir. 🟡 SUGGESTION é opcional — aplique se barato, senão anote e siga. 🟢 NIT é ignorado por padrão.
+5. O revisor nunca edita o plano nem o código — só a Plan/general-purpose agent que escreveu o plano aplica as correções, depois de comparar os achados.
+6. Isso é uma camada adicional ao Socratic Gate, não um substituto: mesmo com zero 🔴 BLOCKING, o plano ainda espera a aprovação do usuário antes da implementação (DEVBUREAU.md, "Alignment de Workspace").
+
 ## Best Practices (Quick Reference)
 
 1. **Start with goal** - What are we building/fixing?

@@ -40,6 +40,7 @@ Invoke: `python .agent/scripts/<script>.py`
 | `sync_ide.py` | Regenerates IDE rule files (Claude, Cursor, Codex, Copilot…) from `.agent/` sources | "sync IDE", "propagate rules" / "sincronizar IDE", "propagar regras" |
 | `install_hooks.py` | Installs the git pre-commit hook (doctor + kit tests) | "install hooks" / "instalar hooks" |
 | `token_footprint.py` | Measures approx. token cost of the kit's generated rule files | "token cost", "context footprint" / "custo de tokens", "pegada de contexto" |
+| `blast_radius.py` | Finds which files reference a given file before you change it (backs File Dependency Awareness, DEVBUREAU.md); `--diff` scans files changed vs HEAD, `--json` for machine output | "blast radius", "what depends on this file", "who references this" / "raio de impacto", "o que depende desse arquivo", "quem referencia isso" |
 | `github_coordination.py` | GitHub Issues-backed epic coordination (claim/decompose/validate/publish/review/unblock/sync) for `/squad`/`/ade` work spanning multiple sessions/agents; wraps `gh` CLI | "coordinate this epic", "claim this issue" / "coordenar esse epic", "reivindicar essa issue" |
 | `validation_config.py` | Support module: central config for selective validation (not invoked directly) | — (imported by `checklist.py`) |
 
@@ -91,6 +92,8 @@ maintenance weight.
 1. Deterministic — same input, same correct output, no judgment involved.
 2. Recurred 3+ times (or the user explicitly ordered the script).
 3. Stable input/output contract that can be expressed as CLI arguments.
+4. **Existing coverage checked, not assumed** — searched this registry AND `.agent/skills/` (a skill script may already cover it) and found no owner. Configured absence of a matching row is not the same as a verified search; do the search before concluding the gap is real.
+5. **Has a concrete stop/success signal** — exit code, diff, count, or explicit pass/fail, not an open-ended "looks fine" the caller has to interpret.
 
 **Measurement instead of projection:** when claiming a script saved effort, measure — use
 `benchmark_skill.py` for before/after comparisons and `token_footprint.py` to watch the kit's

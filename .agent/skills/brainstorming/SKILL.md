@@ -66,9 +66,10 @@ Todo disparo do Gate gera **uma linha** em `.agent/memory/gate-telemetry.md`, no
 
 1. **Perguntou e o usuário respondeu** → registre as dimensões que faltavam, quantas perguntas, e se a resposta **mudou o plano** (escopo/abordagem diferente do que seria feito sem perguntar).
 2. **Prosseguiu com suposição declarada** → registre a suposição e, quando o resultado ficar claro, se ela estava **correta**.
-3. Nunca acumule débito: se a sessão está terminando e a linha não foi escrita, escreva antes de encerrar. Uma linha, sem prosa extra — o formato está no próprio arquivo.
+3. Toda linha nova começa com **Estado de evidência = Declarada** (só a resposta/suposição foi anotada, ninguém checou o resultado real ainda). Quando uma sessão futura ou o desfecho desta mesma sessão confirmar ou contradizer o que foi registrado, volte na MESMA linha e atualize o estado para **Confirmada** ou **Contradita** — não crie uma linha nova. Ver `.agent/memory/gate-telemetry.md` para a definição completa dos três estados.
+4. Nunca acumule débito: se a sessão está terminando e a linha não foi escrita, escreva antes de encerrar. Uma linha, sem prosa extra — o formato está no próprio arquivo.
 
-Esses dados alimentam `question-preferences.md`: tópico com "Mudou o plano? = Não" repetido é candidato a supressão (proponha ao usuário); suposição errada repetida vira "Sempre perguntar".
+Esses dados alimentam `question-preferences.md`: tópico com "Mudou o plano? = Não" repetido é candidato a supressão (proponha ao usuário); suposição errada repetida vira "Sempre perguntar". Uma leitura só é confiável quando a maioria das linhas relevantes já saiu do estado "Declarada" — uma resposta anotada não é, por si só, prova de que funcionou.
 
 ---
 

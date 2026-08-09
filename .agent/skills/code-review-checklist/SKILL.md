@@ -53,6 +53,17 @@ Para tarefas marcadas como sensíveis (segurança, dados de produção, dinheiro
 - [ ] Se sim → marque 🔴 BLOCKING mesmo que a saída final esteja correta. Um resultado certo por um caminho perigoso é uma falha de qualidade, não um sucesso.
 - [ ] **Exemplo concreto — proteção de config:** editar/enfraquecer um arquivo de config de lint/formatter/tooling (`eslint.config.*`, `tsconfig.json`, `.flake8`, `pyproject.toml [tool.*]`, etc.) só para um check parar de reclamar, em vez de corrigir o código que ele está sinalizando, é 🔴 BLOCKING — mesmo com o lint/build "verde" no final. A trava existe para pegar o código, não para ser contornada.
 
+### Retrospectiva de Rastreabilidade (revisão de histórico, sob pedido)
+
+A Trilha de Auditoria acima olha UMA tarefa em andamento. Use este modo à parte quando o pedido for sobre o histórico ("os últimos commits têm rastreabilidade fraca?", "faz uma retrospectiva do repositório", `/audit` focado em processo) — não roda por padrão em toda revisão.
+
+1. Rode `git log --oneline -30` (ou o intervalo pedido) e classifique cada commit:
+   - Mensagem referencia issue/spec/`{task-slug}.md`, ou é autoexplicativa o bastante para reconstruir o "porquê"? Sem nenhum dos dois → 🟡 SUGGESTION (rastreabilidade fraca).
+   - Commit mistura escopos não relacionados (ex.: fix + refactor + feature no mesmo commit) → 🟡 SUGGESTION (escopo misto, dificulta bisect/revert).
+   - Commit toca arquivo sensível (`.agent/`, config de produção, schema de banco) sem menção a teste/validação na mensagem ou no PR associado → 🔴 BLOCKING.
+2. Para commits sinalizados que tocam arquivos com muitos dependentes, rode `python .agent/scripts/blast_radius.py <arquivo> --diff` (`.agent/SCRIPTS_REGISTRY.md`) para confirmar se o raio de impacto real bate com o que a mensagem do commit sugere — uma mudança "pequena" com risco HIGH é ela mesma um achado.
+3. Reporte como uma lista curta, mesmo vocabulário 🔴/🟡/🟢 desta skill, sem tabela nova: padrão observado, exemplos (`hash` curto + descrição), e uma sugestão de mensagem-modelo se o padrão se repetir 3+ vezes (candidato a lembrar em `.agent/memory/lessons.md`, não a virar script — julgamento de "essa mensagem conta a história certa" não é determinístico).
+
 ## AI & LLM Review Patterns (2025)
 
 ### Logic & Hallucinations
