@@ -60,6 +60,32 @@ def write_output(path: Path, content: str, dry_run: bool) -> None:
         print(f"  {GREEN}✔{RESET} Written: {path}")
 
 
+def _prune_stale_hooks(settings: dict) -> int:
+    """Remove hook entries pointing at a .agent/scripts/hooks/*.py file that
+    no longer exists — happens when a newer kit version renames or removes a
+    hook script, since _merge_claude_hook only ever appends, never deletes.
+    Runs every session (this script is a SessionStart hook), so a stale
+    entry self-heals on the session right after `npx devbureau update`.
+    Only touches commands under DevBureau's own hooks/ prefix; anything else
+    the user added to settings.json is left alone. Returns count removed."""
+    hooks_prefix = ".agent/scripts/hooks/"
+    removed = 0
+    for event_groups in settings.get("hooks", {}).values():
+        for group in event_groups:
+            surviving = []
+            for entry in group.get("hooks", []):
+                command = entry.get("command", "")
+                if hooks_prefix in command:
+                    script_name = command.split(hooks_prefix, 1)[1].split('"')[0]
+                    if not (AGENT_DIR / "scripts" / "hooks" / script_name).exists():
+                        removed += 1
+                        continue
+                surviving.append(entry)
+            group["hooks"] = surviving
+        event_groups[:] = [g for g in event_groups if g.get("hooks")]
+    return removed
+
+
 def _merge_claude_hook(settings: dict, event: str, matcher: str, command: str) -> None:
     """Add a hook command under settings['hooks'][event] for the given matcher,
     unless that exact command is already registered there."""
@@ -147,6 +173,9 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
     """Merge DevBureau's Claude Code hooks and permission preset into
     .claude/settings.json without disturbing any other settings the user
     already has configured there:
+    - stale hooks: prunes any DevBureau-owned hook entry (command under
+      .agent/scripts/hooks/) whose script file no longer exists, e.g. after
+      a kit update renamed or removed it — see _prune_stale_hooks.
     - permissions: DEVBUREAU.md's Decision Matrix as harness rules — safe
       recurring operations pre-allowed + acceptEdits default (only when the
       user hasn't set a mode), publish/delete/destructive pinned to ask.
@@ -177,6 +206,12 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
             return
 
     _merge_claude_permissions(settings)
+
+    pruned = _prune_stale_hooks(settings)
+    if pruned:
+        print(
+            f"  {YELLOW}✔{RESET} Removed {pruned} stale hook entr{'y' if pruned == 1 else 'ies'} (script no longer exists)"
+        )
 
     _merge_claude_hook(
         settings,
@@ -277,7 +312,11 @@ def build_agent_summary() -> str:
             elif line.startswith("description:"):
                 raw_desc = line.split(":", 1)[1].strip()
                 # Truncate at a word boundary — a mid-word cut reads broken and wastes context
-                description = raw_desc if len(raw_desc) <= 40 else raw_desc[:40].rsplit(" ", 1)[0] + "…"
+                description = (
+                    raw_desc
+                    if len(raw_desc) <= 40
+                    else raw_desc[:40].rsplit(" ", 1)[0] + "…"
+                )
             if name and description:
                 break
         if name:
