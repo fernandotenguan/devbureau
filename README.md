@@ -6,7 +6,7 @@
 > without needing to know how to code. Works across Claude Code, Cursor, Codex CLI, OpenCode,
 > GitHub Copilot, Antigravity, Windsurf, Cline, Roo Code, and Zed.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.40.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.40.1-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-23-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-78-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-29-red)](https://github.com/fernandotenguan/devbureau)
@@ -204,7 +204,7 @@ If you're maintaining DevBureau itself (not just consuming it in a downstream pr
 npx devbureau init
 ```
 
-This copies the `.agent/` folder into your project, runs the health check (`doctor.py`), installs the pre-commit hook, and syncs the rules to your IDE. It auto-detects which IDE/engine is already in use in the project (Claude Code, Cursor, Codex, OpenCode, Antigravity, Copilot, Windsurf, Cline, Roo Code, Zed) and uses that as the default instead of asking blindly — you can still pick a different one or `--target=<ide>` explicitly.
+This copies the `.agent/` folder into your project, runs the health check (`doctor.py`), installs the pre-commit hook, and syncs the rules to your IDE. It auto-detects which IDE/engine is already in use in the project (Claude Code, Cursor, Codex, OpenCode, Antigravity, Copilot, Windsurf, Cline, Roo Code, Zed) and uses that as the default instead of asking blindly — you can still pick a different one or `--target=<ide>` explicitly. The persistent memory layer (`.agent/memory/lessons.md`, `gotchas.md`, and friends) starts empty for your project — it never inherits DevBureau's own internal history, only the format/instructions so your project can start building its own from day one.
 
 Later, when you've customized agents/skills for this project and want to pull in DevBureau's latest improvements without losing your edits:
 

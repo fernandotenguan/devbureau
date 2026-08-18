@@ -24,8 +24,8 @@
     ".agent/agents/seo-specialist.md": "38156b1b71a119aad9271f679ae16c6ede3bd33bc7ae9c8989b0c3afd6bfaf42",
     ".agent/agents/sre-engineer.md": "799b2a516a423e1ec194920576b0590d8c64423c46fee6a7012b42a296ff7927",
     ".agent/agents/test-engineer.md": "830dae38397d193f753ca4bd570a0332afed39649e80cfba6cf1721ac7fe44c6",
-    ".agent/rules/DEVBUREAU.md": "9700e6a02804fe07a91e0fbf679e824d409133984da2d62139e66e4db99e453e",
-    ".agent/rules/reference/OPERATIONS_DETAIL.md": "95044348ce1b8b33e4363221728de9e976fa293acbd1fd94345e71fa62128e65",
+    ".agent/rules/DEVBUREAU.md": "7326eb70008da11f717151c89c8907b286f2e6c9ecfe7058394f33698346fb6d",
+    ".agent/rules/reference/OPERATIONS_DETAIL.md": "dc7f3f3733ce005e3cc57097d4cc4c2e922c68bc5a95a413eb56762d647c3e98",
     ".agent/workflows/ade.md": "6a0c4b7d8469381caab5f7e747c671bf44c3d4cc0172620c500d00225e3552ed",
     ".agent/workflows/audit.md": "9fc176bf4f09a69884c2fff9acb2fd0fdffc0e72543277ee45c886e783ac81f5",
     ".agent/workflows/benchmark.md": "bda2053eba75a5bb4dfc39a8483bb1e2fa750f1d282734fbba3af74734e38adb",
@@ -56,7 +56,7 @@
     ".agent/workflows/test.md": "f38ee2fbf542602dff83cb09f8d60e0714ec3c9ee2c099b05f59501d1d2be81d",
     ".agent/workflows/ui-ux-pro-max.md": "8a4e243c79d47de31359883462c0c2d7444f365151c041b6470629ba0203ba18"
   },
-  "generated_at": "2026-08-18T00:57:10.146444+00:00",
+  "generated_at": "2026-08-18T01:56:35.481034+00:00",
   "watched_dirs": [
     ".agent/rules",
     ".agent/agents",

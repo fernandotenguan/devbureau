@@ -40,7 +40,7 @@ python .agent/scripts/verify_all.py
 - `docs` → Nenhum teste
 - `refactor` → Lint + pytest (se escopo grande)
 
-**Referência completa:** `.agent/memory/test-strategy-by-change-type.md`.
+Mapeamento completo (código executável, fonte da verdade): `.agent/scripts/validation_config.py`.
 
 ---
 

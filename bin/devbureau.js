@@ -16,6 +16,40 @@ const MANIFEST_FILENAME = ".devbureau-manifest.json";
 // key is a real .agent/... path, so version metadata gets its own tiny file.
 const VERSION_FILENAME = ".devbureau-version";
 
+// Memory files meant to accumulate PER-PROJECT content (lessons, gotchas, Gate/
+// routing telemetry, question preferences) — a fresh install seeds these from
+// a structure-only template (`.agent/memory/templates/<name>.md`) instead of
+// DevBureau's own live, entry-filled file, so a new project doesn't inherit
+// the kit's own internal history as if it were that project's memory. `update()`
+// diffs against the template too, so the kit's own entries never leak in later.
+const MEMORY_TEMPLATE_FILES = [
+    ".agent/memory/lessons.md",
+    ".agent/memory/gotchas.md",
+    ".agent/memory/gate-telemetry.md",
+    ".agent/memory/routing-telemetry.md",
+    ".agent/memory/question-preferences.md",
+];
+
+// Memory files that only make sense for DevBureau's own kit repo (benchmark
+// runs comparing DevBureau against other kits, pattern-mining imports into
+// DevBureau's own knowledge base, retro notes scoped to `/finish-branch` on
+// the kit repo, one-off internal research artifacts) — never shipped to a
+// derived project at all.
+const KIT_ONLY_MEMORY_FILES = [
+    ".agent/memory/benchmark-log.md",
+    ".agent/memory/pattern-mining-log.md",
+    ".agent/memory/retro-log.md",
+    ".agent/memory/behavioral-alignment-wave2.md",
+    ".agent/memory/frontend-design-knowledge-extraction.md",
+];
+
+// ".agent/memory/lessons.md" -> ".agent/memory/templates/lessons.md"
+function templateRelPath(relPath) {
+    const parts = relPath.split("/");
+    const fileName = parts.pop();
+    return [...parts, "templates", fileName].join("/");
+}
+
 function currentPackageVersion() {
     return JSON.parse(
         fs.readFileSync(path.join(PACKAGE_ROOT, "package.json"), "utf8"),
@@ -168,7 +202,30 @@ function copyAgentFolder(targetDir, force) {
             `.agent/ already exists at ${destination}. Re-run with --force to overwrite.`,
         );
     }
-    fs.cpSync(SOURCE_AGENT_DIR, destination, { recursive: true, force: true });
+    fs.cpSync(SOURCE_AGENT_DIR, destination, {
+        recursive: true,
+        force: true,
+        filter: (src) => {
+            const rel = path
+                .relative(SOURCE_AGENT_DIR, src)
+                .split(path.sep)
+                .join("/");
+            if (rel === "") return true; // the .agent root itself
+            const relFromRoot = path.posix.join(".agent", rel);
+            if (rel.startsWith("memory/templates")) return false;
+            if (KIT_ONLY_MEMORY_FILES.includes(relFromRoot)) return false;
+            return true;
+        },
+    });
+    // Seed per-project memory files from their structure-only template instead
+    // of whatever the plain recursive copy above just placed there.
+    for (const relPath of MEMORY_TEMPLATE_FILES) {
+        const templateAbs = path.join(PACKAGE_ROOT, templateRelPath(relPath));
+        const destAbs = path.join(targetDir, relPath);
+        if (fs.existsSync(templateAbs)) {
+            fs.copyFileSync(templateAbs, destAbs);
+        }
+    }
     saveManifest(targetDir, buildManifest(targetDir, agentRelFiles(targetDir)));
     saveVersionFile(targetDir, currentPackageVersion());
     return destination;
@@ -425,7 +482,14 @@ function update(args) {
     const previousVersion = loadVersionFile(targetDir);
     const newVersion = currentPackageVersion();
 
-    const sourceRelFiles = agentRelFiles(PACKAGE_ROOT);
+    // Never ship the installer's own memory/templates/ source assets, or the
+    // kit-only memory logs (benchmark-log.md, pattern-mining-log.md, etc.) —
+    // same exclusion `copyAgentFolder()` applies on init.
+    const sourceRelFiles = agentRelFiles(PACKAGE_ROOT).filter(
+        (relPath) =>
+            !relPath.startsWith(".agent/memory/templates/") &&
+            !KIT_ONLY_MEMORY_FILES.includes(relPath),
+    );
     const destRelFiles = agentRelFiles(targetDir);
     const newManifest = {};
     const customizedFiles = [];
@@ -445,7 +509,12 @@ function update(args) {
 
     try {
         for (const relPath of sourceRelFiles) {
-            const sourceAbs = path.join(PACKAGE_ROOT, relPath);
+            // Per-project memory files diff against their structure-only
+            // template, never against DevBureau's own live, entry-filled file
+            // — otherwise every update would re-inject the kit's own history.
+            const sourceAbs = MEMORY_TEMPLATE_FILES.includes(relPath)
+                ? path.join(PACKAGE_ROOT, templateRelPath(relPath))
+                : path.join(PACKAGE_ROOT, relPath);
             const destAbs = path.join(targetDir, relPath);
             const sourceHash = hashFile(sourceAbs);
             const destHash = hashFile(destAbs);
