@@ -14,9 +14,12 @@
 **Pitfall evitado:** O que não fazer / armadilha identificada
 **Evidência:** Onde isso foi comprovado (commit, sessão, teste) — o que sustenta o nível de Confiança
 **Arquivos chave:** lista de arquivos relevantes
+**Última recuperação:** (opcional) YYYY-MM-DD da última vez que esta entrada foi de fato consultada/aplicada — atualize via `python .agent/scripts/memory_recall.py mark lessons.md <data> <trecho-do-título>` quando recuperar a entrada
 ```
 
 Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢 Confirmado (validado em produção ou em múltiplas sessões), 🟡 Inferido (observado uma vez, ainda não re-testado), 🔴 Hipótese (ainda não comprovado, registrado para vigiar).
+
+`Última recuperação:` é opcional e não retroativo — só entradas novas precisam trazê-lo. `python .agent/scripts/memory_recall.py stale` lista entradas antigas que nunca tiveram uma recuperação registrada, candidatas a revisão via `config-gc`.
 
 ---
 

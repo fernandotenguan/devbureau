@@ -298,7 +298,7 @@ skill-name/
 
 ---
 
-## 📂 Scripts (10 master + tests)
+## 📂 Scripts (15 master + tests)
 
 Master validation scripts that orchestrate skill-level scripts.
 
@@ -316,11 +316,15 @@ Master validation scripts that orchestrate skill-level scripts.
 | `sync_ide.py`            | Multi-IDE sync (Claude, Cursor, Codex, OpenCode, Copilot, Antigravity, Windsurf, Cline, Roo Code, Zed) | When updating the kit or its rules |
 | `auto_fixer.py`          | Auto-fix & format code (selective paths)      | Before finalizing any task         |
 | `auto_preview.py`        | Start/stop/monitor local dev server           | During development                |
-| `session_manager.py`     | Project state, tech stack detection           | Status checks                     |
+| `session_manager.py`     | Project state, tech stack detection; `budget <type>` reports the tool-call ceiling for a REQUEST CLASSIFIER type | Status checks; Loop Protection reference |
 | `install_hooks.py`       | Installs the git pre-commit hook              | Once, after cloning/copying the kit |
 | `token_footprint.py`     | Measures the approx. token cost of the kit's own generated rule files | Periodically, to watch context-footprint growth |
 | `github_coordination.py` | GitHub Issues-backed epic coordination for `/squad`/`/ade` work spanning sessions (wraps `gh` CLI) | `/epic-claim`, `/epic-sync`, and related epic workflows |
-| `blast_radius.py`        | Finds which files reference a given file, backing File Dependency Awareness with a real scan | Before editing a shared/high-fanin file |
+| `blast_radius.py`        | Finds which files reference a given file; `--risk` adds a composite diff-risk score (fan-out + critical-domain keywords + 90-day commit churn) with a suggested verification depth | Before editing a shared/high-fanin or high-risk file |
+| `memory_recall.py`       | Searches `lessons.md`/`gotchas.md` by trigger keyword; `stale` lists entries never recalled | Before starting a task that may match a past lesson/gotcha |
+| `test_gap_check.py`      | Flags changed source files with no matching test file touched in the same diff | Pre-commit / before calling a change done |
+| `doc_drift_check.py`     | Flags doc references (backtick paths/script names) that no longer exist on disk | Periodically, or after renaming/removing a script/agent/skill |
+| `integrity_manifest.py`  | Generates/verifies a SHA-256 manifest of `.agent/rules/`, `.agent/agents/`, `.agent/workflows/` | Before a release (`generate`); in a derived project to detect drift from the shipped baseline (`verify`) |
 
 ### Hooks (deterministic enforcement, not prose)
 
@@ -394,10 +398,10 @@ python .agent/scripts/sync_ide.py --target all
 | **Total Agents**     | 23                                                         |
 | **Total Skills**     | 78 (+ 10 nested under `game-development`)                  |
 | **Total Workflows**  | 29                                                         |
-| **Master Scripts**   | 11 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`, `github_coordination`, `blast_radius`) |
+| **Master Scripts**   | 15 (`doctor`, `checklist`, `verify_all`, `sync_ide`, `auto_fixer`, `auto_preview`, `session_manager`, `install_hooks`, `token_footprint`, `github_coordination`, `blast_radius`, `memory_recall`, `test_gap_check`, `doc_drift_check`, `integrity_manifest`) |
 | **Skills With Scripts** | 17                                                       |
 | **Kit Tests**        | 1 file, parametrized (`test_kit_integrity.py`)              |
-| **Memory Layer**     | `.agent/memory/` (lessons.md + gotchas.md + benchmark-log.md + pattern-mining-log.md) |
+| **Memory Layer**     | `.agent/memory/` (lessons.md + gotchas.md + benchmark-log.md + pattern-mining-log.md + gate-telemetry.md + routing-telemetry.md + question-preferences.md + retro-log.md) |
 
 ---
 

@@ -58,7 +58,7 @@ Catch yourself using "should," "probably," or expressing satisfaction ("Done!", 
 
 **A passing test suite must reflect a general solution, not a fit to the visible cases.** Never hardcode a value, special-case a specific test input, or add a workaround script to make a suite go green — implement the logic that solves the problem for any valid input. Tests verify correctness; they don't define the solution. If a test itself looks wrong, or the task as stated is infeasible, say so instead of engineering around it.
 
-**Verification depth matches change risk.** Don't spend the same verification effort on every change. A trivial, cosmetic edit needs a syntax/type check. A logic change needs a manual trace through the actual changed path with real inputs. A change touching concurrency, money, or persisted state needs a written-out failure scenario (what happens under a race, a retry, a partial failure) before it's called done.
+**Verification depth matches change risk.** Don't spend the same verification effort on every change. A trivial, cosmetic edit needs a syntax/type check. A logic change needs a manual trace through the actual changed path with real inputs. A change touching concurrency, money, or persisted state needs a written-out failure scenario (what happens under a race, a retry, a partial failure) before it's called done. `python .agent/scripts/blast_radius.py <file> --risk` backs this with a concrete score (reference fan-out + critical-domain keywords + 90-day commit churn) instead of a gut call, when the file is uncertain.
 
 > **Enforcement opcional na camada de tooling:** GateGuard (third-party, não bundled) é um hook `PreToolUse` que exige fatos concretos de investigação antes de liberar mudanças arriscadas — instalação e racional em `reference/OPERATIONS_DETAIL.md` ("GateGuard").
 
@@ -86,6 +86,10 @@ Never speculate about code you have not opened in this session — this applies 
 | **Circular reasoning** (trying A → fails → tries B → fails → tries A again) | STOP.                       |
 | **File edit that fails 2+ times** with target content mismatch              | Re-read the file first.     |
 | **Subagent returns same error twice**                                       | Switch approach entirely.   |
+
+#### Replanejamento a partir do Estado (não repita o passo que falhou)
+
+Quando uma pré-condição de um passo do plano falhar (ex.: arquivo esperado não existe, comando retorna erro, dependência ausente), não repita o mesmo passo — reavalie o estado atual e decida o próximo passo a partir dele, como uma trilha de execução que replaneja em vez de uma sequência fixa. Se o novo estado não sugerir um próximo passo óbvio, isso é o próprio sinal de "Circular reasoning" da tabela acima: pare e aplique o Escape Protocol em vez de insistir na sequência original.
 
 #### Escape Protocol (mandatory when loop is detected)
 

@@ -6,7 +6,7 @@
 > equipe especializada, sem precisar saber programar. Funciona no Claude Code, Cursor, Codex CLI,
 > OpenCode, GitHub Copilot, Antigravity, Windsurf, Cline, Roo Code e Zed.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.39.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.40.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-23-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-78-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-29-red)](https://github.com/fernandotenguan/devbureau)
@@ -23,7 +23,7 @@
 | **Agentes**          | 23         | Personas de IA especialistas (frontend, backend, segurança, SRE, a11y, jogos, etc.) |
 | **Skills**           | 78         | Módulos de conhecimento de domínio com scripts automatizados                  |
 | **Workflows**        | 29         | Procedimentos de comando de barra, incluindo o pipeline autônomo `/ade`       |
-| **Scripts Mestres**  | 10         | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py`, `github_coordination.py` |
+| **Scripts Mestres**  | 15         | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py`, `github_coordination.py`, `blast_radius.py`, `memory_recall.py`, `test_gap_check.py`, `doc_drift_check.py`, `integrity_manifest.py` |
 | **Testes do Kit**    | ✅         | Suíte pytest automatizada — roda antes de cada commit                         |
 | **Camada de Memória**| ✅         | Lições e armadilhas persistentes entre sessões                                |
 | **Hooks**            | 11         | Git pre-commit (todos os IDEs) + 10 hooks do Claude Code: bloqueia edições em arquivos auto-gerados, bloqueia escritas fora da worktree atual, bloqueia bypass de `git --no-verify`/hooksPath, bloqueia edição de arquivo de UI sem ler o agente especialista antes, varredura consultiva de prompt-injection, aviso consultivo de `console.log`, auto-fix ao editar, aviso consultivo de Purple Ban/biblioteca de UI, detecção consultiva de loop de ferramenta, monitoramento consultivo de saúde de MCP |

@@ -324,6 +324,43 @@ def check_version_drift() -> int:
     return 0
 
 
+def check_integrity_manifest() -> int:
+    """Advisory only: if an INTEGRITY_MANIFEST.json baseline exists (generated via
+    `integrity_manifest.py generate`), report whether rules/agents/workflows still
+    match it. Absent baseline is normal (opt-in tool) — skip silently. A derived
+    project customizing its own rules on purpose is legitimate, so drift is a
+    signal to review, never a failing check here.
+    """
+    manifest_path = AGENT_DIR / "INTEGRITY_MANIFEST.json"
+    if not manifest_path.exists():
+        return 0
+
+    try:
+        import hashlib
+        import json
+
+        baseline = json.loads(manifest_path.read_text(encoding="utf-8"))
+        baseline_files: dict = baseline.get("files", {})
+        drifted = []
+        for rel_path, expected_hash in baseline_files.items():
+            full_path = REPO_ROOT / rel_path
+            if not full_path.exists():
+                drifted.append(rel_path)
+                continue
+            actual_hash = hashlib.sha256(full_path.read_bytes()).hexdigest()
+            if actual_hash != expected_hash:
+                drifted.append(rel_path)
+
+        if drifted:
+            warn(f"Integrity manifest: {len(drifted)} file(s) differ from baseline "
+                 f"(run 'python .agent/scripts/integrity_manifest.py verify' for details)")
+        else:
+            ok(f"Integrity manifest: {len(baseline_files)} file(s) match baseline")
+    except Exception:
+        pass
+    return 0
+
+
 def check_devbureau_rules() -> tuple[int, int]:
     """Verify DEVBUREAU.md rules file exists."""
     rules_path = RULES_DIR / "DEVBUREAU.md"
@@ -403,6 +440,9 @@ def main() -> None:
 
     section("Version")
     check_version_drift()
+
+    section("Integrity Manifest")
+    check_integrity_manifest()
 
     section("Kit Health Score")
     for name, sc in scoreboard:

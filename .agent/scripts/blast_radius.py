@@ -107,6 +107,58 @@ def classify_risk(target: Path, reference_count: int) -> str:
     return "LOW"
 
 
+# Path fragments that mark a file as touching a critical domain — auth, money,
+# schema migrations, secrets. A change here deserves more verification depth
+# regardless of how many other files reference it (DEVBUREAU.md, "Verification
+# depth matches change risk").
+CRITICALITY_KEYWORDS = {
+    "auth", "login", "senha", "password", "session", "token",
+    "payment", "pagamento", "checkout", "billing", "invoice", "fatura",
+    "migration", "migração", "migrations", "schema",
+    "secret", "credential", "credencial", ".env",
+}
+
+
+def path_criticality(target: Path) -> list[str]:
+    haystack = str(target).lower().replace("\\", "/")
+    return sorted(kw for kw in CRITICALITY_KEYWORDS if kw in haystack)
+
+
+def git_churn(target: Path, root: Path) -> int:
+    """Number of commits touching this file in the last 90 days — a proxy for
+    how often this file has historically needed a follow-up fix. 0 on any git
+    failure (shallow clone, file never committed) rather than raising."""
+    result = subprocess.run(
+        ["git", "log", "--since=90.days", "--oneline", "--", str(target.relative_to(root))],
+        cwd=root, capture_output=True, text=True,
+    )
+    if result.returncode != 0:
+        return 0
+    return len([line for line in result.stdout.splitlines() if line.strip()])
+
+
+def suggest_verification_depth(risk_score: int) -> str:
+    if risk_score >= 6:
+        return "Written failure scenario (race/retry/partial-failure) before calling this done."
+    if risk_score >= 3:
+        return "Manual trace through the changed path with real inputs."
+    return "Syntax/type check is likely sufficient."
+
+
+def compute_diff_risk(target: Path, root: Path, reference_count: int) -> dict:
+    criticality = path_criticality(target)
+    churn = git_churn(target, root)
+    # Score: reference fan-out (capped) + 3 per critical-domain keyword hit + churn (capped).
+    score = min(reference_count, 10) + 3 * len(criticality) + min(churn, 5)
+    return {
+        "reference_count": reference_count,
+        "criticality_keywords": criticality,
+        "commits_last_90d": churn,
+        "risk_score": score,
+        "suggested_verification": suggest_verification_depth(score),
+    }
+
+
 def git_diff_targets(root: Path) -> list[str]:
     result = subprocess.run(
         ["git", "diff", "--name-only", "HEAD"],
@@ -124,6 +176,9 @@ def main() -> int:
     parser.add_argument("files", nargs="*", help="File paths (relative to repo root) to check.")
     parser.add_argument("--diff", action="store_true", help="Use files changed vs HEAD as targets.")
     parser.add_argument("--json", action="store_true", help="Machine-readable JSON output.")
+    parser.add_argument("--risk", action="store_true",
+                         help="Add a composite diff-risk score (reference fan-out + critical-domain keywords + "
+                              "90-day commit churn) and a suggested verification depth per target.")
     args = parser.parse_args()
 
     targets = list(args.files)
@@ -144,14 +199,17 @@ def main() -> int:
         term, term_kind = resolve_search_term(target)
         refs = find_references(target, REPO_ROOT)
         risk = classify_risk(target, len(refs))
-        report.append({
+        entry = {
             "target": rel_path.replace("\\", "/"),
             "search_term": term,
             "search_term_kind": term_kind,
             "reference_count": len(refs),
             "risk": risk,
             "references": refs,
-        })
+        }
+        if args.risk:
+            entry["diff_risk"] = compute_diff_risk(target, REPO_ROOT, len(refs))
+        report.append(entry)
 
     if not report:
         print(f"{RED}No valid target files to scan.{RESET}", file=sys.stderr)
@@ -166,6 +224,12 @@ def main() -> int:
         color = risk_color[entry["risk"]]
         print(f"\n{BOLD}{entry['target']}{RESET}  (search term: {CYAN}{entry['search_term']}{RESET} — {entry['search_term_kind']})")
         print(f"  Risk: {color}{entry['risk']}{RESET}  |  Referenced by {entry['reference_count']} file(s)")
+        if "diff_risk" in entry:
+            dr = entry["diff_risk"]
+            crit = ", ".join(dr["criticality_keywords"]) or "none"
+            print(f"  Diff risk score: {BOLD}{dr['risk_score']}{RESET}  "
+                  f"(critical-domain keywords: {crit}; commits last 90d: {dr['commits_last_90d']})")
+            print(f"  Suggested verification: {dr['suggested_verification']}")
         for ref in entry["references"][:15]:
             print(f"    {ref['file']}:{ref['line']}  {ref['snippet']}")
         if entry["reference_count"] > 15:

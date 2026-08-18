@@ -124,6 +124,8 @@ Ao auto-aplicar um agente, anuncie na resposta: `🤖 **Applying knowledge of @[
 
 **Failure Conditions:** código sem agente identificado = violação de protocolo; pular o anúncio impede o usuário de verificar; ignorar regra específica do agente (ex: Purple Ban) = falha de qualidade. Antes de escrever qualquer código ou UI, confirme que o checklist acima foi cumprido.
 
+**Log de roteamento (COMPLEX CODE / DESIGN / multi-domínio):** uma linha em `.agent/memory/routing-telemetry.md` ao fim da interação — qual agente foi escolhido e se, em retrospecto, foi o certo (mesmo formato/disciplina do `gate-telemetry.md`: comece em "Declarada", reclassifique só com evidência posterior). Fast-Track (QUESTION/SURVEY-INTEL/SIMPLE CODE) não loga — o custo de registrar excede o valor de medir escolhas triviais.
+
 ---
 
 ## ⚡ EFICIÊNCIA OPERACIONAL & ECONOMIA (MODOS SELETIVOS)
@@ -138,6 +140,10 @@ Ao auto-aplicar um agente, anuncie na resposta: `🤖 **Applying knowledge of @[
 2. **Se não existe script**, aplique a **Regra dos Três**: 1ª ocorrência resolve inline; 2ª ocorrência resolve inline E sinaliza ao usuário que virou candidato a script; 3ª ocorrência promove a script (via `skill-scaffolder`) e registra no `SCRIPTS_REGISTRY.md` com gatilhos EN + PT-BR. Nunca crie script por especulação: script sem demanda comprovada é manutenção morta.
 3. **Fronteira:** tarefas de julgamento (nomear, decidir arquitetura, avaliar trade-off, gosto de design, hipótese de causa raiz) ficam com agentes. A própria classificação do pedido é julgamento e acontece na cabeça do modelo, não num roteador em código.
 4. **Economia honesta:** ao afirmar que um script economizou tokens/tempo, meça (`benchmark_skill.py`, `token_footprint.py`) em vez de projetar percentuais.
+
+### Orçamento de Tarefa (Task Budget)
+
+Cada tipo do REQUEST CLASSIFIER tem um teto de referência de tool calls (`python .agent/scripts/session_manager.py budget <tipo>`: question ~3, survey-intel ~10, simple-code ~8, complex-code ~25, design-ui ~25, full-orchestration ~50). É um número de referência para o Loop Protection citar, não enforcement automático: ao suspeitar que uma tarefa está "não avançando" (ver Loop Detection Rules), compare contra o teto do tipo antes de decidir se é hora do Escape Protocol, em vez de julgar por sensação.
 
 ---
 
@@ -166,7 +172,7 @@ Catch yourself using "should," "probably," or expressing satisfaction ("Done!", 
 
 **A passing test suite must reflect a general solution, not a fit to the visible cases.** Never hardcode a value, special-case a specific test input, or add a workaround script to make a suite go green — implement the logic that solves the problem for any valid input. Tests verify correctness; they don't define the solution. If a test itself looks wrong, or the task as stated is infeasible, say so instead of engineering around it.
 
-**Verification depth matches change risk.** Don't spend the same verification effort on every change. A trivial, cosmetic edit needs a syntax/type check. A logic change needs a manual trace through the actual changed path with real inputs. A change touching concurrency, money, or persisted state needs a written-out failure scenario (what happens under a race, a retry, a partial failure) before it's called done.
+**Verification depth matches change risk.** Don't spend the same verification effort on every change. A trivial, cosmetic edit needs a syntax/type check. A logic change needs a manual trace through the actual changed path with real inputs. A change touching concurrency, money, or persisted state needs a written-out failure scenario (what happens under a race, a retry, a partial failure) before it's called done. `python .agent/scripts/blast_radius.py <file> --risk` backs this with a concrete score (reference fan-out + critical-domain keywords + 90-day commit churn) instead of a gut call, when the file is uncertain.
 
 > **Enforcement opcional na camada de tooling:** GateGuard (third-party, não bundled) é um hook `PreToolUse` que exige fatos concretos de investigação antes de liberar mudanças arriscadas — instalação e racional em `reference/OPERATIONS_DETAIL.md` ("GateGuard").
 
@@ -194,6 +200,10 @@ Never speculate about code you have not opened in this session — this applies 
 | **Circular reasoning** (trying A → fails → tries B → fails → tries A again) | STOP.                       |
 | **File edit that fails 2+ times** with target content mismatch              | Re-read the file first.     |
 | **Subagent returns same error twice**                                       | Switch approach entirely.   |
+
+#### Replanejamento a partir do Estado (não repita o passo que falhou)
+
+Quando uma pré-condição de um passo do plano falhar (ex.: arquivo esperado não existe, comando retorna erro, dependência ausente), não repita o mesmo passo — reavalie o estado atual e decida o próximo passo a partir dele, como uma trilha de execução que replaneja em vez de uma sequência fixa. Se o novo estado não sugerir um próximo passo óbvio, isso é o próprio sinal de "Circular reasoning" da tabela acima: pare e aplique o Escape Protocol em vez de insistir na sequência original.
 
 #### Escape Protocol (mandatory when loop is detected)
 
@@ -444,7 +454,7 @@ Tabela de comandos por estágio: `reference/OPERATIONS_DETAIL.md` ("Final Checkl
 
 - **Paths**: ver "System Map Read" acima. Listas completas de agents/skills/scripts: `reference/OPERATIONS_DETAIL.md` ("Quick Reference") e `.agent/ARCHITECTURE.md`.
 - **Workflows-chave**: `/ade` (**ADE Pipeline Autônomo**: req → spec → impl → qa → memory), `/build-saas` (SaaS completo em 7 etapas), `/squad` (equipes reutilizáveis por processo, `squads/`), `/epic-claim`/`/epic-sync`/etc. (coordenação opcional via GitHub Issues para `/squad`/`/ade` entre sessões, ver `github_coordination.py`), `/plan`, `/debug`, `/deploy`, `/orchestrate`, `/brainstorm`, `/enhance`.
-- **Memory Layer** (`.agent/memory/`): `lessons.md` (padrões que funcionaram), `gotchas.md` (erros a evitar), `question-preferences.md` (perguntas do Socratic Gate suprimidas/sempre-fazer), `gate-telemetry.md` (uma linha por disparo do Gate: a pergunta valeu? a suposição estava certa?). Consulte no início de tasks complexas.
+- **Memory Layer** (`.agent/memory/`): `lessons.md` (padrões que funcionaram), `gotchas.md` (erros a evitar), `question-preferences.md` (perguntas do Socratic Gate suprimidas/sempre-fazer), `gate-telemetry.md` (uma linha por disparo do Gate: a pergunta valeu? a suposição estava certa?), `routing-telemetry.md` (uma linha por roteamento COMPLEX CODE/DESIGN: o agente escolhido foi o certo?). Consulte no início de tasks complexas. Ambos `lessons.md` e `gotchas.md` aceitam um campo opcional `Última recuperação:` por entrada — `python .agent/scripts/memory_recall.py recall <termo>` busca por gatilho, `stale` lista entradas nunca recuperadas.
 
 ---
 

@@ -104,6 +104,8 @@ Ties the retro to an event that already exists (finishing a branch) instead of i
 2. `git log <last-sha>..HEAD --oneline` to see what shipped since then (if no prior entry exists, summarize the current session's commits instead of the full history).
 3. Check `.agent/memory/lessons.md` and `gotchas.md` for entries added since that SHA.
 4. Append one dated entry to `retro-log.md`: commits shipped (one line each), any new lesson/gotcha worth surfacing, and the current HEAD SHA for the next run to diff against. Do not re-summarize what a prior entry already covered.
+5. Run `python .agent/scripts/doc_drift_check.py` and `python .agent/scripts/test_gap_check.py --diff` — advisory, report findings in the retro entry if any, never blocks the chosen action (Step 4 already ran before this step).
+6. Run `python .agent/scripts/integrity_manifest.py generate` if any file under `.agent/rules/`, `.agent/agents/`, or `.agent/workflows/` shipped in this session's commits (`git log <last-sha>..HEAD --name-only` against those three paths) — keeps the baseline `INTEGRITY_MANIFEST.json` current so `doctor.py`'s advisory drift check doesn't start reporting false drift against a stale snapshot. Skip silently if nothing under those paths changed.
 
 ## Common Mistakes
 

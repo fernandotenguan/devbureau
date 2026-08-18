@@ -111,14 +111,51 @@ def print_status(root: Path):
     print(f"\n📄 Files: {stats['total']} total files tracked")
     print("\n====================\n")
 
+# Approximate tool-call ceilings per REQUEST CLASSIFIER type (DEVBUREAU.md).
+# These are reference numbers for the Anti-Hallucination Loop Protection's
+# "Task not advancing" signal, not a hard runtime enforcement — the agent
+# quotes a concrete ceiling instead of a vibe ("this is taking a while") when
+# deciding whether to invoke the Escape Protocol.
+TASK_BUDGETS = {
+    "question": {"tool_calls": 3, "note": "Read-only lookup; no edits expected."},
+    "survey-intel": {"tool_calls": 10, "note": "Exploration/analysis, no file writes."},
+    "simple-code": {"tool_calls": 8, "note": "Single-file inline edit, Fast-Track."},
+    "complex-code": {"tool_calls": 25, "note": "Multi-file build/refactor with a {task-slug}.md plan."},
+    "design-ui": {"tool_calls": 25, "note": "Same ceiling as complex-code; UI work adds browser-check calls."},
+    "full-orchestration": {"tool_calls": 50, "note": "Multi-agent /orchestrate or /ade run."},
+}
+
+
+def print_budget(request_type: str | None) -> None:
+    if request_type is None:
+        print("\n=== Task Budgets (tool-call ceilings by REQUEST CLASSIFIER type) ===\n")
+        for key, val in TASK_BUDGETS.items():
+            print(f"  {key:<20} ~{val['tool_calls']} tool calls — {val['note']}")
+        print()
+        return
+
+    key = request_type.lower()
+    if key not in TASK_BUDGETS:
+        print(f"Unknown request type '{request_type}'. Valid types: {', '.join(TASK_BUDGETS)}")
+        return
+    val = TASK_BUDGETS[key]
+    print(f"\n{key}: ~{val['tool_calls']} tool calls — {val['note']}\n")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Session Manager")
-    parser.add_argument("command", choices=["status", "info"], help="Command to run")
-    parser.add_argument("path", nargs="?", default=".", help="Project path")
-    
+    parser.add_argument("command", choices=["status", "info", "budget"], help="Command to run")
+    parser.add_argument("path", nargs="?", default=".", help="Project path, or request type when command=budget")
+
     args = parser.parse_args()
+
+    if args.command == "budget":
+        request_type = None if args.path == "." else args.path
+        print_budget(request_type)
+        return
+
     root = get_project_root(args.path)
-    
+
     if args.command == "status":
         print_status(root)
     elif args.command == "info":
