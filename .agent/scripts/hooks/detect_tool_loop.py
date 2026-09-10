@@ -10,6 +10,9 @@ state - those stay prose-only, self-monitored by the agent.
 Uses _hook_state.py to compare the current call against this session's
 recent history. Never blocks - only the agent decides to actually stop;
 this hook just makes the signal hard to miss or rationalize away.
+When a rule fires, the failed approach is also appended to
+.agent/memory/dead-ends.md via _dead_ends.py (A9), so the same dead end is
+recallable in a later session instead of only inside this one.
 Registered in .claude/settings.json by sync_ide.py's generate_claude_config().
 
 VERIFY: the exact shape of `tool_response` on error is not confirmed against
@@ -23,6 +26,7 @@ import hashlib
 import json
 import sys
 
+from _dead_ends import record as record_dead_end
 from _hook_state import append_call
 
 LOOP_MATCHER_TOOLS = ("Edit", "Write", "MultiEdit", "Bash", "Grep", "Read")
@@ -78,10 +82,20 @@ def main() -> None:
     # recent calls are the same failing Edit.
     if tool_name == "Edit" and len(history) >= 2:
         last_two = history[-2:]
-        if all(h["tool"] == "Edit" and h["error"] and h["sig"] == record["sig"] for h in last_two):
+        if all(
+            h["tool"] == "Edit" and h["error"] and h["sig"] == record["sig"]
+            for h in last_two
+        ):
+            registered = record_dead_end(
+                tool_name,
+                tool_input,
+                record["sig"],
+                "Edit falhou 2x seguidas com o mesmo conteudo alvo",
+            )
             print(
                 "[Hook] This Edit has now failed 2x with the same target content - "
-                "re-read the file before retrying (DEVBUREAU.md Loop Detection Rules).",
+                "re-read the file before retrying (DEVBUREAU.md Loop Detection Rules)."
+                + (" Registered in .agent/memory/dead-ends.md." if registered else ""),
             )
             sys.exit(0)
 
@@ -93,10 +107,17 @@ def main() -> None:
             h["tool"] == record["tool"] and h["sig"] == record["sig"] and h["error"]
             for h in last_three
         ):
+            registered = record_dead_end(
+                tool_name,
+                tool_input,
+                record["sig"],
+                f"{tool_name} falhou 3x seguidas com argumentos identicos",
+            )
             print(
                 f"[Hook] '{tool_name}' has now failed 3x in a row with identical "
                 "arguments - STOP and declare the blocker instead of retrying "
-                "(DEVBUREAU.md Loop Detection Rules).",
+                "(DEVBUREAU.md Loop Detection Rules)."
+                + (" Registered in .agent/memory/dead-ends.md." if registered else ""),
             )
 
     sys.exit(0)

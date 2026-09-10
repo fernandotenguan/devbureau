@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 memory_recall.py — DevBureau Memory Recall & Decay Tracker
-Searches lessons.md/gotchas.md by keyword (matching the "Gatilho" field convention
+Searches lessons.md/gotchas.md/dead-ends.md by keyword (matching the "Gatilho" field convention
 already used in both files), and flags entries nobody has recalled in a long time
 so the memory layer doesn't just grow forever without anyone checking whether an
 entry is still earning its place.
@@ -29,7 +29,7 @@ if sys.platform == "win32":
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MEMORY_DIR = REPO_ROOT / ".agent" / "memory"
 ARCHIVE_DIR = MEMORY_DIR / "archive"
-DEFAULT_FILES = ["lessons.md", "gotchas.md"]
+DEFAULT_FILES = ["lessons.md", "gotchas.md", "dead-ends.md"]
 
 
 def searchable_paths() -> list[Path]:
