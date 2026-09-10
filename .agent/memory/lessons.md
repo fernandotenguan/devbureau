@@ -247,3 +247,21 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Pitfall evitado:** "Bump de dependências" genérico esconde se a mudança era cosmética ou corrigia uma vulnerabilidade real — quem decide se atualiza urgente ou não precisa dessa informação.
 **Evidência:** observação cruzada em múltiplos codebases auditados (nota de manutenção interna, não pública).
 **Arquivos chave:** `.agent/skills/deployment-procedures/SKILL.md`
+
+## 2026-09-10 — Ondas 1 e 2: regra em prosa vira hook determinístico
+**Gatilho:** "a regra existe mas ninguém cumpre", "isso deveria rodar sozinho", automação de ciclo de vida, benchmark de kit
+**Confiança:** 🟢 Confirmado
+**Padrão identificado:** Toda regra do DEVBUREAU.md que é mecanicamente verificável rende mais como hook do que como texto. O ciclo que funcionou: benchmark externo para achar o mecanismo, medir o baseline real antes de propor, implementar um item por commit, e provar cada um com payload de hook forjado ou projeto derivado limpo. Ordem deliberada: medir antes de podar. O `rule_adherence.py` foi entregue ANTES de qualquer corte no DEVBUREAU.md, com portão explícito de 20 sessões.
+**Pitfall evitado:** Não cortar os 40 KB de regras "por eficiência" sem instrumento. O placar já mostrou que uma regra de alta confiança (tag de abertura) estava sendo cumprida em 3 de 8 aberturas na própria sessão que a implementou — dado que só existe porque foi medido, não estimado.
+**Evidência:** Branch `feat/lifecycle-and-automation-wave1`, 9 commits, v3.41.0. 357 testes, doctor 10/10, deriva de doc zero. Projeto derivado limpo instala 19 registros de hook.
+**Arquivos chave:** `.agent/scripts/rule_adherence.py`, `.agent/scripts/repo_map.py`, `.agent/scripts/hooks/reinject_on_compact.py`, `docs/prd-2026-09/`
+**Última recuperação:** (nunca registrada)
+
+## 2026-09-10 — Teste em ambiente limpo antes de afirmar que algo não é distribuído
+**Gatilho:** "isso não chega ao projeto do usuário", "o hook não roda", auditoria de distribuição, análise de package.json
+**Confiança:** 🟢 Confirmado
+**Padrão identificado:** Conclusão sobre comportamento de instalador só vale depois de rodar o instalador. `npx devbureau init --target=claude` num diretório vazio leva segundos e responde de forma definitiva o que a leitura de `package.json` só sugere.
+**Pitfall evitado:** Duas análises independentes concluíram, a partir da lista `files` do `package.json`, que a camada de hooks nunca chegava a projetos derivados. Estava errado: `sync_ide.py` viaja dentro de `.agent/` e o `ensure_claude_protect_hook()` já fazia o merge. Uma implementação paralela chegou a ser escrita e teve de ser revertida por duplicar o mecanismo e criar duas fontes de verdade para a lista de hooks.
+**Evidência:** Sessão de 2026-09-10; `.claude/settings.json` gerado com SessionStart 1, PreToolUse 5, PostToolUse 6 sem nenhuma alteração de código.
+**Arquivos chave:** `bin/devbureau.js`, `.agent/scripts/sync_ide.py`, `.agent/scripts/install_hooks.py`
+**Última recuperação:** (nunca registrada)

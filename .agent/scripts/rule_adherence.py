@@ -3,7 +3,7 @@
 rule_adherence.py — Measures which DEVBUREAU.md rules the model actually
 follows, so pruning the rule set is driven by evidence instead of guesswork.
 
-PRD_final_Gemini_10_09_26.md, E2.2. The kit carries ~40 KB of always-loaded
+docs/prd-2026-09/PRD_final_Gemini_10_09_26.md, E2.2. The kit carries ~40 KB of always-loaded
 rules and nobody knows which of them change behavior. Before cutting anything,
 measure. Six rules are mechanically verifiable from the session transcript;
 each session contributes one row, and `report` aggregates them.

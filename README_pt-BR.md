@@ -6,7 +6,7 @@
 > equipe especializada, sem precisar saber programar. Funciona no Claude Code, Cursor, Codex CLI,
 > OpenCode, GitHub Copilot, Antigravity, Windsurf, Cline, Roo Code e Zed.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.40.1-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.41.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-23-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-78-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-29-red)](https://github.com/fernandotenguan/devbureau)
@@ -23,7 +23,7 @@
 | **Agentes**          | 23         | Personas de IA especialistas (frontend, backend, segurança, SRE, a11y, jogos, etc.) |
 | **Skills**           | 78         | Módulos de conhecimento de domínio com scripts automatizados                  |
 | **Workflows**        | 29         | Procedimentos de comando de barra, incluindo o pipeline autônomo `/ade`       |
-| **Scripts Mestres**  | 15         | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py`, `github_coordination.py`, `blast_radius.py`, `memory_recall.py`, `test_gap_check.py`, `doc_drift_check.py`, `integrity_manifest.py` |
+| **Scripts Mestres**  | 20         | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py`, `github_coordination.py`, `blast_radius.py`, `memory_recall.py`, `test_gap_check.py`, `doc_drift_check.py`, `integrity_manifest.py`, `sync_docs.py`, `repo_map.py`, `rule_adherence.py`, `memory_rotate.py`, `context_cost.py` |
 | **Testes do Kit**    | ✅         | Suíte pytest automatizada — roda antes de cada commit                         |
 | **Camada de Memória**| ✅         | Lições e armadilhas persistentes entre sessões                                |
 | **Hooks**            | 20         | Git pre-commit (todos os IDEs) + 19 hooks do Claude Code: ranqueia os arquivos que mais custaram contexto na sessão, rotaciona arquivos de memória grandes para o arquivo morto ao fim da sessão, grava uma linha de aderência às regras ao fim da sessão, bloqueia apagar/esvaziar/pular um teste existente, bloqueia edição direta em branch main/master com remote, bloqueia gravar credencial de alta confiança em disco, reinjeta o núcleo P0 após compactação de contexto, bloqueia edições em arquivos auto-gerados, bloqueia escritas fora da worktree atual, bloqueia bypass de `git --no-verify`/hooksPath, bloqueia edição de arquivo de UI sem ler o agente especialista antes, varredura consultiva de prompt-injection, aviso consultivo de `console.log`, auto-fix ao editar, aviso consultivo de Purple Ban/biblioteca de UI, detecção consultiva de loop de ferramenta que ainda registra a abordagem falha em `dead-ends.md`, monitoramento consultivo de saúde de MCP |
@@ -32,6 +32,26 @@
 ---
 
 ## Funcionalidades
+
+### 🛡️ Barreiras Determinísticas (não só texto)
+
+Regras que antes existiam apenas como instrução agora rodam como hooks que a ferramenta faz cumprir:
+
+```
+Apagar ou pular um teste para ficar verde      → bloqueado (DEVBUREAU_ALLOW_TEST_EDITS libera)
+Editar direto numa branch main com remote      → bloqueado, pede uma branch de trabalho
+Gravar uma chave AWS num arquivo               → bloqueado antes de chegar ao disco
+Compactação de contexto em sessão longa        → núcleo P0 reinjetado automaticamente
+Fim da sessão                                  → aderência, custo de contexto e rotação de memória
+```
+
+### 📊 Meça Antes de Cortar
+
+```bash
+python .agent/scripts/doctor.py --adherence     # quais regras o modelo de fato segue
+python .agent/scripts/context_cost.py report    # quais arquivos custam mais contexto
+python .agent/scripts/repo_map.py               # o código como mapa de símbolos, dentro de um orçamento
+```
 
 ### 🤖 Roteamento Inteligente Automático
 
@@ -398,6 +418,21 @@ python .agent/scripts/sync_ide.py --target all
 
 # Mede a própria pegada de contexto do kit (tokens aproximados nos arquivos de regras gerados)
 python .agent/scripts/token_footprint.py
+
+# Mapa de símbolos do código, ranqueado por imports de entrada e limitado por orçamento
+python .agent/scripts/repo_map.py src --budget 800
+
+# Quais regras do DEVBUREAU.md o modelo de fato segue (precisa de sessões registradas)
+python .agent/scripts/doctor.py --adherence
+
+# Quais arquivos mais custaram contexto, somando as sessões
+python .agent/scripts/context_cost.py report
+
+# Reconta agentes/skills/workflows e corrige as contagens de README/ARCHITECTURE
+python .agent/scripts/sync_docs.py
+
+# Rotaciona arquivos de memória acima de 50 KB para .agent/memory/archive/ (nada é apagado)
+python .agent/scripts/memory_rotate.py --dry-run
 ```
 
 ---

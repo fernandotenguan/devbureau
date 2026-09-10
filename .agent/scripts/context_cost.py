@@ -3,7 +3,7 @@
 context_cost.py — Attributes the cost of tool output back to the files that
 produced it, so "read narrowly" stops being advice with no price tag.
 
-PRD_final_Gemini_10_09_26.md, A13. DEVBUREAU.md's Context Scoping Discipline
+docs/prd-2026-09/PRD_final_Gemini_10_09_26.md, A13. DEVBUREAU.md's Context Scoping Discipline
 asks for narrow reads and never shows what a read actually cost. This walks
 the session transcript once at SessionEnd, pairs each tool result with the
 file its call targeted, and records the five most expensive ones.

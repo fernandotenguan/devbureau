@@ -4,7 +4,7 @@ repo_map.py — A compact symbol map of a codebase, so an agent can find the
 right file on the first try instead of spending 10 to 20 exploratory tool
 calls on list/grep/read.
 
-PRD_final_Gemini_10_09_26.md, E2.1. Python is parsed with the stdlib `ast`;
+docs/prd-2026-09/PRD_final_Gemini_10_09_26.md, E2.1. Python is parsed with the stdlib `ast`;
 TypeScript/JavaScript with targeted regex, because the kit stays dependency
 free and a full TS parser is not worth a runtime dependency here. Files are
 ranked by how many other files import them, so the most connected modules

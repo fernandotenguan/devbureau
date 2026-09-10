@@ -2,7 +2,7 @@
 """
 memory_rotate.py — Keeps the memory layer from growing without a ceiling.
 
-PRD_final_Gemini_10_09_26.md, A14. `pattern-mining-log.md` and
+docs/prd-2026-09/PRD_final_Gemini_10_09_26.md, A14. `pattern-mining-log.md` and
 `benchmark-log.md` had grown past 100 KB each. Nothing is ever deleted: the
 oldest dated entries move to `.agent/memory/archive/<name>.md` and stay
 searchable through `memory_recall.py`, they just leave the default read path.
