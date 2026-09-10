@@ -271,6 +271,14 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
         "",
         'python "$CLAUDE_PROJECT_DIR/.agent/scripts/memory_rotate.py"',
     )
+    # Bills each tool result back to the file its call targeted, so the Context
+    # Scoping rule has a price tag instead of only advice (A13).
+    _merge_claude_hook(
+        settings,
+        "SessionEnd",
+        "",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/context_cost.py" record',
+    )
     # Compaction can summarize the P0 rules out of context; this reprints a
     # minimal kernel plus task state. SessionStart (not PreCompact) because
     # only SessionStart stdout is added back as context.

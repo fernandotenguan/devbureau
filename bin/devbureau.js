@@ -30,6 +30,7 @@ const MEMORY_TEMPLATE_FILES = [
     ".agent/memory/question-preferences.md",
     ".agent/memory/rule-adherence.jsonl",
     ".agent/memory/dead-ends.md",
+    ".agent/memory/context-cost.jsonl",
 ];
 
 // Memory files that only make sense for DevBureau's own kit repo (benchmark

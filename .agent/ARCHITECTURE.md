@@ -329,6 +329,7 @@ Master validation scripts that orchestrate skill-level scripts.
 | `repo_map.py`            | Compact AST symbol map of a codebase, ranked by inbound imports and capped by a token budget | At the start of a task in an unfamiliar codebase, instead of exploratory list/grep/read |
 | `rule_adherence.py`      | `record` (SessionEnd hook) writes one verdict row per session; `report` aggregates which DEVBUREAU.md rules are actually followed | Before pruning any rule (PRD Onda 3 gate: 20 sessions) |
 | `memory_rotate.py`       | Moves the oldest dated entries out of any memory file above 50 KB into `.agent/memory/archive/`, keeping a light INDEX.md; nothing is deleted and `memory_recall.py` still searches the archive | Automatically at session end; manually with `--check` or `--dry-run` |
+| `context_cost.py`        | `record` (SessionEnd hook) bills each tool result back to the file its call targeted and logs the 5 costliest; `report` shows which files are hogs across sessions | When deciding what to split, summarize, or stop reading whole |
 
 ### Hooks (deterministic enforcement, not prose)
 
@@ -351,6 +352,7 @@ Master validation scripts that orchestrate skill-level scripts.
 | `.agent/scripts/hooks/reinject_on_compact.py` | Claude Code only (`SessionStart`, matcher `compact`) | The session was resumed after context compaction | Reprints a ~430-token P0 kernel plus current branch and uncommitted files, so long sessions don't silently revert to generic behavior. Registered on SessionStart rather than PreCompact because only SessionStart stdout is added back as context |
 | `.agent/scripts/rule_adherence.py record` | Claude Code only (`SessionEnd`) | The session ends | Silently appends one row of rule verdicts to `.agent/memory/rule-adherence.jsonl` (verdicts only, never message content). Read it with `python .agent/scripts/rule_adherence.py report` |
 | `.agent/scripts/memory_rotate.py` | Claude Code only (`SessionEnd`) | The session ends and a memory file is above 50 KB | Moves the oldest dated entries to `.agent/memory/archive/<name>.md` and refreshes the archive index. Non-destructive and idempotent; structural sections and the entry template always stay in the active file |
+| `.agent/scripts/context_cost.py record` | Claude Code only (`SessionEnd`) | The session ends | Appends the 5 costliest targets of the session to `.agent/memory/context-cost.jsonl` (file paths and sizes only, never command text or file content). Read it with `python .agent/scripts/context_cost.py report` |
 
 > Cursor does not yet expose a pre-write blocking hook (`afterFileEdit` is informational only as of this writing), so the hooks above are Claude-Code-specific. See `.agent/memory/benchmark-log.md` (2026-06-26 and 2026-06-27 Run #6) for the research behind this.
 

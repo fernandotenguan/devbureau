@@ -163,6 +163,15 @@
             "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/memory_rotate.py\""
           }
         ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/context_cost.py\" record"
+          }
+        ]
       }
     ]
   },
