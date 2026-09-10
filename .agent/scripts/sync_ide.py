@@ -86,6 +86,30 @@ def _prune_stale_hooks(settings: dict) -> int:
     return removed
 
 
+# sync_ide.py's --target argument is required by argparse, so the original
+# SessionStart registration (no --target) failed on every session start with a
+# usage error, silently. Rewrite it in place rather than appending a second
+# entry beside the broken one.
+LEGACY_COMMAND_FIXES = {
+    'python "$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py"': (
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py" --target claude'
+    ),
+}
+
+
+def _repair_legacy_hooks(settings: dict) -> int:
+    """Upgrade hook commands that shipped broken, in place. Returns count fixed."""
+    fixed = 0
+    for event_groups in settings.get("hooks", {}).values():
+        for group in event_groups:
+            for entry in group.get("hooks", []):
+                replacement = LEGACY_COMMAND_FIXES.get(entry.get("command", ""))
+                if replacement:
+                    entry["command"] = replacement
+                    fixed += 1
+    return fixed
+
+
 def _merge_claude_hook(settings: dict, event: str, matcher: str, command: str) -> None:
     """Add a hook command under settings['hooks'][event] for the given matcher,
     unless that exact command is already registered there."""
@@ -212,6 +236,12 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
 
     _merge_claude_permissions(settings)
 
+    repaired = _repair_legacy_hooks(settings)
+    if repaired:
+        print(
+            f"  {GREEN}✔{RESET} Repaired {repaired} hook command(s) that shipped broken"
+        )
+
     pruned = _prune_stale_hooks(settings)
     if pruned:
         print(
@@ -222,7 +252,16 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
         settings,
         "SessionStart",
         "",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py"',
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py" --target claude',
+    )
+    # Records one verdict row per session so DEVBUREAU.md's rules can be pruned
+    # on evidence instead of impression (PRD E2.2). SessionEnd output is ignored
+    # by the harness, which is exactly right for a silent recorder.
+    _merge_claude_hook(
+        settings,
+        "SessionEnd",
+        "",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/rule_adherence.py" record',
     )
     # Compaction can summarize the P0 rules out of context; this reprints a
     # minimal kernel plus task state. SessionStart (not PreCompact) because

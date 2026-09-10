@@ -131,7 +131,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py\""
+            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py\" --target claude"
           }
         ]
       },
@@ -141,6 +141,17 @@
           {
             "type": "command",
             "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/reinject_on_compact.py\""
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/rule_adherence.py\" record"
           }
         ]
       }

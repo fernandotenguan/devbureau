@@ -28,6 +28,7 @@ const MEMORY_TEMPLATE_FILES = [
     ".agent/memory/gate-telemetry.md",
     ".agent/memory/routing-telemetry.md",
     ".agent/memory/question-preferences.md",
+    ".agent/memory/rule-adherence.jsonl",
 ];
 
 // Memory files that only make sense for DevBureau's own kit repo (benchmark

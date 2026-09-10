@@ -326,6 +326,8 @@ Master validation scripts that orchestrate skill-level scripts.
 | `doc_drift_check.py`     | Flags doc references (backtick paths/script names) that no longer exist on disk | Periodically, or after renaming/removing a script/agent/skill |
 | `integrity_manifest.py`  | Generates/verifies a SHA-256 manifest of `.agent/rules/`, `.agent/agents/`, `.agent/workflows/` | Before a release (`generate`); in a derived project to detect drift from the shipped baseline (`verify`) |
 | `sync_docs.py`           | Recounts agents/skills/workflows from disk and updates README badges + ARCHITECTURE.md counts; `--check` reports drift without writing | Whenever `TestDocsSync` fails, or after adding/removing an agent, skill or workflow |
+| `repo_map.py`            | Compact AST symbol map of a codebase, ranked by inbound imports and capped by a token budget | At the start of a task in an unfamiliar codebase, instead of exploratory list/grep/read |
+| `rule_adherence.py`      | `record` (SessionEnd hook) writes one verdict row per session; `report` aggregates which DEVBUREAU.md rules are actually followed | Before pruning any rule (PRD Onda 3 gate: 20 sessions) |
 
 ### Hooks (deterministic enforcement, not prose)
 
@@ -346,6 +348,7 @@ Master validation scripts that orchestrate skill-level scripts.
 | `.agent/scripts/hooks/guard_main_branch.py` | Claude Code only (`PreToolUse`) | Edit/Write/MultiEdit while on `main`/`master` in a repo that has a remote | Blocks it and asks for `git checkout -b` first. Silent on repos with no remote, since DEVBUREAU.md's Decision Matrix treats a purely local edit as automatic. Escapes: `DEVBUREAU_ALLOW_MAIN_EDITS=1` or an `.agent/.allow-main-edits` file |
 | `.agent/scripts/hooks/scan_secrets_on_write.py` | Claude Code only (`PreToolUse`) | Edit/Write/MultiEdit whose new content matches a high-confidence credential (AWS key id, private key block, Stripe live key, GitHub/Slack/Google/Anthropic token, JWT) | Blocks the write before the value reaches disk. Generic patterns like `password = "..."` are excluded on purpose; `security_scan.py` still covers those. Skips `.agent/` and `.example`/`.sample` files. Escape: `DEVBUREAU_ALLOW_SECRETS=1` |
 | `.agent/scripts/hooks/reinject_on_compact.py` | Claude Code only (`SessionStart`, matcher `compact`) | The session was resumed after context compaction | Reprints a ~430-token P0 kernel plus current branch and uncommitted files, so long sessions don't silently revert to generic behavior. Registered on SessionStart rather than PreCompact because only SessionStart stdout is added back as context |
+| `.agent/scripts/rule_adherence.py record` | Claude Code only (`SessionEnd`) | The session ends | Silently appends one row of rule verdicts to `.agent/memory/rule-adherence.jsonl` (verdicts only, never message content). Read it with `python .agent/scripts/rule_adherence.py report` |
 
 > Cursor does not yet expose a pre-write blocking hook (`afterFileEdit` is informational only as of this writing), so the hooks above are Claude-Code-specific. See `.agent/memory/benchmark-log.md` (2026-06-26 and 2026-06-27 Run #6) for the research behind this.
 

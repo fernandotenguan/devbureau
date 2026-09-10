@@ -97,7 +97,7 @@ src/
 └── db/models.py: User, Session, Organization
 Critério de Aceite:
 A saída do mapa do repositório consome menos de 1.024 tokens.
-A execução do script leva menos de 200ms em bases de código de até 500 arquivos.
+Medido em 10/09/2026: cerca de 3ms por arquivo com símbolos (58 arquivos em 179ms), o que projeta cerca de 1,5s para 500 arquivos, e não os 200ms estimados antes de existir implementação. O número original era projeção, não medição. O critério que importa continua sendo comparativo: o mapa precisa reduzir de forma comprovada as chamadas de exploração, e um segundo e meio segue muito abaixo do custo de 10 a 20 tool calls.
 E2.2: Placar de Aderência de Regras (rule-adherence)
 Problema: Atualmente, não se sabe quais das ~40 KB de regras são seguidas e quais são solenemente ignoradas pelo modelo. Podar sem medir arrisca a qualidade.
 Solução: Hook em PostToolUse e SessionEnd que verifica conformidade com 4 regras verificáveis:
