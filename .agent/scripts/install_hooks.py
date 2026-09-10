@@ -47,14 +47,39 @@ def run_check(command: list, label: str) -> bool:
     return result.returncode == 0
 
 
+def project_mode() -> None:
+    """A project that installed devbureau, not the kit itself: validate that
+    project's own staged diff (secrets, lint, tests) instead of kit health."""
+    checklist = REPO_ROOT / ".agent" / "scripts" / "checklist.py"
+    if not checklist.exists():
+        # Never block someone's commit because a kit file is missing.
+        sys.exit(0)
+
+    print("\\n🔍 DevBureau — Pre-commit check (project)")
+    print("─" * 40)
+
+    ok = run_check(
+        [sys.executable, ".agent/scripts/checklist.py", ".", "--pre-commit"],
+        "Project validation (checklist.py --pre-commit)",
+    )
+
+    if not ok:
+        print("\\n❌ Pre-commit BLOCKED: project validation failed.")
+        print("   Fix the issues above before committing.")
+        print("   To skip in an emergency: git commit --no-verify")
+        sys.exit(1)
+
+    print("\\n✅ Pre-commit checks passed. Proceeding with commit.\\n")
+    sys.exit(0)
+
+
 def main() -> None:
     # KIT_MASTER_RULES.md only ships in devbureau's own source repo (excluded
     # from package.json's "files" list) — its absence means this is a project
-    # that installed devbureau, not the kit itself. Skip silently so a
-    # derived project's commits are never blocked by devbureau's own
-    # kit-health checks.
+    # that installed devbureau. The kit-health checks below are meaningless
+    # there, but that project still deserves a gate of its own.
     if not (REPO_ROOT / "KIT_MASTER_RULES.md").exists():
-        sys.exit(0)
+        project_mode()
 
     print("\\n🔍 DevBureau — Pre-commit check")
     print("─" * 40)
@@ -110,20 +135,12 @@ BOLD = "\033[1m"
 def main() -> None:
     print(f"\n{BOLD}🪝 Installing DevBureau pre-commit hook...{RESET}")
 
-    # This hook runs doctor.py + the kit's own integrity tests — meaningful
-    # only inside devbureau's source repo. KIT_MASTER_RULES.md is the
-    # reliable signal (excluded from package.json's "files" list, so it
-    # never ships to a project that installed devbureau).
-    if not (REPO_ROOT / "KIT_MASTER_RULES.md").exists():
-        print(
-            f"  {RED}✘{RESET} KIT_MASTER_RULES.md not found — this isn't the devbureau "
-            "source repo."
-        )
-        print(
-            "    This hook checks devbureau's OWN kit health (agents/skills/scripts), "
-            "not your project's. Nothing installed."
-        )
-        sys.exit(1)
+    # The hook has two modes, picked at commit time. Inside devbureau's source
+    # repo it checks the kit's own health (doctor.py + integrity tests); in a
+    # project that installed devbureau it validates that project's staged diff
+    # via checklist.py --pre-commit. KIT_MASTER_RULES.md is the reliable signal
+    # (excluded from package.json's "files" list, so it never ships).
+    is_kit_repo = (REPO_ROOT / "KIT_MASTER_RULES.md").exists()
 
     if not GIT_HOOKS_DIR.exists():
         print(f"  {RED}✘{RESET} .git/hooks/ not found — is this a git repository?")
@@ -152,7 +169,13 @@ def main() -> None:
     print(f"  {GREEN}✔{RESET} Hook installed: .git/hooks/pre-commit (shell wrapper)")
     print(f"  {GREEN}✔{RESET} Logic:          .git/hooks/pre-commit.py (Python tests)")
     print(f"\n{BOLD}How it works:{RESET}")
-    print("  • git commit  →  runs doctor.py + pytest .agent/tests/ first")
+    if is_kit_repo:
+        print("  • git commit  →  runs doctor.py + pytest .agent/tests/ first")
+    else:
+        print(
+            "  • git commit  →  runs checklist.py --pre-commit on your project "
+            "(secrets, lint, tests)"
+        )
     print("  • Checks PASS →  commit proceeds normally")
     print("  • Checks FAIL →  commit is BLOCKED with error message")
     print("  • Emergency?  →  git commit --no-verify  (bypasses hook)\n")

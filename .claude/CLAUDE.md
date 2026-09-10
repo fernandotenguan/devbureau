@@ -2,6 +2,13 @@
 > Auto-generated from .agent/rules/DEVBUREAU.md. Do not edit manually — run sync_ide.py to update.
 > Activate a specialist by mentioning `@agent-name`.
 
+> **Context contract — read once, here.** Everything below IS the full P0 rule
+> set. `.agent/rules/DEVBUREAU.md` is the source this file was generated from,
+> byte-for-byte the same rules: do NOT open it at session start or "to be sure"
+> — that pays ~10k tokens twice for identical content. Open a file under
+> `.agent/rules/reference/` only when a rule below explicitly points you at a
+> named section of it, and read only that section.
+
 ## Available Agents
 
 - **accessibility-specialist**: Expert in WCAG compliance, screen…

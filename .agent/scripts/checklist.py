@@ -82,6 +82,12 @@ CORE_CHECKS = [
     ("SEO Check", ".agent/skills/seo-fundamentals/scripts/seo_checker.py", False),
 ]
 
+# Extra CLI args per check. The security scanner reports by default and only
+# exits non-zero when asked to, so the checklist (a gate) has to ask.
+EXTRA_ARGS = {
+    "Security Scan": ["--fail-on", "critical"],
+}
+
 PERFORMANCE_CHECKS = [
     ("Lighthouse Audit", ".agent/skills/performance-profiling/scripts/lighthouse_audit.py", True),
     ("Playwright E2E", ".agent/skills/webapp-testing/scripts/playwright_runner.py", False),
@@ -106,6 +112,7 @@ def run_script(name: str, script_path: Path, project_path: str, url: Optional[st
     
     # Build command
     cmd = ["python", str(script_path), project_path]
+    cmd.extend(EXTRA_ARGS.get(name, []))
     if url and ("lighthouse" in script_path.name.lower() or "playwright" in script_path.name.lower()):
         cmd.append(url)
     

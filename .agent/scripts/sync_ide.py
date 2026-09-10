@@ -219,6 +219,15 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
         "",
         'python "$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py"',
     )
+    # Compaction can summarize the P0 rules out of context; this reprints a
+    # minimal kernel plus task state. SessionStart (not PreCompact) because
+    # only SessionStart stdout is added back as context.
+    _merge_claude_hook(
+        settings,
+        "SessionStart",
+        "compact",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/reinject_on_compact.py"',
+    )
     _merge_claude_hook(
         settings,
         "PreToolUse",
@@ -643,6 +652,13 @@ def generate_claude_config(dry_run: bool) -> None:
     content = f"""# CLAUDE.md — DevBureau Rules
 > Auto-generated from .agent/rules/DEVBUREAU.md. Do not edit manually — run sync_ide.py to update.
 > Activate a specialist by mentioning `@agent-name`.
+
+> **Context contract — read once, here.** Everything below IS the full P0 rule
+> set. `.agent/rules/DEVBUREAU.md` is the source this file was generated from,
+> byte-for-byte the same rules: do NOT open it at session start or "to be sure"
+> — that pays ~10k tokens twice for identical content. Open a file under
+> `.agent/rules/reference/` only when a rule below explicitly points you at a
+> named section of it, and read only that section.
 
 {agent_summary}
 
