@@ -31,7 +31,7 @@ Invoke: `python .agent/scripts/<script>.py`
 
 | Script | What it does | Triggers (EN / PT-BR) |
 |---|---|---|
-| `doctor.py` | Kit health check — agents, skills, refs, structure | "kit health", "diagnose kit" / "diagnóstico", "checar kit", "saúde do kit" |
+| `doctor.py` | Kit health check — agents, skills, refs, structure; `--adherence` prints the rule-adherence scorecard instead | "kit health", "diagnose kit" / "diagnóstico", "checar kit", "saúde do kit" |
 | `checklist.py` | Priority-based validation (security, lint, schema, tests); supports `--selective`, `--pre-commit` | "validate project", "run checks" / "validar projeto", "rodar verificações" |
 | `verify_all.py` | Full pre-deploy suite (everything + Lighthouse + Playwright + bundle) | "final verification", "pre-deploy" / "verificação final", "antes de publicar" |
 | `auto_fixer.py` | Auto-fix lint & formatting on given paths | "fix formatting", "clean code style" / "arrumar formatação", "limpar lint" |

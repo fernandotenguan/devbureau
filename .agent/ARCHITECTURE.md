@@ -310,7 +310,7 @@ Master validation scripts that orchestrate skill-level scripts.
 
 | Script                  | Purpose                                   | When to Use                    |
 | ----------------------- | ------------------------------------------ | -------------------------------- |
-| `doctor.py`              | Kit health check — agents, skills, refs     | Always, before any work          |
+| `doctor.py`              | Kit health check — agents, skills, refs; `--adherence` shows the rule scorecard | Always, before any work          |
 | `checklist.py`           | Priority-based validation (core checks)      | Development, pre-commit          |
 | `verify_all.py`          | Comprehensive verification (all checks)       | Pre-deployment, releases          |
 | `sync_ide.py`            | Multi-IDE sync (Claude, Cursor, Codex, OpenCode, Copilot, Antigravity, Windsurf, Cline, Roo Code, Zed) | When updating the kit or its rules |
