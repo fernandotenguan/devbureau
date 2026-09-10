@@ -28,7 +28,20 @@ if sys.platform == "win32":
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MEMORY_DIR = REPO_ROOT / ".agent" / "memory"
+ARCHIVE_DIR = MEMORY_DIR / "archive"
 DEFAULT_FILES = ["lessons.md", "gotchas.md"]
+
+
+def searchable_paths() -> list[Path]:
+    """Active memory files plus anything memory_rotate.py moved to archive/.
+
+    Rotation must not make an entry unfindable: it only takes an old entry out
+    of the default read path, never out of search.
+    """
+    paths = [MEMORY_DIR / name for name in DEFAULT_FILES]
+    if ARCHIVE_DIR.exists():
+        paths += [p for p in sorted(ARCHIVE_DIR.glob("*.md")) if p.name != "INDEX.md"]
+    return [p for p in paths if p.exists()]
 
 GREEN = "\033[92m"
 YELLOW = "\033[93m"
@@ -71,10 +84,7 @@ def split_entries(text: str) -> list[dict]:
 
 def load_all_entries() -> list[tuple[Path, dict]]:
     result = []
-    for name in DEFAULT_FILES:
-        path = MEMORY_DIR / name
-        if not path.exists():
-            continue
+    for path in searchable_paths():
         for entry in split_entries(path.read_text(encoding="utf-8", errors="ignore")):
             result.append((path, entry))
     return result

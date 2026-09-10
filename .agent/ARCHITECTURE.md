@@ -328,6 +328,7 @@ Master validation scripts that orchestrate skill-level scripts.
 | `sync_docs.py`           | Recounts agents/skills/workflows from disk and updates README badges + ARCHITECTURE.md counts; `--check` reports drift without writing | Whenever `TestDocsSync` fails, or after adding/removing an agent, skill or workflow |
 | `repo_map.py`            | Compact AST symbol map of a codebase, ranked by inbound imports and capped by a token budget | At the start of a task in an unfamiliar codebase, instead of exploratory list/grep/read |
 | `rule_adherence.py`      | `record` (SessionEnd hook) writes one verdict row per session; `report` aggregates which DEVBUREAU.md rules are actually followed | Before pruning any rule (PRD Onda 3 gate: 20 sessions) |
+| `memory_rotate.py`       | Moves the oldest dated entries out of any memory file above 50 KB into `.agent/memory/archive/`, keeping a light INDEX.md; nothing is deleted and `memory_recall.py` still searches the archive | Automatically at session end; manually with `--check` or `--dry-run` |
 
 ### Hooks (deterministic enforcement, not prose)
 
@@ -349,6 +350,7 @@ Master validation scripts that orchestrate skill-level scripts.
 | `.agent/scripts/hooks/scan_secrets_on_write.py` | Claude Code only (`PreToolUse`) | Edit/Write/MultiEdit whose new content matches a high-confidence credential (AWS key id, private key block, Stripe live key, GitHub/Slack/Google/Anthropic token, JWT) | Blocks the write before the value reaches disk. Generic patterns like `password = "..."` are excluded on purpose; `security_scan.py` still covers those. Skips `.agent/` and `.example`/`.sample` files. Escape: `DEVBUREAU_ALLOW_SECRETS=1` |
 | `.agent/scripts/hooks/reinject_on_compact.py` | Claude Code only (`SessionStart`, matcher `compact`) | The session was resumed after context compaction | Reprints a ~430-token P0 kernel plus current branch and uncommitted files, so long sessions don't silently revert to generic behavior. Registered on SessionStart rather than PreCompact because only SessionStart stdout is added back as context |
 | `.agent/scripts/rule_adherence.py record` | Claude Code only (`SessionEnd`) | The session ends | Silently appends one row of rule verdicts to `.agent/memory/rule-adherence.jsonl` (verdicts only, never message content). Read it with `python .agent/scripts/rule_adherence.py report` |
+| `.agent/scripts/memory_rotate.py` | Claude Code only (`SessionEnd`) | The session ends and a memory file is above 50 KB | Moves the oldest dated entries to `.agent/memory/archive/<name>.md` and refreshes the archive index. Non-destructive and idempotent; structural sections and the entry template always stay in the active file |
 
 > Cursor does not yet expose a pre-write blocking hook (`afterFileEdit` is informational only as of this writing), so the hooks above are Claude-Code-specific. See `.agent/memory/benchmark-log.md` (2026-06-26 and 2026-06-27 Run #6) for the research behind this.
 

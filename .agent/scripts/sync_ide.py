@@ -263,6 +263,14 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
         "",
         'python "$CLAUDE_PROJECT_DIR/.agent/scripts/rule_adherence.py" record',
     )
+    # Non-destructive and idempotent: only fires above the size ceiling, and
+    # moves old entries to archive/ rather than deleting anything (A14).
+    _merge_claude_hook(
+        settings,
+        "SessionEnd",
+        "",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/memory_rotate.py"',
+    )
     # Compaction can summarize the P0 rules out of context; this reprints a
     # minimal kernel plus task state. SessionStart (not PreCompact) because
     # only SessionStart stdout is added back as context.
