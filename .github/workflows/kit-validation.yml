@@ -59,7 +59,12 @@ jobs:
           fi
           git diff --name-only --diff-filter=ACMR "$base" HEAD > changed.txt || true
           echo "Changed files:"; cat changed.txt
-          grep -E '\.(md)$' changed.txt > changed-docs.txt || true
+          # Memory logs and the PRD archive are records, not live documentation:
+          # they quote files from other repos and from proposals that were never
+          # built, so a dead-reference check on them is noise by construction.
+          grep -E '\.md$' changed.txt \
+            | grep -Ev '^(\.agent/memory/|docs/prd-)' > changed-docs.txt || true
+          echo "Docs to check for drift:"; cat changed-docs.txt
 
       - name: Secret scan (blocks on critical)
         run: >
