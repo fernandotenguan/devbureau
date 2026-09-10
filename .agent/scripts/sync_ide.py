@@ -184,7 +184,12 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
       the current git worktree (using-git-worktrees), block git --no-verify /
       -c core.hooksPath= bypass attempts (CLAUDE.md's Git Safety Protocol),
       block UI-file edits until the specialist agent/design skill was Read
-      this session (DEVBUREAU.md's Agent Routing Checklist, step 2).
+      this session (DEVBUREAU.md's Agent Routing Checklist, step 2), block
+      deleting/emptying/skipping an existing test (Zero-Break protocol),
+      block edits made directly on a main/master branch that has a remote
+      (Decision Matrix), block writing a high-confidence credential to disk
+      (Code Quality Standards, secrets belong in .env). Each of those three
+      has a documented env-var escape, named in its own docstring.
     - PostToolUse: advisory scan of Read/WebFetch/WebSearch output for known
       prompt-injection patterns (DEVBUREAU.md's Untrusted Content Boundary),
       advisory warning when an edited JS/TS file still has console.log(),
@@ -251,6 +256,24 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
         "PreToolUse",
         "Edit|Write|MultiEdit",
         'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/enforce_design_context.py"',
+    )
+    _merge_claude_hook(
+        settings,
+        "PreToolUse",
+        "Edit|Write|MultiEdit|Bash",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/protect_tests.py"',
+    )
+    _merge_claude_hook(
+        settings,
+        "PreToolUse",
+        "Edit|Write|MultiEdit",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/guard_main_branch.py"',
+    )
+    _merge_claude_hook(
+        settings,
+        "PreToolUse",
+        "Edit|Write|MultiEdit",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/scan_secrets_on_write.py"',
     )
     _merge_claude_hook(
         settings,
