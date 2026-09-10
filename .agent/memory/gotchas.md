@@ -129,3 +129,32 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Solução:** Tratar a imagem como briefing visual, nunca como código; verificar a fonte real (clonar/grepar) antes de afirmar que um repo contém algo; mapear o efeito mostrado para a técnica real (canvas, SVG filter, mask, custom props).
 **Evidência:** Sessão 2026-07-11 — criação da skill `hover-effects` (v3.35.0); CodeCandy clonado e verificado sem os efeitos.
 **Prevenção:** Skill `.agent/skills/hover-effects/SKILL.md` abre com a seção "Social-Media Pseudo-CSS (READ FIRST)" endereçando exatamente essa racionalização.
+
+## 2026-09-10 — Hook de SessionStart falhava em toda sessão sem ninguém ver
+**Gatilho:** hook "não faz nada", sync_ide não roda sozinho, comportamento do kit some depois de um tempo
+**Confiança:** 🟢 Confirmado
+**Sintoma:** O `.claude/settings.json` registrava `python "$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py"` sem `--target`. O argparse exige o argumento, então o hook saía com erro de uso em toda inicialização de sessão, desde sempre.
+**Causa raiz:** A saída de erro do hook vai só para o log de debug, então a falha nunca apareceu no transcript visível. Descoberto ao ler o `.jsonl` bruto da sessão, que trazia `hook_non_blocking_error` com o texto de usage.
+**Solução:** Registro corrigido para `--target claude` e `_repair_legacy_hooks()` no `sync_ide.py`, que reescreve o comando quebrado no lugar em vez de acrescentar uma segunda entrada ao lado.
+**Evidência:** commit `90fc10d`; reparo aplica uma vez e é idempotente na segunda execução.
+**Prevenção:** Ao registrar um hook novo, execute o comando exatamente como ele ficará no settings.json antes de confiar nele. Hook que falha é silencioso por desenho.
+**Última recuperação:** (nunca registrada)
+
+## 2026-09-10 — Scanner de segurança reportava crítico e saía com código 0
+**Gatilho:** "o portão passou mas o problema estava lá", checklist verde com achado crítico, gate que não bloqueia
+**Confiança:** 🟢 Confirmado
+**Sintoma:** `security_scan.py` listava 4 achados críticos e terminava com exit 0, então o `checklist.py` e o pre-commit tratavam como aprovado. Um commit com chave AWS passava.
+**Causa raiz:** O `main()` só chamava `sys.exit(1)` para diretório inexistente; nenhum caminho traduzia achado em código de saída. Somado a isso, o scanner varria `.agent/` e reportava a própria tabela de regex (`eval(`, `exec(`, `Bearer`) como crítico, o que teria tornado qualquer portão inutilizável por falso positivo.
+**Solução:** Flag `--fail-on {none,critical,high}` com `none` como padrão para não quebrar quem só quer o relatório, `.agent` na lista de exclusão, e `checklist.py` passando `--fail-on critical`.
+**Evidência:** commit `bacd57a`; projeto derivado limpo bloqueia commit com chave AWS (exit 1) e aprova o commit limpo (exit 0).
+**Prevenção:** Ferramenta usada como portão precisa de teste que confirme o bloqueio, não só a aprovação. Verificar sempre o caminho negativo.
+**Última recuperação:** (nunca registrada)
+
+## 2026-09-10 — auto_fixer.py em arquivo nunca formatado explode o diff
+**Gatilho:** diff gigante depois de uma mudança pequena, "reformatou o arquivo inteiro", revisão impossível
+**Confiança:** 🟢 Confirmado
+**Sintoma:** Rodar `auto_fixer.py` em `checklist.py` e `security_scan.py` após edições de 7 e 26 linhas gerou um diff de quase 700 linhas, quase todo reformatação do Ruff.
+**Causa raiz:** Os dois arquivos nunca tinham passado pelo formatador. A regra do kit manda rodar o auto-fixer nos caminhos alterados, o que colide com a regra de mudança cirúrgica quando o arquivo é legado.
+**Solução:** Reverter e reaplicar só as edições de lógica. Diff final: 7 e 26 linhas.
+**Prevenção:** Antes de rodar o auto-fixer num arquivo legado, verifique se ele já é formatado. Se não for, ou formate num commit separado e dedicado, ou pule o formatador nessa mudança.
+**Última recuperação:** (nunca registrada)

@@ -31,13 +31,19 @@ Invoke: `python .agent/scripts/<script>.py`
 
 | Script | What it does | Triggers (EN / PT-BR) |
 |---|---|---|
-| `doctor.py` | Kit health check — agents, skills, refs, structure | "kit health", "diagnose kit" / "diagnóstico", "checar kit", "saúde do kit" |
+| `doctor.py` | Kit health check — agents, skills, refs, structure; `--adherence` prints the rule-adherence scorecard instead | "kit health", "diagnose kit" / "diagnóstico", "checar kit", "saúde do kit" |
 | `checklist.py` | Priority-based validation (security, lint, schema, tests); supports `--selective`, `--pre-commit` | "validate project", "run checks" / "validar projeto", "rodar verificações" |
 | `verify_all.py` | Full pre-deploy suite (everything + Lighthouse + Playwright + bundle) | "final verification", "pre-deploy" / "verificação final", "antes de publicar" |
 | `auto_fixer.py` | Auto-fix lint & formatting on given paths | "fix formatting", "clean code style" / "arrumar formatação", "limpar lint" |
 | `auto_preview.py` | Start/stop/monitor local dev server | "preview", "dev server" / "abrir preview", "servidor local" |
 | `session_manager.py` | Project state & tech-stack detection; `budget <type>` reports the tool-call ceiling for a REQUEST CLASSIFIER type (DEVBUREAU.md Loop Protection) | "project status", "what stack", "task budget" / "status do projeto", "qual stack", "orçamento da tarefa" |
 | `sync_ide.py` | Regenerates IDE rule files (Claude, Cursor, Codex, Copilot…) from `.agent/` sources | "sync IDE", "propagate rules" / "sincronizar IDE", "propagar regras" |
+| `sync_docs.py` | Recounts agents/skills/workflows from disk and updates README badges + ARCHITECTURE.md counts; `--check` reports drift without writing. **Run this whenever `TestDocsSync` fails instead of editing the four files by hand.** | "sync docs", "fix badge counts", "TestDocsSync failed" / "sincronizar docs", "arrumar contagem", "badges desatualizados" |
+| `repo_map.py` | Compact AST symbol map (Python via stdlib `ast`, TS/JS via regex), ranked by inbound imports, capped by `--budget` tokens; `--json` for machine use | "repo map", "where is this defined", "map the codebase" / "mapa do repositório", "onde fica isso", "estrutura do projeto" |
+| `rule_adherence.py` | `record` (SessionEnd hook, stdin) logs one verdict row per session; `report` prints which DEVBUREAU.md rules are actually followed and flags any below 50% | "rule adherence", "which rules are ignored" / "aderência às regras", "quais regras são ignoradas" |
+| `memory_recall.py` (dead ends) | Recall também cobre `dead-ends.md`, o registro automático de abordagens que já falharam 2 ou 3 vezes seguidas | "already tried this", "dead end" / "já tentei isso", "beco sem saída" |
+| `memory_rotate.py` | Rotates dated entries out of memory files above 50 KB into `archive/`, refreshing `archive/INDEX.md`; `--check` reports, `--dry-run` previews. Nothing is deleted and recall still finds archived entries | "rotate memory", "memory file too big" / "rotacionar memória", "arquivo de memória grande" |
+| `context_cost.py` | `record` (SessionEnd) attributes tool-output size to the files each call targeted; `report` ranks recurring context hogs across sessions | "context cost", "what is eating my context", "biggest files read" / "custo de contexto", "o que está consumindo contexto" |
 | `install_hooks.py` | Installs the git pre-commit hook (doctor + kit tests) | "install hooks" / "instalar hooks" |
 | `token_footprint.py` | Measures approx. token cost of the kit's generated rule files | "token cost", "context footprint" / "custo de tokens", "pegada de contexto" |
 | `blast_radius.py` | Finds which files reference a given file before you change it (backs File Dependency Awareness, DEVBUREAU.md); `--diff` scans files changed vs HEAD, `--json` for machine output, `--risk` adds a composite diff-risk score (fan-out + critical-domain keywords + 90-day commit churn) and a suggested verification depth | "blast radius", "what depends on this file", "who references this", "diff risk" / "raio de impacto", "o que depende desse arquivo", "quem referencia isso", "risco da mudança" |
@@ -55,7 +61,6 @@ Invoke: `python .agent/skills/<skill>/scripts/<script>.py`
 | Script | Skill | What it does | Triggers (EN / PT-BR) |
 |---|---|---|---|
 | `security_scan.py` | vulnerability-scanner | Secrets, OWASP patterns, PII scan (`--scan-type pii`) | "scan security", "check secrets" / "verificar segurança", "vazou segredo" |
-| `dependency_analyzer.py` | vulnerability-scanner | Vulnerable/outdated dependency report | "audit dependencies" / "auditar dependências" |
 | `lint_runner.py` | lint-and-validate | Lint + static analysis on given paths | "lint", "static analysis" / "rodar lint" |
 | `type_coverage.py` | lint-and-validate | % of functions/variables with type hints (TS/Python) | "type coverage" / "cobertura de tipos" |
 | `test_runner.py` | testing-patterns | Runs the test suite (selective paths supported) | "run tests" / "rodar testes" |
@@ -67,7 +72,6 @@ Invoke: `python .agent/skills/<skill>/scripts/<script>.py`
 | `react_performance_checker.py` | nextjs-react-expert | React/Next.js performance anti-pattern scan | "react performance" / "performance do React" |
 | `convert_rules.py` | nextjs-react-expert | Utility: converts rule formats for the skill | — (internal utility) |
 | `lighthouse_audit.py` | performance-profiling | Core Web Vitals / Lighthouse run | "lighthouse", "web vitals" / "medir performance" |
-| `bundle_analyzer.py` | performance-profiling | Bundle size analysis | "bundle size" / "tamanho do bundle" |
 | `seo_checker.py` | seo-fundamentals | On-page SEO checks | "SEO check" / "verificar SEO" |
 | `geo_checker.py` | geo-fundamentals | Generative Engine Optimization checks | "GEO check" / "visibilidade em IA" |
 | `i18n_checker.py` | i18n-localization | Hardcoded strings, locale coverage | "i18n check" / "checar tradução" |

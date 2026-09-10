@@ -5,6 +5,8 @@ Verifica a integridade completa do .agent/ (agentes, skills, workflows, scripts,
 Usage: python .agent/scripts/doctor.py
 """
 
+import argparse
+import subprocess
 import sys
 from pathlib import Path
 
@@ -182,9 +184,7 @@ def check_cross_references() -> tuple[int, int]:
             available_skills.add(skill_dir.name)
             # Nested skills (e.g. game-development/pc-games) are referenced by their
             # path relative to SKILLS_DIR, not just the leaf directory name.
-            available_skills.add(
-                skill_dir.relative_to(SKILLS_DIR).as_posix()
-            )
+            available_skills.add(skill_dir.relative_to(SKILLS_DIR).as_posix())
             # A skill's declared `name:` in its own frontmatter can differ from its
             # directory name (a documented internal alias) — both are valid refs.
             declared_name = extract_frontmatter_field(
@@ -310,13 +310,17 @@ def check_version_drift() -> int:
         import json
         import urllib.request
 
-        with urllib.request.urlopen("https://registry.npmjs.org/devbureau/latest", timeout=2) as response:
+        with urllib.request.urlopen(
+            "https://registry.npmjs.org/devbureau/latest", timeout=2
+        ) as response:
             latest_version = json.loads(response.read().decode("utf-8"))["version"]
 
         local_parts = tuple(int(p) for p in local_version.split("."))
         latest_parts = tuple(int(p) for p in latest_version.split("."))
         if latest_parts > local_parts:
-            warn(f"DevBureau v{latest_version} disponível (você está na v{local_version}) — rode `npx devbureau update`")
+            warn(
+                f"DevBureau v{latest_version} disponível (você está na v{local_version}) — rode `npx devbureau update`"
+            )
         else:
             ok(f"DevBureau v{local_version} — você está atualizado")
     except Exception:
@@ -352,8 +356,10 @@ def check_integrity_manifest() -> int:
                 drifted.append(rel_path)
 
         if drifted:
-            warn(f"Integrity manifest: {len(drifted)} file(s) differ from baseline "
-                 f"(run 'python .agent/scripts/integrity_manifest.py verify' for details)")
+            warn(
+                f"Integrity manifest: {len(drifted)} file(s) differ from baseline "
+                f"(run 'python .agent/scripts/integrity_manifest.py verify' for details)"
+            )
         else:
             ok(f"Integrity manifest: {len(baseline_files)} file(s) match baseline")
     except Exception:
@@ -384,7 +390,30 @@ def check_python_version() -> tuple[int, int]:
 
 
 # ── main ─────────────────────────────────────────────────────────────────────
+def run_adherence_report() -> None:
+    """Delegate to rule_adherence.py, which owns the ledger and its format.
+
+    doctor.py reports on the kit's structure; rule adherence is behavioral
+    analytics. The flag lives here only because this is where people look.
+    """
+    script = Path(__file__).resolve().parent / "rule_adherence.py"
+    if not script.exists():
+        print(f"  {RED}✘{RESET} rule_adherence.py not found — nothing to report.")
+        sys.exit(1)
+    sys.exit(subprocess.run([sys.executable, str(script), "report"]).returncode)
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser(description="DevBureau kit diagnostics")
+    parser.add_argument(
+        "--adherence",
+        action="store_true",
+        help="Show the rule-adherence scorecard instead of the health check",
+    )
+    if parser.parse_args().adherence:
+        run_adherence_report()
+        return
+
     print(f"\n{BOLD}🏥 DevBureau — System Diagnostics{RESET}")
     print("─" * 50)
 

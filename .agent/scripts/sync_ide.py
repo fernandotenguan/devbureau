@@ -86,6 +86,30 @@ def _prune_stale_hooks(settings: dict) -> int:
     return removed
 
 
+# sync_ide.py's --target argument is required by argparse, so the original
+# SessionStart registration (no --target) failed on every session start with a
+# usage error, silently. Rewrite it in place rather than appending a second
+# entry beside the broken one.
+LEGACY_COMMAND_FIXES = {
+    'python "$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py"': (
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py" --target claude'
+    ),
+}
+
+
+def _repair_legacy_hooks(settings: dict) -> int:
+    """Upgrade hook commands that shipped broken, in place. Returns count fixed."""
+    fixed = 0
+    for event_groups in settings.get("hooks", {}).values():
+        for group in event_groups:
+            for entry in group.get("hooks", []):
+                replacement = LEGACY_COMMAND_FIXES.get(entry.get("command", ""))
+                if replacement:
+                    entry["command"] = replacement
+                    fixed += 1
+    return fixed
+
+
 def _merge_claude_hook(settings: dict, event: str, matcher: str, command: str) -> None:
     """Add a hook command under settings['hooks'][event] for the given matcher,
     unless that exact command is already registered there."""
@@ -184,7 +208,12 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
       the current git worktree (using-git-worktrees), block git --no-verify /
       -c core.hooksPath= bypass attempts (CLAUDE.md's Git Safety Protocol),
       block UI-file edits until the specialist agent/design skill was Read
-      this session (DEVBUREAU.md's Agent Routing Checklist, step 2).
+      this session (DEVBUREAU.md's Agent Routing Checklist, step 2), block
+      deleting/emptying/skipping an existing test (Zero-Break protocol),
+      block edits made directly on a main/master branch that has a remote
+      (Decision Matrix), block writing a high-confidence credential to disk
+      (Code Quality Standards, secrets belong in .env). Each of those three
+      has a documented env-var escape, named in its own docstring.
     - PostToolUse: advisory scan of Read/WebFetch/WebSearch output for known
       prompt-injection patterns (DEVBUREAU.md's Untrusted Content Boundary),
       advisory warning when an edited JS/TS file still has console.log(),
@@ -207,6 +236,12 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
 
     _merge_claude_permissions(settings)
 
+    repaired = _repair_legacy_hooks(settings)
+    if repaired:
+        print(
+            f"  {GREEN}✔{RESET} Repaired {repaired} hook command(s) that shipped broken"
+        )
+
     pruned = _prune_stale_hooks(settings)
     if pruned:
         print(
@@ -217,7 +252,41 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
         settings,
         "SessionStart",
         "",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py"',
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py" --target claude',
+    )
+    # Records one verdict row per session so DEVBUREAU.md's rules can be pruned
+    # on evidence instead of impression (PRD E2.2). SessionEnd output is ignored
+    # by the harness, which is exactly right for a silent recorder.
+    _merge_claude_hook(
+        settings,
+        "SessionEnd",
+        "",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/rule_adherence.py" record',
+    )
+    # Non-destructive and idempotent: only fires above the size ceiling, and
+    # moves old entries to archive/ rather than deleting anything (A14).
+    _merge_claude_hook(
+        settings,
+        "SessionEnd",
+        "",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/memory_rotate.py"',
+    )
+    # Bills each tool result back to the file its call targeted, so the Context
+    # Scoping rule has a price tag instead of only advice (A13).
+    _merge_claude_hook(
+        settings,
+        "SessionEnd",
+        "",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/context_cost.py" record',
+    )
+    # Compaction can summarize the P0 rules out of context; this reprints a
+    # minimal kernel plus task state. SessionStart (not PreCompact) because
+    # only SessionStart stdout is added back as context.
+    _merge_claude_hook(
+        settings,
+        "SessionStart",
+        "compact",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/reinject_on_compact.py"',
     )
     _merge_claude_hook(
         settings,
@@ -242,6 +311,24 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
         "PreToolUse",
         "Edit|Write|MultiEdit",
         'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/enforce_design_context.py"',
+    )
+    _merge_claude_hook(
+        settings,
+        "PreToolUse",
+        "Edit|Write|MultiEdit|Bash",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/protect_tests.py"',
+    )
+    _merge_claude_hook(
+        settings,
+        "PreToolUse",
+        "Edit|Write|MultiEdit",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/guard_main_branch.py"',
+    )
+    _merge_claude_hook(
+        settings,
+        "PreToolUse",
+        "Edit|Write|MultiEdit",
+        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/scan_secrets_on_write.py"',
     )
     _merge_claude_hook(
         settings,
@@ -643,6 +730,13 @@ def generate_claude_config(dry_run: bool) -> None:
     content = f"""# CLAUDE.md — DevBureau Rules
 > Auto-generated from .agent/rules/DEVBUREAU.md. Do not edit manually — run sync_ide.py to update.
 > Activate a specialist by mentioning `@agent-name`.
+
+> **Context contract — read once, here.** Everything below IS the full P0 rule
+> set. `.agent/rules/DEVBUREAU.md` is the source this file was generated from,
+> byte-for-byte the same rules: do NOT open it at session start or "to be sure"
+> — that pays ~10k tokens twice for identical content. Open a file under
+> `.agent/rules/reference/` only when a rule below explicitly points you at a
+> named section of it, and read only that section.
 
 {agent_summary}
 

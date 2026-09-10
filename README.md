@@ -6,7 +6,7 @@
 > without needing to know how to code. Works across Claude Code, Cursor, Codex CLI, OpenCode,
 > GitHub Copilot, Antigravity, Windsurf, Cline, Roo Code, and Zed.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.40.1-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.41.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-23-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-78-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-29-red)](https://github.com/fernandotenguan/devbureau)
@@ -23,15 +23,35 @@
 | **Agents**         | 23    | Specialist AI personas (frontend, backend, security, SRE, a11y, game dev, etc.) |
 | **Skills**         | 78    | Domain-specific knowledge modules with automated scripts                     |
 | **Workflows**      | 29    | Slash-command procedures including the autonomous `/ade` pipeline             |
-| **Master Scripts** | 15    | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py`, `github_coordination.py`, `blast_radius.py`, `memory_recall.py`, `test_gap_check.py`, `doc_drift_check.py`, `integrity_manifest.py` |
+| **Master Scripts** | 20    | `doctor.py`, `checklist.py`, `verify_all.py`, `sync_ide.py`, `auto_fixer.py`, `install_hooks.py`, `session_manager.py`, `auto_preview.py`, `token_footprint.py`, `github_coordination.py`, `blast_radius.py`, `memory_recall.py`, `test_gap_check.py`, `doc_drift_check.py`, `integrity_manifest.py`, `sync_docs.py`, `repo_map.py`, `rule_adherence.py`, `memory_rotate.py`, `context_cost.py` |
 | **Kit Tests**      | ✅    | Automated pytest suite — runs before every commit                            |
 | **Memory Layer**   | ✅    | Persistent lessons and gotchas across sessions                               |
-| **Hooks**          | 11    | Git pre-commit (all IDEs) + 10 Claude Code hooks: block edits to auto-generated files, block writes outside the current worktree, block `git --no-verify`/hooksPath bypass, block UI-file edits until the specialist agent was read this session, advisory prompt-injection scan, advisory `console.log` warning, auto-fix on edit, advisory Purple Ban/UI-library warning, advisory tool-loop detection, advisory MCP health tracking |
+| **Hooks**          | 20    | Git pre-commit (all IDEs) + 19 Claude Code hooks: rank the files that cost the most context per session, rotate oversized memory files to archive at session end, record a rule-adherence row at session end, block deleting/emptying/skipping an existing test, block edits directly on a main/master branch that has a remote, block writing a high-confidence credential to disk, reinject the P0 kernel after context compaction, block edits to auto-generated files, block writes outside the current worktree, block `git --no-verify`/hooksPath bypass, block UI-file edits until the specialist agent was read this session, advisory prompt-injection scan, advisory `console.log` warning, auto-fix on edit, advisory Purple Ban/UI-library warning, advisory tool-loop detection that also records the failed approach in `dead-ends.md`, advisory MCP health tracking |
 | **MCP**            | 1     | Starter `.mcp.json` with the GitHub MCP server (OAuth, no token in the file) |
 
 ---
 
 ## Features
+
+### 🛡️ Deterministic Guardrails (not just prose)
+
+Rules that used to live only as instructions now run as hooks the harness enforces:
+
+```
+Deleting or skipping a test to go green      → blocked (DEVBUREAU_ALLOW_TEST_EDITS overrides)
+Editing straight on a main branch w/ remote  → blocked, asks for a working branch
+Writing an AWS key into a file               → blocked before it reaches disk
+Context compaction on a long session         → P0 kernel reinjected automatically
+Session ends                                 → adherence, context cost and memory rotation recorded
+```
+
+### 📊 Measure Before You Cut
+
+```bash
+python .agent/scripts/doctor.py --adherence     # which rules the model actually follows
+python .agent/scripts/context_cost.py report    # which files cost the most context
+python .agent/scripts/repo_map.py               # the codebase as a symbol map, under a token budget
+```
 
 ### 🤖 Intelligent Auto-Routing
 
@@ -398,6 +418,21 @@ python .agent/scripts/sync_ide.py --target all
 
 # Measure the kit's own context footprint (approx. tokens in generated rule files)
 python .agent/scripts/token_footprint.py
+
+# Symbol map of a codebase, ranked by inbound imports and capped by a token budget
+python .agent/scripts/repo_map.py src --budget 800
+
+# Which DEVBUREAU.md rules the model actually follows (needs recorded sessions)
+python .agent/scripts/doctor.py --adherence
+
+# Which files cost the most context, across sessions
+python .agent/scripts/context_cost.py report
+
+# Recount agents/skills/workflows and fix README/ARCHITECTURE counts
+python .agent/scripts/sync_docs.py
+
+# Rotate memory files above 50 KB into .agent/memory/archive/ (nothing is deleted)
+python .agent/scripts/memory_rotate.py --dry-run
 ```
 
 ---
