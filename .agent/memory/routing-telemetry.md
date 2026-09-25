@@ -25,3 +25,4 @@ Sem observação posterior concreta, a linha permanece **Declarada** indefinidam
 
 <!-- Entradas abaixo. "Precisou de orchestrator depois?": a escolha solo se mostrou insuficiente e a tarefa escalou para multi-agente. "Roteamento correto?": Sim/Não/N/A (ainda não observado). "Estado de evidência": Declarada/Confirmada/Contradita — ver seção acima; atualizar a mesma linha quando houver observação posterior, sem duplicar. -->
 | 2026-09-24 | benchmark-run10-adopt | orchestrator (code-archaeologist, security-auditor, frontend-specialist) | N/A (já começou multi-agente) | Sim (5 itens em 3 domínios distintos) | Declarada |
+| 2026-09-24 | correcoes-alinhamento-4-itens | orchestrator (devops-engineer, documentation-writer) | N/A (já começou multi-agente) | Sim (distribuição, hooks e documentação ao usuário) | Declarada |
