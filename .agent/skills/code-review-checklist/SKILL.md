@@ -50,6 +50,17 @@ allowed-tools: Read, Glob, Grep
 - [ ] Public APIs documented
 - [ ] README updated if needed
 
+## Ângulos de Caça a Bugs (diff com lógica alterada)
+
+O checklist acima confere categorias, mas não obriga ninguém a procurar. Quando o diff muda lógica (não só estilo, docs ou testes), rode os quatro ângulos abaixo, um de cada vez e cada um do zero: a conclusão de um ângulo nunca descarta o que outro encontrou. Linhas não alteradas de uma função tocada também estão no escopo, porque o diff as reexpõe.
+
+1. **Comportamento removido:** para cada linha que o diff apaga ou substitui, nomeie a garantia que ela dava (validação, guarda, caminho de erro, teste que cobria um caso real) e ache onde o código novo a restabelece. Não achou, é achado.
+2. **Chamadores:** para cada função alterada, faça grep dos chamadores. Alguma chamada quebra com a pré-condição nova, o formato de retorno novo, a exceção nova ou a dependência de ordem nova?
+3. **Altitude:** a mudança corrige a causa na profundidade certa ou remenda o sintoma? Caso especial empilhado sobre infraestrutura compartilhada indica correção rasa; nomeie a mudança mais geral no mecanismo de baixo.
+4. **Convenção citável:** só aponte violação de regra do projeto (`DEVBUREAU.md`, `CLAUDE.md`, `AGENTS.md`, o `.md` do agente) quando puder citar a regra exata e a linha exata que a quebra. Sem "espírito da regra", sem preferência de estilo.
+
+**Todo achado carrega um cenário de falha concreto:** entrada ou estado → resultado errado ou crash. Para achado de limpeza ou convenção, o custo concreto (o que duplica, o que desperdiça, qual regra quebra). Achado cujo cenário você não consegue nomear vira ❓ QUESTION, nunca 🔴 BLOCKING. Se for preciso cortar a lista, correção vem antes de limpeza.
+
 ## Revisão em Dois Eixos (Opcional, mudanças de risco real)
 
 O checklist acima é um único agente, um único passe — suficiente para a maioria das revisões. Para mudanças de risco real, rode dois sub-agentes paralelos e independentes, cada um vendo só o diff e o pedido original (nunca o raciocínio um do outro, para que nenhum contamine o veredito do outro):
@@ -146,7 +157,7 @@ const data: UserData = ...
 
 ```
 // Blocking issues use 🔴
-🔴 BLOCKING: SQL injection vulnerability here
+🔴 BLOCKING: SQL injection vulnerability here → `?name=' OR 1=1--` returns every row
 
 // Important suggestions use 🟡
 🟡 SUGGESTION: Consider using useMemo for performance

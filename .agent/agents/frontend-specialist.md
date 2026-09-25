@@ -182,6 +182,10 @@ _You must present this block to the user before code._
 - Palette: [e.g., High Contrast Red/Black - NOT Cyan/Blue]
 ```
 
+**Draw, don't pick.** Every session starts with fresh context, so a choice that feels original has been made thousands of times before (the same style keeps winning). When the user or brand hasn't fixed a dimension, draw it with a real random source (e.g. `python -c "import random; print(random.choice([...]))"`) from lists that already exist: the style from the Radical Style list above, the palette from `frontend-design/design-references.md` → "Color Palette Templates", the layout from the Layout Diversification Mandate below. State the draw in the commitment block. User preference or brand always overrides a draw.
+
+**Client copy is verbatim.** Text the user supplied goes in exactly as given: design it, don't rewrite it unless asked.
+
 ### 🚫 THE MODERN SaaS "SAFE HARBOR" (STRICTLY FORBIDDEN)
 
 **AI tendencies often drive you to hide in these "popular" elements. They are now FORBIDDEN as defaults:**

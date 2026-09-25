@@ -12,8 +12,10 @@
 4. [Como Usar (Por Tarefa)](#como-usar-por-tarefa) — Exemplos práticos
 5. [Todos os Comandos](#todos-os-comandos) — Referência rápida
 6. [Especialistas Disponíveis](#especialistas-disponíveis) — Quem faz o quê
-7. [Perguntas Frequentes](#perguntas-frequentes)
-8. [Configurações Avançadas](#configurações-avançadas)
+7. [Proteções Automáticas](#proteções-automáticas) — O que o kit impede sozinho
+8. [Perguntas Frequentes](#perguntas-frequentes)
+9. [Configurações Avançadas](#configurações-avançadas)
+10. [Mantendo Atualizado](#mantendo-atualizado) — Atualizar ou remover o kit
 
 ---
 
@@ -21,13 +23,17 @@
 
 ### ⚡ Configure em 2 Minutos
 
-Você baixou o DevBureau? Ótimo! Agora execute **UM COMANDO** para ativar tudo:
+**Antes de começar**, o computador precisa ter três programas gratuitos: [Node.js](https://nodejs.org) (versão 16.7 ou mais nova), [Python](https://www.python.org/downloads/) (3.9 ou mais novo) e [Git](https://git-scm.com/downloads).
+
+Abra o terminal **dentro da pasta do seu projeto** e execute **UM COMANDO**:
 
 ```bash
-python .agent/scripts/sync_ide.py --target all
+npx devbureau init
 ```
 
-**Pronto!** Sua IDE (Cursor, Claude, VS Code) agora entende os poderes do DevBureau automaticamente.
+O instalador copia a equipe de especialistas para o projeto, pergunta qual ferramenta de IA você usa (Claude Code, Cursor, Copilot e outras) e já faz o diagnóstico de saúde no final.
+
+**Pronto!** Sua ferramenta de IA agora entende o DevBureau automaticamente. Cada projeto recebe a sua própria memória, que começa vazia e vai aprendendo com o seu trabalho.
 
 ### ✅ Verificar se Funcionou
 
@@ -502,6 +508,19 @@ Além dos comandos rápidos, você pode ativar um especialista específico escre
 | `/test`    | Cria e roda testes          | `/test`                                |
 | `/preview` | Abre o servidor local       | `/preview`                             |
 | `/status`  | Mostra progresso do projeto | `/status`                              |
+| `/orchestrate` | Junta vários especialistas numa tarefa grande | `/orchestrate revise o checkout inteiro` |
+| `/clean`   | Arruma a formatação do código | `/clean`                             |
+
+#### Comandos de Revisão e Qualidade
+
+| Comando          | O que faz                                                                 |
+| ---------------- | ------------------------------------------------------------------------- |
+| `/audit`         | Raio-X do projeto: bugs, segurança, desempenho, testes. Só relata, não muda nada |
+| `/lean-audit`    | Encontra código complicado demais que pode ser apagado                     |
+| `/lean-debt`     | Lista os atalhos provisórios deixados no código para você decidir quando resolver |
+| `/finish-branch` | Fecha um trabalho terminado: juntar, enviar para revisão, guardar ou descartar |
+
+> Trabalha com várias sessões de IA ao mesmo tempo? Os comandos `/epic-claim`, `/epic-sync` e demais `/epic-*` coordenam o trabalho entre elas usando as issues do GitHub. É opcional e voltado a quem já usa GitHub no dia a dia.
 
 #### Comandos de Deploy e Publicação
 
@@ -681,6 +700,38 @@ Além dos comandos rápidos, você pode ativar um especialista específico escre
 
 ---
 
+## Proteções Automáticas
+
+Regras escritas dependem de o agente lembrar delas. As mais importantes o DevBureau não deixa só na confiança: ele confere cada ação do agente antes ou depois que ela acontece. Isso funciona sozinho no **Claude Code**, em Windows, Mac e Linux. Nas outras ferramentas (Cursor, Copilot e demais), as mesmas regras valem como instrução para o agente, mas sem essa conferência automática.
+
+**O kit bloqueia** (a ação não acontece):
+
+| Se o agente tentar...                                                      | O que acontece                              |
+| -------------------------------------------------------------------------- | ------------------------------------------- |
+| Pular as verificações automáticas ao salvar uma versão do código           | Bloqueado                                   |
+| Apagar, desativar ou esvaziar um teste para ele "passar"                   | Bloqueado                                   |
+| Gravar uma senha ou chave de acesso (de pagamento, nuvem, IA) num arquivo  | Bloqueado; o lugar certo é o arquivo `.env` |
+| Editar direto a versão principal de um projeto compartilhado               | Bloqueado; ele cria uma linha de trabalho separada |
+| Mexer no visual sem ler antes as regras do especialista de design          | Bloqueado até ele ler                       |
+| Editar arquivos que o próprio kit gera                                     | Bloqueado; ele é levado ao arquivo certo    |
+| Editar arquivos fora da pasta do projeto                                   | Bloqueado                                   |
+
+**O kit avisa** (a ação acontece, mas o agente é alertado):
+
+| Situação                                                              | O aviso                                         |
+| --------------------------------------------------------------------- | ----------------------------------------------- |
+| Uma página ou arquivo lido traz instruções escondidas para a IA        | O agente trata aquilo como dado, não como ordem |
+| O agente repete uma ação que já falhou                                 | Ele para, e o beco sem saída fica registrado para não ser repetido |
+| Sobrou um comando de depuração esquecido no código                     | Lembrete para remover                           |
+| O visual usa as cores ou bibliotecas genéricas que o kit evita         | Lembrete das regras de design                   |
+| Uma integração externa (MCP) está falhando seguidamente                | Alerta antes da próxima tentativa               |
+
+E quando a conversa fica longa demais e a ferramenta resume o histórico, o kit **reinsere as regras essenciais**, para o agente não voltar a um comportamento genérico no meio do trabalho.
+
+> Precisa mesmo apagar um teste? Peça ao agente explicando o motivo. Ele vai mostrar como liberar a ação só dessa vez.
+
+---
+
 ## Perguntas Frequentes
 
 ### ❓ Dúvidas Comuns
@@ -736,6 +787,10 @@ Além dos comandos rápidos, você pode ativar um especialista específico escre
 #### P: O que é um "Squad"?
 
 **R:** Um squad é uma equipe especializada para um processo específico. Exemplo: "squad de content production" para criar posts, imagens, emails automaticamente.
+
+#### P: Funciona no Windows, no Mac e no Linux?
+
+**R:** Sim, nos três. As proteções automáticas (veja [Proteções Automáticas](#proteções-automáticas)) encontram sozinhas o Python instalado em cada sistema.
 
 ---
 
@@ -850,6 +905,21 @@ Isso verifica:
 
 ---
 
+## Mantendo Atualizado
+
+O DevBureau recebe melhorias com frequência. Para trazê-las ao seu projeto, abra o terminal na pasta do projeto:
+
+| Quero...                                          | Comando                                    |
+| ------------------------------------------------- | ------------------------------------------ |
+| Ver o que mudou, sem alterar nada                 | `npx devbureau@latest update --dry-run`    |
+| Atualizar                                         | `npx devbureau@latest update`              |
+| Ver o que seria removido, sem remover             | `npx devbureau uninstall --dry-run`        |
+| Remover o DevBureau do projeto                    | `npx devbureau uninstall`                  |
+
+**Suas personalizações estão seguras.** O kit guarda uma impressão digital de cada arquivo que instalou. Se você (ou o agente, a seu pedido) alterou um arquivo, a atualização percebe e não sobrescreve; ela lista esses arquivos para você decidir. Ao atualizar, o DevBureau também mostra as novidades desde a sua versão, em linguagem simples.
+
+---
+
 ### 📚 Leitura Recomendada Adicional
 
 Se você quer aprender mais:
@@ -868,10 +938,10 @@ Se você quer aprender mais:
 
 ### Comece Agora!
 
-1. **Execute o setup:**
+1. **Instale no seu projeto:**
 
     ```bash
-    python .agent/scripts/sync_ide.py --target all
+    npx devbureau init
     ```
 
 2. **Verifique:**

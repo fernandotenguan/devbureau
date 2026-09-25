@@ -46,6 +46,28 @@ const KIT_ONLY_MEMORY_FILES = [
     ".agent/memory/frontend-design-knowledge-extraction.md",
 ];
 
+// Whole subtrees that are never shipped either: hook session state, the kit's
+// own rotated memory archive, the benchmark source list and the npm packaging
+// file. `.agent/.npmignore` keeps the same paths out of the tarball; this list
+// also covers installs run from a local checkout, where they exist on disk.
+const KIT_ONLY_PATH_PREFIXES = [
+    ".agent/.tmp/",
+    ".agent/memory/archive/",
+    ".agent/memory/templates/",
+    ".agent/skills/framework-benchmarking/references/sources.md/",
+    ".agent/.npmignore/",
+];
+
+// Suffixing "/" lets one prefix match a directory, its children and a single file.
+function isKitOnlyPath(relFromRoot) {
+    return (
+        KIT_ONLY_MEMORY_FILES.includes(relFromRoot) ||
+        KIT_ONLY_PATH_PREFIXES.some((prefix) =>
+            `${relFromRoot}/`.startsWith(prefix),
+        )
+    );
+}
+
 // ".agent/memory/lessons.md" -> ".agent/memory/templates/lessons.md"
 function templateRelPath(relPath) {
     const parts = relPath.split("/");
@@ -214,10 +236,7 @@ function copyAgentFolder(targetDir, force) {
                 .split(path.sep)
                 .join("/");
             if (rel === "") return true; // the .agent root itself
-            const relFromRoot = path.posix.join(".agent", rel);
-            if (rel.startsWith("memory/templates")) return false;
-            if (KIT_ONLY_MEMORY_FILES.includes(relFromRoot)) return false;
-            return true;
+            return !isKitOnlyPath(path.posix.join(".agent", rel));
         },
     });
     // Seed per-project memory files from their structure-only template instead
@@ -248,10 +267,17 @@ function copyMcpConfigIfAbsent(targetDir) {
 
 function runPythonScript(pythonCmd, targetDir, relativeScriptPath, extraArgs) {
     const scriptPath = path.join(targetDir, relativeScriptPath);
-    const result = spawnSync(pythonCmd, [scriptPath, ...extraArgs], {
-        cwd: targetDir,
-        stdio: "inherit",
-    });
+    // Bare `py` follows the scripts' `#!/usr/bin/env python3` line to the
+    // Windows Store stub; an explicit version makes the launcher ignore it.
+    const versionFlag = pythonCmd === "py" ? ["-3"] : [];
+    const result = spawnSync(
+        pythonCmd,
+        [...versionFlag, scriptPath, ...extraArgs],
+        {
+            cwd: targetDir,
+            stdio: "inherit",
+        },
+    );
     return result.status === 0;
 }
 
@@ -403,21 +429,30 @@ async function init(args) {
     }
 
     console.log(
-        "\n✅ DevBureau is set up. Open this project in your AI assistant and start with /brainstorm or /ade.\n",
+        "\n✅ DevBureau is set up. Open this project in your AI assistant and start with /brainstorm or /ade.\n" +
+            "📚 Guia do usuário / User guide: https://github.com/fernandotenguan/devbureau/blob/main/GUIA_DO_USUARIO.md\n",
     );
 }
 
-// Reads CHANGELOG.md from the freshly-installed package and prints the entries
-// between the previously-installed version and the new one (newest first,
-// capped at 5 full entries). Falls back to a one-liner if either version's
-// heading can't be located (manually-edited version file, missing entry).
+// Plain-language release notes in the user's language. CHANGELOG.md is the
+// maintainer's technical log and never ships (it names the external projects
+// the kit was benchmarked against), so these are written for the end user.
+function releaseNotesFile() {
+    const locale = Intl.DateTimeFormat().resolvedOptions().locale || "";
+    return locale.toLowerCase().startsWith("pt")
+        ? "RELEASE_NOTES_pt-BR.md"
+        : "RELEASE_NOTES.md";
+}
+
+// Reads the release notes from the freshly-installed package and prints the
+// entries between the previously-installed version and the new one (newest
+// first, capped at 5 full entries). Falls back to a one-liner if either
+// version's heading can't be located (manually-edited version file, missing entry).
 function printChangelogSince(previousVersion, newVersion) {
+    const notesFile = releaseNotesFile();
     let changelog;
     try {
-        changelog = fs.readFileSync(
-            path.join(PACKAGE_ROOT, "CHANGELOG.md"),
-            "utf8",
-        );
+        changelog = fs.readFileSync(path.join(PACKAGE_ROOT, notesFile), "utf8");
     } catch {
         return;
     }
@@ -429,7 +464,7 @@ function printChangelogSince(previousVersion, newVersion) {
 
     if (startIdx === -1 || endIdx === -1 || endIdx <= startIdx) {
         console.log(
-            `\nℹ Atualizado de v${previousVersion} para v${newVersion} — veja CHANGELOG.md para detalhes.`,
+            `\nℹ Atualizado de v${previousVersion} para v${newVersion} — veja ${notesFile} para detalhes.`,
         );
         return;
     }
@@ -447,7 +482,7 @@ function printChangelogSince(previousVersion, newVersion) {
     }
     if (entries.length > shown.length) {
         console.log(
-            `...e mais ${entries.length - shown.length} releases anteriores — veja CHANGELOG.md para o histórico completo.\n`,
+            `...e mais ${entries.length - shown.length} releases anteriores — veja ${notesFile} para o histórico completo.\n`,
         );
     }
 }
@@ -485,13 +520,9 @@ function update(args) {
     const previousVersion = loadVersionFile(targetDir);
     const newVersion = currentPackageVersion();
 
-    // Never ship the installer's own memory/templates/ source assets, or the
-    // kit-only memory logs (benchmark-log.md, pattern-mining-log.md, etc.) —
-    // same exclusion `copyAgentFolder()` applies on init.
+    // Same exclusion `copyAgentFolder()` applies on init.
     const sourceRelFiles = agentRelFiles(PACKAGE_ROOT).filter(
-        (relPath) =>
-            !relPath.startsWith(".agent/memory/templates/") &&
-            !KIT_ONLY_MEMORY_FILES.includes(relPath),
+        (relPath) => !isKitOnlyPath(relPath),
     );
     const destRelFiles = agentRelFiles(targetDir);
     const newManifest = {};
@@ -576,13 +607,37 @@ function update(args) {
         saveVersionFile(targetDir, newVersion);
     }
 
+    // 3.41.0 and earlier installed maintainer-only files into projects. Remove
+    // the ones the kit itself put there and nobody changed since (hash still
+    // matches the previous manifest); anything edited or created locally stays.
+    const leakedKitFiles = Object.keys(previousManifest || {}).filter(
+        (relPath) =>
+            isKitOnlyPath(relPath) &&
+            fs.existsSync(path.join(targetDir, relPath)) &&
+            hashFile(path.join(targetDir, relPath)) ===
+                previousManifest[relPath],
+    );
+    if (!dryRun) {
+        for (const relPath of leakedKitFiles) {
+            fs.unlinkSync(path.join(targetDir, relPath));
+        }
+        removeEmptyDirsRecursive(path.join(targetDir, ".agent", ".tmp"));
+    }
+
     const orphaned = destRelFiles.filter(
-        (relPath) => !sourceRelFiles.includes(relPath),
+        (relPath) =>
+            !sourceRelFiles.includes(relPath) &&
+            !leakedKitFiles.includes(relPath),
     );
 
     console.log(`✔ Atualizados: ${updated}`);
     console.log(`✔ Adicionados: ${added}`);
     console.log(`ℹ Sem mudança: ${unchanged}`);
+    if (leakedKitFiles.length > 0) {
+        console.log(
+            `🧹 Arquivos internos do kit instalados por engano, removidos${dryRun ? " (simulação)" : ""}: ${leakedKitFiles.length}`,
+        );
+    }
     if (customizedFiles.length > 0) {
         console.log(
             `⚠ Customizados, não sobrescritos (${customizedFiles.length}):`,
@@ -601,6 +656,22 @@ function update(args) {
         console.log(
             `ℹ Presentes localmente mas não mais no kit publicado (mantidos, nada foi apagado): ${orphaned.length}`,
         );
+    }
+
+    // Hook commands registered by an older version are migrated by sync_ide.py.
+    // Its own SessionStart hook would do it, but on macOS that old command (a
+    // bare `python`) is exactly what can't run, so do it here.
+    const claudeSettings = path.join(targetDir, ".claude", "settings.json");
+    if (!dryRun && fs.existsSync(claudeSettings)) {
+        const pythonCmd = findPythonCommand();
+        if (pythonCmd) {
+            runPythonScript(
+                pythonCmd,
+                targetDir,
+                ".agent/scripts/sync_ide.py",
+                ["--target", "claude"],
+            );
+        }
     }
 
     if (previousVersion && previousVersion !== newVersion) {

@@ -23,6 +23,17 @@ if sys.platform == "win32":
     except AttributeError:
         pass
 
+sys.path.insert(0, str(Path(__file__).resolve().parent / "hooks"))
+from protect_generated_files import PROTECTED_FILES, PROTECTED_PREFIXES, find_real_source  # noqa: E402
+
+# Kit instruction files are prompts, not docs: Prettier pads their tables with
+# spaces, which inflates every session's token cost and buries the real diff.
+KIT_INSTRUCTION_EXCLUDES = (
+    ["!.agent/**/*.md"]
+    + [f"!{path}" for path in PROTECTED_FILES]
+    + [f"!{prefix}**" for prefix in PROTECTED_PREFIXES]
+)
+
 # ANSI colors
 class Colors:
     CYAN = '\033[96m'
@@ -84,11 +95,32 @@ def get_targets(args: list, extensions: list) -> list:
             targets.append(arg)
     return targets
 
+def is_kit_instruction_file(path: str, root: Path) -> bool:
+    """True for kit prompt files: markdown under .agent/ or a sync_ide.py output."""
+    try:
+        relative = Path(path).resolve().relative_to(root).as_posix()
+    except ValueError:
+        return False
+    if Path(relative).suffix.lower() not in (".md", ".mdc"):
+        return False
+    return relative.startswith(".agent/") or find_real_source(relative) is not None
+
+def prettier_command(targets: list) -> list:
+    """Directory targets get exclusion patterns so kit instruction files inside stay untouched."""
+    if any(t == "." or Path(t).is_dir() for t in targets):
+        targets = targets + KIT_INSTRUCTION_EXCLUDES
+    return ["npx", "prettier", "--write"] + targets
+
 def fix_nodejs(project_path: Path, args: list):
     """Fix Node.js, TS, HTML, CSS projects."""
     web_exts = [".js", ".jsx", ".ts", ".tsx", ".html", ".css", ".json", ".md"]
     targets = get_targets(args, web_exts)
-    
+
+    skipped = [t for t in targets if is_kit_instruction_file(t, project_path)]
+    if skipped:
+        print_status(f"  ⏭️  Skipped {len(skipped)} kit instruction file(s): Prettier would pad their tables", Colors.YELLOW)
+        targets = [t for t in targets if t not in skipped]
+
     if not targets:
         return
 
@@ -101,8 +133,7 @@ def fix_nodejs(project_path: Path, args: list):
         run_command(eslint_cmd, project_path, "ESLint Fix")
 
     # 2. Prettier Format
-    prettier_cmd = ["npx", "prettier", "--write"] + targets
-    run_command(prettier_cmd, project_path, "Prettier Format")
+    run_command(prettier_command(targets), project_path, "Prettier Format")
 
 def fix_python(project_path: Path, args: list):
     """Fix Python projects."""

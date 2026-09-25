@@ -327,3 +327,88 @@ class TestDocsSync:
             f"ARCHITECTURE.md out of sync with disk: {mismatches}. "
             "Update it per KIT_MASTER_RULES.md rule 5."
         )
+
+
+# ── auto_fixer must never reformat kit instruction files ──────────────────────
+class TestAutoFixerSkipsKitInstructions:
+    """Prettier pads markdown tables with spaces. On kit prompt files that inflates
+    every session's token cost and buries the real diff, so auto_fixer must skip them."""
+
+    @pytest.fixture(scope="class")
+    def auto_fixer(self):
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location("auto_fixer", SCRIPTS_DIR / "auto_fixer.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    @pytest.mark.parametrize("path", [
+        ".agent/rules/DEVBUREAU.md",
+        ".agent/agents/security-auditor.md",
+        ".agent/skills/code-review-checklist/SKILL.md",
+        ".claude/CLAUDE.md",
+        "AGENTS.md",
+        "GEMINI.md",
+        ".cursor/rules/00-core.mdc",
+        ".github/instructions/frontend.instructions.md",
+    ])
+    def test_kit_instruction_files_are_skipped(self, auto_fixer, path: str) -> None:
+        assert auto_fixer.is_kit_instruction_file(str(REPO_ROOT / path), REPO_ROOT)
+
+    @pytest.mark.parametrize("path", [
+        "README.md",
+        "docs/README.md",
+        ".agent/INTEGRITY_MANIFEST.json",
+        "web/src/app/page.tsx",
+    ])
+    def test_project_files_are_still_formatted(self, auto_fixer, path: str) -> None:
+        assert not auto_fixer.is_kit_instruction_file(str(REPO_ROOT / path), REPO_ROOT)
+
+    def test_directory_target_carries_exclusions(self, auto_fixer) -> None:
+        command = auto_fixer.prettier_command(["."])
+        assert "!.agent/**/*.md" in command
+        assert "!AGENTS.md" in command
+        assert "!.cursor/rules/**" in command
+
+    def test_file_targets_carry_no_exclusions(self, auto_fixer) -> None:
+        assert auto_fixer.prettier_command(["README.md"]) == ["npx", "prettier", "--write", "README.md"]
+
+
+# ── Claude Code hook commands must resolve Python on every OS ─────────────────
+class TestHookPythonResolution:
+    """A bare `python` does not exist on macOS 12.3+, so every hook would fail
+    silently there and the deterministic barriers would be off."""
+
+    @pytest.fixture(scope="class")
+    def sync_ide(self):
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location("sync_ide", SCRIPTS_DIR / "sync_ide.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    def test_legacy_bare_python_is_migrated_once(self, sync_ide) -> None:
+        old = 'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/block_no_verify.py"'
+        settings = {"hooks": {"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": old}]}]}}
+
+        assert sync_ide._repair_legacy_hooks(settings) == 1
+        command = settings["hooks"]["PreToolUse"][0]["hooks"][0]["command"]
+        assert command == sync_ide.PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/block_no_verify.py"'
+        assert sync_ide._repair_legacy_hooks(settings) == 0
+
+    def test_resolver_prefers_py_launcher_with_version_flag(self, sync_ide) -> None:
+        # Bare `py` follows the scripts' python3 shebang to the Windows Store stub.
+        assert '"py -3"' in sync_ide.PYTHON
+        assert "WindowsApps" in sync_ide.PYTHON
+
+    def test_committed_settings_have_no_bare_python(self) -> None:
+        import json
+
+        settings_path = REPO_ROOT / ".claude" / "settings.json"
+        if not settings_path.exists():
+            pytest.skip(".claude/settings.json not generated")
+        settings = json.loads(settings_path.read_text(encoding="utf-8"))
+        commands = [e["command"] for groups in settings.get("hooks", {}).values() for g in groups for e in g["hooks"]]
+        assert not [c for c in commands if c.startswith('python "')]

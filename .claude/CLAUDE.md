@@ -173,6 +173,7 @@ Cada tipo do REQUEST CLASSIFIER tem um teto de referência de tool calls (`pytho
 | Bug fixed | Original symptom re-tested and gone | Code changed, assumed fixed |
 | Lint clean | Fresh linter output, 0 errors | Partial check, extrapolation |
 | Subagent/delegate completed | Diff or test output you verified yourself | The subagent's own success report |
+| Behavior works | An independent oracle: the repo's own tests, a golden file, an external source, a second method | A check built on the same assumption as the change (it can pass with the feature broken) |
 
 Catch yourself using "should," "probably," or expressing satisfaction ("Done!", "Perfect!") before that evidence exists — that's the signal to stop and run the command first.
 
@@ -340,6 +341,7 @@ Touch only what the request explicitly requires. Never improve adjacent code as 
 | **Own your orphans** | Remove imports/variables/functions that YOUR change made unused — not pre-existing ones |
 | **The line test** | Every changed line must trace directly to the user's request. If it can't, undo it |
 | **Clean up scratch** | Delete temp scripts/files created purely to iterate or debug once the task is done — they're not part of the deliverable unless the user asked to keep them |
+| **Not yours, don't undo** | Never revert, delete or overwrite changes or untracked files you didn't create this session (the user or another agent may be mid-work). After an installer/generator (`npm install`, codegen, formatter), check `git status` and undo collateral edits you didn't need |
 
 **Scope creep signals:** "while I'm in here", "I also cleaned up", "I refactored while fixing".
 

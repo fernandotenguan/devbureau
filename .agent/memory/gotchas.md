@@ -157,4 +157,13 @@ Confiança usa a mesma escala de `.agent/skills/confidence-scale/SKILL.md`: 🟢
 **Causa raiz:** Os dois arquivos nunca tinham passado pelo formatador. A regra do kit manda rodar o auto-fixer nos caminhos alterados, o que colide com a regra de mudança cirúrgica quando o arquivo é legado.
 **Solução:** Reverter e reaplicar só as edições de lógica. Diff final: 7 e 26 linhas.
 **Prevenção:** Antes de rodar o auto-fixer num arquivo legado, verifique se ele já é formatado. Se não for, ou formate num commit separado e dedicado, ou pule o formatador nessa mudança.
+**Última recuperação:** 2026-09-24. Recorreu com o Prettier nas tabelas de `DEVBUREAU.md` e `security-auditor.md` (~250 linhas). Para os `.md` do kit a prevenção agora é estrutural: `auto_fixer.py` os pula (commit `2ebb3fd`).
+
+## 2026-09-24 — npm publica o disco, não o git
+**Gatilho:** publicar no npm, `npm pack`, "arquivo privado apareceu no pacote", `.gitignore` não protegeu
+**Confiança:** 🟢 Confirmado
+**Sintoma:** A 3.41.0 publicada contém `benchmark-log.md`, `pattern-mining-log.md`, `sources.md` e 14 arquivos de `.agent/.tmp/hook-state/`, todos ignorados pelo git e descritos no `.gitignore` como "never pushed".
+**Causa raiz:** `package.json` lista `.agent` inteiro em `files`, e o npm empacota a árvore de trabalho. O `.gitignore` não vale para o npm, e o `.npmignore` da raiz não sobrepõe `files`.
+**Solução:** `.agent/.npmignore` (o npm respeita `.npmignore` dentro de um diretório de `files`) e um único `isKitOnlyPath()` em `bin/devbureau.js` para `init` e `update` (commit `b34ce4c`).
+**Prevenção:** Antes de publicar, rode `npm pack --dry-run --json` e compare com `git ls-files`: todo arquivo empacotado precisa estar versionado. Arquivo privado novo em `.agent/` entra no `.agent/.npmignore` no mesmo commit.
 **Última recuperação:** (nunca registrada)
