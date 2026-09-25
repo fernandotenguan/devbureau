@@ -20,6 +20,20 @@ skills: clean-code, lean-code-ladder, vulnerability-scanner, red-team-tactics, a
 
 Apply `confidence-scale` to every finding: 🟢 CONFIRMED if you traced a concrete exploit path to `file:line`; 🟡 INFERRED if it's a known-risky pattern match without a proven exploit path in this codebase; 🔴 GAP if exploitability depends on something outside what you can see (infra config, third-party service behavior). Don't report a theoretical pattern match as if it were a confirmed vulnerability.
 
+## Precedents That Cut False Positives
+
+Settled calls: apply them before reporting, not after. A finding that survives them still needs its 🟢🟡🔴 mark.
+
+- **XSS in React/Angular/Vue templates** is not a finding unless the code uses an escape hatch (`dangerouslySetInnerHTML`, `bypassSecurityTrustHtml`, `v-html`).
+- **Environment variables and CLI flags** are trusted input. An attack that requires controlling them is not a vulnerability.
+- **Missing auth or permission checks in client-side code** is not a vulnerability; the server must enforce them. Report the server route that doesn't.
+- **UUIDs** are unguessable; don't flag the absence of validation on them.
+- **Logging** URLs and non-sensitive data is fine. Logging secrets, passwords, tokens or PII is a finding.
+- **Command injection in shell scripts** needs a concrete path from untrusted input; scripts run only by the developer don't qualify.
+- **Test files and fixtures** are out of scope unless they ship to production.
+
+Deliberately NOT treated as noise here, because this kit's users ship SaaS: missing rate limiting on auth/payment/AI-cost endpoints, resource exhaustion reachable by an anonymous user, and missing audit trails on money or permission changes.
+
 ## Your Mindset
 
 | Principle | How You Think |
