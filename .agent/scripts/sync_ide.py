@@ -97,14 +97,33 @@ LEGACY_COMMAND_FIXES = {
 }
 
 
+# Hooks run through bash on every OS, but the interpreter's name differs:
+# macOS (12.3+) has only `python3`, and on Windows `python3` is often the
+# Microsoft Store stub. Resolved on the machine that runs the hook, so a
+# committed settings.json works for every teammate. `py -3`, not bare `py`: the
+# launcher otherwise follows the scripts' `#!/usr/bin/env python3` line straight
+# to that stub. Emits a name, never a path, so the unquoted expansion is safe.
+PYTHON = (
+    '$(command -v py >/dev/null 2>&1 && echo "py -3"'
+    " || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3)"
+    " || echo python)"
+)
+
+# Commands registered before PYTHON existed: a bare `python` fails on macOS.
+LEGACY_PYTHON_PREFIX = 'python "$CLAUDE_PROJECT_DIR/.agent/scripts/'
+
+
 def _repair_legacy_hooks(settings: dict) -> int:
     """Upgrade hook commands that shipped broken, in place. Returns count fixed."""
     fixed = 0
     for event_groups in settings.get("hooks", {}).values():
         for group in event_groups:
             for entry in group.get("hooks", []):
-                replacement = LEGACY_COMMAND_FIXES.get(entry.get("command", ""))
-                if replacement:
+                command = entry.get("command", "")
+                replacement = LEGACY_COMMAND_FIXES.get(command, command)
+                if replacement.startswith(LEGACY_PYTHON_PREFIX):
+                    replacement = PYTHON + replacement[len("python"):]
+                if replacement != command:
                     entry["command"] = replacement
                     fixed += 1
     return fixed
@@ -252,7 +271,7 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
         settings,
         "SessionStart",
         "",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py" --target claude',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py" --target claude',
     )
     # Records one verdict row per session so DEVBUREAU.md's rules can be pruned
     # on evidence instead of impression (PRD E2.2). SessionEnd output is ignored
@@ -261,7 +280,7 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
         settings,
         "SessionEnd",
         "",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/rule_adherence.py" record',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/rule_adherence.py" record',
     )
     # Non-destructive and idempotent: only fires above the size ceiling, and
     # moves old entries to archive/ rather than deleting anything (A14).
@@ -269,7 +288,7 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
         settings,
         "SessionEnd",
         "",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/memory_rotate.py"',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/memory_rotate.py"',
     )
     # Bills each tool result back to the file its call targeted, so the Context
     # Scoping rule has a price tag instead of only advice (A13).
@@ -277,7 +296,7 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
         settings,
         "SessionEnd",
         "",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/context_cost.py" record',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/context_cost.py" record',
     )
     # Compaction can summarize the P0 rules out of context; this reprints a
     # minimal kernel plus task state. SessionStart (not PreCompact) because
@@ -286,91 +305,91 @@ def ensure_claude_protect_hook(dry_run: bool) -> None:
         settings,
         "SessionStart",
         "compact",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/reinject_on_compact.py"',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/reinject_on_compact.py"',
     )
     _merge_claude_hook(
         settings,
         "PreToolUse",
         "Edit|Write|MultiEdit",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/protect_generated_files.py"',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/protect_generated_files.py"',
     )
     _merge_claude_hook(
         settings,
         "PreToolUse",
         "Edit|Write|MultiEdit",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/guard_worktree_path.py"',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/guard_worktree_path.py"',
     )
     _merge_claude_hook(
         settings,
         "PreToolUse",
         "Bash",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/block_no_verify.py"',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/block_no_verify.py"',
     )
     _merge_claude_hook(
         settings,
         "PreToolUse",
         "Edit|Write|MultiEdit",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/enforce_design_context.py"',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/enforce_design_context.py"',
     )
     _merge_claude_hook(
         settings,
         "PreToolUse",
         "Edit|Write|MultiEdit|Bash",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/protect_tests.py"',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/protect_tests.py"',
     )
     _merge_claude_hook(
         settings,
         "PreToolUse",
         "Edit|Write|MultiEdit",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/guard_main_branch.py"',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/guard_main_branch.py"',
     )
     _merge_claude_hook(
         settings,
         "PreToolUse",
         "Edit|Write|MultiEdit",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/scan_secrets_on_write.py"',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/scan_secrets_on_write.py"',
     )
     _merge_claude_hook(
         settings,
         "PostToolUse",
         "Read|WebFetch|WebSearch",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/scan_injection.py"',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/scan_injection.py"',
     )
     _merge_claude_hook(
         settings,
         "PostToolUse",
         "Edit|Write|MultiEdit",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/warn_debug_statements.py"',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/warn_debug_statements.py"',
     )
     _merge_claude_hook(
         settings,
         "PostToolUse",
         "Edit|Write|MultiEdit",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/auto_fix_on_edit.py"',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/auto_fix_on_edit.py"',
     )
     _merge_claude_hook(
         settings,
         "PostToolUse",
         "Edit|Write|MultiEdit",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/warn_generic_design.py"',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/warn_generic_design.py"',
     )
     _merge_claude_hook(
         settings,
         "PostToolUse",
         "Edit|Write|MultiEdit|Bash|Grep|Read",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/detect_tool_loop.py"',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/detect_tool_loop.py"',
     )
     _merge_claude_hook(
         settings,
         "PreToolUse",
         "mcp__.*",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/check_mcp_health.py"',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/check_mcp_health.py"',
     )
     _merge_claude_hook(
         settings,
         "PostToolUse",
         "mcp__.*",
-        'python "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/check_mcp_health.py"',
+        PYTHON + ' "$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/check_mcp_health.py"',
     )
 
     write_output(settings_path, json.dumps(settings, indent=2) + "\n", dry_run)

@@ -267,10 +267,17 @@ function copyMcpConfigIfAbsent(targetDir) {
 
 function runPythonScript(pythonCmd, targetDir, relativeScriptPath, extraArgs) {
     const scriptPath = path.join(targetDir, relativeScriptPath);
-    const result = spawnSync(pythonCmd, [scriptPath, ...extraArgs], {
-        cwd: targetDir,
-        stdio: "inherit",
-    });
+    // Bare `py` follows the scripts' `#!/usr/bin/env python3` line to the
+    // Windows Store stub; an explicit version makes the launcher ignore it.
+    const versionFlag = pythonCmd === "py" ? ["-3"] : [];
+    const result = spawnSync(
+        pythonCmd,
+        [...versionFlag, scriptPath, ...extraArgs],
+        {
+            cwd: targetDir,
+            stdio: "inherit",
+        },
+    );
     return result.status === 0;
 }
 
@@ -616,6 +623,22 @@ function update(args) {
         console.log(
             `ℹ Presentes localmente mas não mais no kit publicado (mantidos, nada foi apagado): ${orphaned.length}`,
         );
+    }
+
+    // Hook commands registered by an older version are migrated by sync_ide.py.
+    // Its own SessionStart hook would do it, but on macOS that old command (a
+    // bare `python`) is exactly what can't run, so do it here.
+    const claudeSettings = path.join(targetDir, ".claude", "settings.json");
+    if (!dryRun && fs.existsSync(claudeSettings)) {
+        const pythonCmd = findPythonCommand();
+        if (pythonCmd) {
+            runPythonScript(
+                pythonCmd,
+                targetDir,
+                ".agent/scripts/sync_ide.py",
+                ["--target", "claude"],
+            );
+        }
     }
 
     if (previousVersion && previousVersion !== newVersion) {

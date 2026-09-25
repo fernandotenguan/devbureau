@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/protect_generated_files.py\""
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/protect_generated_files.py\""
           }
         ]
       },
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/guard_worktree_path.py\""
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/guard_worktree_path.py\""
           }
         ]
       },
@@ -24,7 +24,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/block_no_verify.py\""
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/block_no_verify.py\""
           }
         ]
       },
@@ -33,7 +33,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/check_mcp_health.py\""
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/check_mcp_health.py\""
           }
         ]
       },
@@ -42,7 +42,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/enforce_design_context.py\""
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/enforce_design_context.py\""
           }
         ]
       },
@@ -51,7 +51,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/protect_tests.py\""
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/protect_tests.py\""
           }
         ]
       },
@@ -60,7 +60,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/guard_main_branch.py\""
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/guard_main_branch.py\""
           }
         ]
       },
@@ -69,7 +69,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/scan_secrets_on_write.py\""
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/scan_secrets_on_write.py\""
           }
         ]
       }
@@ -80,7 +80,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/scan_injection.py\""
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/scan_injection.py\""
           }
         ]
       },
@@ -89,11 +89,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/warn_debug_statements.py\""
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/warn_debug_statements.py\""
           },
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/auto_fix_on_edit.py\""
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/auto_fix_on_edit.py\""
           }
         ]
       },
@@ -102,7 +102,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/warn_generic_design.py\""
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/warn_generic_design.py\""
           }
         ]
       },
@@ -111,7 +111,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/detect_tool_loop.py\""
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/detect_tool_loop.py\""
           }
         ]
       },
@@ -120,7 +120,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/check_mcp_health.py\""
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/check_mcp_health.py\""
           }
         ]
       }
@@ -131,7 +131,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py\" --target claude"
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/sync_ide.py\" --target claude"
           }
         ]
       },
@@ -140,7 +140,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/reinject_on_compact.py\""
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/hooks/reinject_on_compact.py\""
           }
         ]
       }
@@ -151,7 +151,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/rule_adherence.py\" record"
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/rule_adherence.py\" record"
           }
         ]
       },
@@ -160,7 +160,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/memory_rotate.py\""
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/memory_rotate.py\""
           }
         ]
       },
@@ -169,7 +169,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.agent/scripts/context_cost.py\" record"
+            "command": "$(command -v py >/dev/null 2>&1 && echo \"py -3\" || (command -v python3 2>/dev/null | grep -qv WindowsApps && echo python3) || echo python) \"$CLAUDE_PROJECT_DIR/.agent/scripts/context_cost.py\" record"
           }
         ]
       }
