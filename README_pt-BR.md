@@ -6,13 +6,15 @@
 > equipe especializada, sem precisar saber programar. Funciona no Claude Code, Cursor, Codex CLI,
 > OpenCode, GitHub Copilot, Antigravity, Windsurf, Cline, Roo Code e Zed.
 
-[![Kit Version](https://img.shields.io/badge/DevBureau-v3.41.0-blue)](https://github.com/fernandotenguan/devbureau)
+[![Kit Version](https://img.shields.io/badge/DevBureau-v3.42.0-blue)](https://github.com/fernandotenguan/devbureau)
 [![Agents](https://img.shields.io/badge/Agents-23-green)](https://github.com/fernandotenguan/devbureau)
 [![Skills](https://img.shields.io/badge/Skills-78-orange)](https://github.com/fernandotenguan/devbureau)
 [![Workflows](https://img.shields.io/badge/Workflows-29-red)](https://github.com/fernandotenguan/devbureau)
 [![Tests](https://img.shields.io/badge/Tests-Automated-brightgreen)](https://github.com/fernandotenguan/devbureau)
 
 > Os links dos badges assumem que o repositório está publicado como `fernandotenguan/devbureau`. Atualize-os se o caminho final publicado for diferente.
+
+> 📚 **Não programa? Comece pelo [Guia do Usuário](GUIA_DO_USUARIO.md).** Ele explica em linguagem simples como instalar, o que pedir aos especialistas, o que o kit protege sozinho e como manter tudo atualizado.
 
 ---
 
@@ -216,7 +218,7 @@ Se você está mantendo o próprio DevBureau (não só usando em um projeto deri
 
 ## Instalação
 
-> **Requisitos:** Python 3.9+ e Git
+> **Requisitos:** Node.js 16.7+, Python 3.9+ e Git
 
 ### Opção 1 — CLI via NPX (Recomendado, mais rápido)
 

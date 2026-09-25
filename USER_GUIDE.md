@@ -12,8 +12,10 @@
 4. [How to Use (By Task)](#how-to-use-by-task) — Practical examples
 5. [All Commands](#all-commands) — Quick reference
 6. [Available Specialists](#available-specialists) — Who does what
-7. [Frequently Asked Questions](#frequently-asked-questions)
-8. [Advanced Configuration](#advanced-configuration)
+7. [Automatic Safeguards](#automatic-safeguards) — What the kit prevents on its own
+8. [Frequently Asked Questions](#frequently-asked-questions)
+9. [Advanced Configuration](#advanced-configuration)
+10. [Staying Up to Date](#staying-up-to-date) — Update or remove the kit
 
 ---
 
@@ -21,13 +23,17 @@
 
 ### ⚡ Set Up in 2 Minutes
 
-You downloaded DevBureau? Great! Now run **ONE COMMAND** to activate everything:
+**Before you start**, the computer needs three free programs: [Node.js](https://nodejs.org) (16.7 or newer), [Python](https://www.python.org/downloads/) (3.9 or newer) and [Git](https://git-scm.com/downloads).
+
+Open a terminal **inside your project folder** and run **ONE COMMAND**:
 
 ```bash
-python .agent/scripts/sync_ide.py --target all
+npx devbureau init
 ```
 
-**Done!** Your IDE (Cursor, Claude, VS Code) now understands DevBureau's powers automatically.
+The installer copies the specialist team into the project, asks which AI tool you use (Claude Code, Cursor, Copilot and others) and runs the health check at the end.
+
+**Done!** Your AI tool now understands DevBureau automatically. Each project gets its own memory, which starts empty and learns from your work.
 
 ### ✅ Verify It Works
 
@@ -502,6 +508,19 @@ Beyond quick commands, you can activate a specific specialist by writing `@name`
 | `/test`    | Creates and runs tests      | `/test`                            |
 | `/preview` | Opens local server          | `/preview`                         |
 | `/status`  | Shows project progress      | `/status`                          |
+| `/orchestrate` | Brings several specialists into one big task | `/orchestrate review the whole checkout` |
+| `/clean`   | Tidies code formatting      | `/clean`                           |
+
+#### Review and Quality Commands
+
+| Command          | What it does                                                                  |
+| ---------------- | ----------------------------------------------------------------------------- |
+| `/audit`         | Project X-ray: bugs, security, performance, tests. Reports only, changes nothing |
+| `/lean-audit`    | Finds over-complicated code that can be deleted                                |
+| `/lean-debt`     | Lists the temporary shortcuts left in the code so you decide when to settle them |
+| `/finish-branch` | Closes finished work: merge, send for review, keep or discard                  |
+
+> Running several AI sessions at once? `/epic-claim`, `/epic-sync` and the other `/epic-*` commands coordinate work between them through GitHub issues. Optional, aimed at people who already use GitHub day to day.
 
 #### Deploy and Publishing Commands
 
@@ -681,6 +700,38 @@ Beyond quick commands, you can activate a specific specialist by writing `@name`
 
 ---
 
+## Automatic Safeguards
+
+Written rules depend on the agent remembering them. For the most important ones DevBureau doesn't rely on trust: it checks each agent action before or after it happens. This works on its own in **Claude Code**, on Windows, Mac and Linux. In the other tools (Cursor, Copilot and the rest), the same rules apply as instructions to the agent, without the automatic check.
+
+**The kit blocks** (the action doesn't happen):
+
+| If the agent tries to...                                              | What happens                                 |
+| --------------------------------------------------------------------- | -------------------------------------------- |
+| Skip the automatic checks when saving a version of the code           | Blocked                                      |
+| Delete, disable or empty a test to make it "pass"                     | Blocked                                      |
+| Write a password or access key (payments, cloud, AI) into a file      | Blocked; the right place is the `.env` file  |
+| Edit the main version of a shared project directly                    | Blocked; it creates a separate line of work  |
+| Change the design without first reading the design specialist's rules | Blocked until it reads them                  |
+| Edit files the kit generates itself                                   | Blocked; it is pointed to the right file     |
+| Edit files outside the project folder                                 | Blocked                                      |
+
+**The kit warns** (the action happens, but the agent is alerted):
+
+| Situation                                                         | The warning                                    |
+| ----------------------------------------------------------------- | ---------------------------------------------- |
+| A page or file it read carries hidden instructions for the AI     | The agent treats it as data, not as an order   |
+| The agent repeats an action that already failed                   | It stops, and the dead end is recorded so it isn't retried |
+| A forgotten debugging command is left in the code                 | Reminder to remove it                          |
+| The design uses the generic colors or libraries the kit avoids    | Reminder of the design rules                   |
+| An external integration (MCP) keeps failing                       | Alert before the next attempt                  |
+
+And when a conversation gets so long that the tool summarizes the history, the kit **re-inserts the essential rules**, so the agent doesn't drift back to generic behavior mid-task.
+
+> Really need to delete a test? Ask the agent and explain why. It will show you how to allow the action just this once.
+
+---
+
 ## Frequently Asked Questions
 
 ### ❓ Common Questions
@@ -736,6 +787,10 @@ Beyond quick commands, you can activate a specific specialist by writing `@name`
 #### Q: What is a "Squad"?
 
 **A:** A squad is a specialized team for a specific process. Example: "content production squad" to automatically create posts, images, emails.
+
+#### Q: Does it work on Windows, Mac and Linux?
+
+**A:** Yes, on all three. The automatic safeguards (see [Automatic Safeguards](#automatic-safeguards)) find the Python installed on each system by themselves.
 
 ---
 
@@ -850,6 +905,21 @@ It checks:
 
 ---
 
+## Staying Up to Date
+
+DevBureau gets improvements often. To bring them into your project, open a terminal in the project folder:
+
+| I want to...                                  | Command                                    |
+| --------------------------------------------- | ------------------------------------------ |
+| See what changed, without changing anything   | `npx devbureau@latest update --dry-run`    |
+| Update                                        | `npx devbureau@latest update`              |
+| See what would be removed, without removing   | `npx devbureau uninstall --dry-run`        |
+| Remove DevBureau from the project             | `npx devbureau uninstall`                  |
+
+**Your customizations are safe.** The kit keeps a fingerprint of every file it installed. If you (or the agent, at your request) changed a file, the update notices and doesn't overwrite it; it lists those files so you can decide. When updating, DevBureau also shows what's new since your version, in plain language.
+
+---
+
 ### 📚 Recommended Additional Reading
 
 If you want to learn more:
@@ -868,10 +938,10 @@ If you want to learn more:
 
 ### Start Now!
 
-1. **Run the setup:**
+1. **Install it in your project:**
 
     ```bash
-    python .agent/scripts/sync_ide.py --target all
+    npx devbureau init
     ```
 
 2. **Verify:**

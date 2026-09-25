@@ -429,21 +429,30 @@ async function init(args) {
     }
 
     console.log(
-        "\n✅ DevBureau is set up. Open this project in your AI assistant and start with /brainstorm or /ade.\n",
+        "\n✅ DevBureau is set up. Open this project in your AI assistant and start with /brainstorm or /ade.\n" +
+            "📚 Guia do usuário / User guide: https://github.com/fernandotenguan/devbureau/blob/main/GUIA_DO_USUARIO.md\n",
     );
 }
 
-// Reads CHANGELOG.md from the freshly-installed package and prints the entries
-// between the previously-installed version and the new one (newest first,
-// capped at 5 full entries). Falls back to a one-liner if either version's
-// heading can't be located (manually-edited version file, missing entry).
+// Plain-language release notes in the user's language. CHANGELOG.md is the
+// maintainer's technical log and never ships (it names the external projects
+// the kit was benchmarked against), so these are written for the end user.
+function releaseNotesFile() {
+    const locale = Intl.DateTimeFormat().resolvedOptions().locale || "";
+    return locale.toLowerCase().startsWith("pt")
+        ? "RELEASE_NOTES_pt-BR.md"
+        : "RELEASE_NOTES.md";
+}
+
+// Reads the release notes from the freshly-installed package and prints the
+// entries between the previously-installed version and the new one (newest
+// first, capped at 5 full entries). Falls back to a one-liner if either
+// version's heading can't be located (manually-edited version file, missing entry).
 function printChangelogSince(previousVersion, newVersion) {
+    const notesFile = releaseNotesFile();
     let changelog;
     try {
-        changelog = fs.readFileSync(
-            path.join(PACKAGE_ROOT, "CHANGELOG.md"),
-            "utf8",
-        );
+        changelog = fs.readFileSync(path.join(PACKAGE_ROOT, notesFile), "utf8");
     } catch {
         return;
     }
@@ -455,7 +464,7 @@ function printChangelogSince(previousVersion, newVersion) {
 
     if (startIdx === -1 || endIdx === -1 || endIdx <= startIdx) {
         console.log(
-            `\nℹ Atualizado de v${previousVersion} para v${newVersion} — veja CHANGELOG.md para detalhes.`,
+            `\nℹ Atualizado de v${previousVersion} para v${newVersion} — veja ${notesFile} para detalhes.`,
         );
         return;
     }
@@ -473,7 +482,7 @@ function printChangelogSince(previousVersion, newVersion) {
     }
     if (entries.length > shown.length) {
         console.log(
-            `...e mais ${entries.length - shown.length} releases anteriores — veja CHANGELOG.md para o histórico completo.\n`,
+            `...e mais ${entries.length - shown.length} releases anteriores — veja ${notesFile} para o histórico completo.\n`,
         );
     }
 }
@@ -598,13 +607,37 @@ function update(args) {
         saveVersionFile(targetDir, newVersion);
     }
 
+    // 3.41.0 and earlier installed maintainer-only files into projects. Remove
+    // the ones the kit itself put there and nobody changed since (hash still
+    // matches the previous manifest); anything edited or created locally stays.
+    const leakedKitFiles = Object.keys(previousManifest || {}).filter(
+        (relPath) =>
+            isKitOnlyPath(relPath) &&
+            fs.existsSync(path.join(targetDir, relPath)) &&
+            hashFile(path.join(targetDir, relPath)) ===
+                previousManifest[relPath],
+    );
+    if (!dryRun) {
+        for (const relPath of leakedKitFiles) {
+            fs.unlinkSync(path.join(targetDir, relPath));
+        }
+        removeEmptyDirsRecursive(path.join(targetDir, ".agent", ".tmp"));
+    }
+
     const orphaned = destRelFiles.filter(
-        (relPath) => !sourceRelFiles.includes(relPath),
+        (relPath) =>
+            !sourceRelFiles.includes(relPath) &&
+            !leakedKitFiles.includes(relPath),
     );
 
     console.log(`✔ Atualizados: ${updated}`);
     console.log(`✔ Adicionados: ${added}`);
     console.log(`ℹ Sem mudança: ${unchanged}`);
+    if (leakedKitFiles.length > 0) {
+        console.log(
+            `🧹 Arquivos internos do kit instalados por engano, removidos${dryRun ? " (simulação)" : ""}: ${leakedKitFiles.length}`,
+        );
+    }
     if (customizedFiles.length > 0) {
         console.log(
             `⚠ Customizados, não sobrescritos (${customizedFiles.length}):`,
