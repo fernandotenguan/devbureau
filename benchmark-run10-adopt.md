@@ -13,7 +13,7 @@ Close the five gaps the run confirmed by grep, without adding a skill, agent, wo
 - [x] 3. `DEVBUREAU.md` Zero-Break evidence table: one row for an independent oracle. → Verify: same as task 2, P0 growth measured with `token_footprint.py`.
 - [x] 4. `security-auditor`: curated false-positive precedents, adapted to a SaaS audience (DoS, rate limiting and audit-log exclusions deliberately not imported). → Verify: section present, consistent with the 🟢🟡🔴 confidence rule.
 - [x] 5. `frontend-specialist`: draw style, palette and layout with a real random source from the kit's existing curated lists; user-supplied copy goes in verbatim. → Verify: lists referenced exist, no new script.
-- [x] 6. `CHANGELOG.md` under `[Unreleased]`; mark items done in the local benchmark log. → Verify: `doctor.py` 10/10, `pytest .agent/tests/` green, `doc_drift_check.py` clean.
+- [x] 6. Maintainer changelog (local only, gitignored) under Unreleased; mark items done in the local benchmark log. → Verify: `doctor.py` 10/10, `pytest .agent/tests/` green, `doc_drift_check.py` clean.
 
 ## Out of scope
 
