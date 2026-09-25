@@ -327,3 +327,49 @@ class TestDocsSync:
             f"ARCHITECTURE.md out of sync with disk: {mismatches}. "
             "Update it per KIT_MASTER_RULES.md rule 5."
         )
+
+
+# ── auto_fixer must never reformat kit instruction files ──────────────────────
+class TestAutoFixerSkipsKitInstructions:
+    """Prettier pads markdown tables with spaces. On kit prompt files that inflates
+    every session's token cost and buries the real diff, so auto_fixer must skip them."""
+
+    @pytest.fixture(scope="class")
+    def auto_fixer(self):
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location("auto_fixer", SCRIPTS_DIR / "auto_fixer.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    @pytest.mark.parametrize("path", [
+        ".agent/rules/DEVBUREAU.md",
+        ".agent/agents/security-auditor.md",
+        ".agent/skills/code-review-checklist/SKILL.md",
+        ".claude/CLAUDE.md",
+        "AGENTS.md",
+        "GEMINI.md",
+        ".cursor/rules/00-core.mdc",
+        ".github/instructions/frontend.instructions.md",
+    ])
+    def test_kit_instruction_files_are_skipped(self, auto_fixer, path: str) -> None:
+        assert auto_fixer.is_kit_instruction_file(str(REPO_ROOT / path), REPO_ROOT)
+
+    @pytest.mark.parametrize("path", [
+        "README.md",
+        "docs/README.md",
+        ".agent/INTEGRITY_MANIFEST.json",
+        "web/src/app/page.tsx",
+    ])
+    def test_project_files_are_still_formatted(self, auto_fixer, path: str) -> None:
+        assert not auto_fixer.is_kit_instruction_file(str(REPO_ROOT / path), REPO_ROOT)
+
+    def test_directory_target_carries_exclusions(self, auto_fixer) -> None:
+        command = auto_fixer.prettier_command(["."])
+        assert "!.agent/**/*.md" in command
+        assert "!AGENTS.md" in command
+        assert "!.cursor/rules/**" in command
+
+    def test_file_targets_carry_no_exclusions(self, auto_fixer) -> None:
+        assert auto_fixer.prettier_command(["README.md"]) == ["npx", "prettier", "--write", "README.md"]
