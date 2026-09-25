@@ -46,6 +46,28 @@ const KIT_ONLY_MEMORY_FILES = [
     ".agent/memory/frontend-design-knowledge-extraction.md",
 ];
 
+// Whole subtrees that are never shipped either: hook session state, the kit's
+// own rotated memory archive, the benchmark source list and the npm packaging
+// file. `.agent/.npmignore` keeps the same paths out of the tarball; this list
+// also covers installs run from a local checkout, where they exist on disk.
+const KIT_ONLY_PATH_PREFIXES = [
+    ".agent/.tmp/",
+    ".agent/memory/archive/",
+    ".agent/memory/templates/",
+    ".agent/skills/framework-benchmarking/references/sources.md/",
+    ".agent/.npmignore/",
+];
+
+// Suffixing "/" lets one prefix match a directory, its children and a single file.
+function isKitOnlyPath(relFromRoot) {
+    return (
+        KIT_ONLY_MEMORY_FILES.includes(relFromRoot) ||
+        KIT_ONLY_PATH_PREFIXES.some((prefix) =>
+            `${relFromRoot}/`.startsWith(prefix),
+        )
+    );
+}
+
 // ".agent/memory/lessons.md" -> ".agent/memory/templates/lessons.md"
 function templateRelPath(relPath) {
     const parts = relPath.split("/");
@@ -214,10 +236,7 @@ function copyAgentFolder(targetDir, force) {
                 .split(path.sep)
                 .join("/");
             if (rel === "") return true; // the .agent root itself
-            const relFromRoot = path.posix.join(".agent", rel);
-            if (rel.startsWith("memory/templates")) return false;
-            if (KIT_ONLY_MEMORY_FILES.includes(relFromRoot)) return false;
-            return true;
+            return !isKitOnlyPath(path.posix.join(".agent", rel));
         },
     });
     // Seed per-project memory files from their structure-only template instead
@@ -485,13 +504,9 @@ function update(args) {
     const previousVersion = loadVersionFile(targetDir);
     const newVersion = currentPackageVersion();
 
-    // Never ship the installer's own memory/templates/ source assets, or the
-    // kit-only memory logs (benchmark-log.md, pattern-mining-log.md, etc.) —
-    // same exclusion `copyAgentFolder()` applies on init.
+    // Same exclusion `copyAgentFolder()` applies on init.
     const sourceRelFiles = agentRelFiles(PACKAGE_ROOT).filter(
-        (relPath) =>
-            !relPath.startsWith(".agent/memory/templates/") &&
-            !KIT_ONLY_MEMORY_FILES.includes(relPath),
+        (relPath) => !isKitOnlyPath(relPath),
     );
     const destRelFiles = agentRelFiles(targetDir);
     const newManifest = {};

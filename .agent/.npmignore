@@ -1,0 +1,17 @@
+# Kit-maintenance files: they exist in the maintainer's working copy and must
+# never reach the npm tarball. package.json's "files" allowlist includes all of
+# .agent/, and npm packs the working tree (not git), so gitignored notes would
+# otherwise ship. npm honors a .npmignore in a subdirectory of "files".
+# Keep in sync with KIT_ONLY_* in bin/devbureau.js.
+
+# Session state written by the Claude Code hooks
+.tmp/
+
+# Maintainer notes (see the "Kept locally only" block in the root .gitignore)
+memory/benchmark-log.md
+memory/pattern-mining-log.md
+memory/retro-log.md
+memory/behavioral-alignment-wave2.md
+memory/frontend-design-knowledge-extraction.md
+memory/archive/
+skills/framework-benchmarking/references/sources.md
